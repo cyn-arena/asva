@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  # To cater for deploying 2 concurrent running apps, a before- and an after-remediation app, 2 separate services will be created. In the eventual blue-green state, a single service will be deployed. Deployment selector labels will be used to point to either the Blue or the Green Deployment workload i.e. the ${DEPLOY_TARGET} suffix no longer needed.
+  name: svc-nodegoat-${DEPLOY_TARGET}
+  namespace: dvapps
+  labels:
+    app: nodegoat-${DEPLOY_TARGET}
+
+spec:
+  selector:
+    app: nodegoat-${DEPLOY_TARGET}
+
+  type: NodePort
+
+  ports:
+    - protocol: TCP
+      port: 4043
+      targetPort: 4043
+      nodePort: ${DEPLOY_NODEPORT}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: dep-nodegoat-${DEPLOY_TARGET}
+  namespace: dvapps
+  labels:
+    app: nodegoat-${DEPLOY_TARGET}
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: nodegoat-${DEPLOY_TARGET}
+
+  template:
+    metadata:
+      labels:
+        app: nodegoat-${DEPLOY_TARGET}
+
+    spec:
+      automountServiceAccountToken: false
+
+      imagePullSecrets:
+      - name: sec-docker-registry
+
+      containers:
+      - name: nodegoat
+        image: cyntillate/dvapps:dvng-latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4043
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          capabilities:
+            drop:
+              - ALL
+
+        resources:
+          limits:
+            memory: 300Mi
+            cpu: 200m
+          requests:
+            memory: 200Mi
+            cpu: 100m
+
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+
+      volumes:
+        - name: tmp
+          emptyDir: {}

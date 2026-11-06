@@ -1,0 +1,145 @@
+RAG Security Context Service  http://localhost:8800  (ok)
+  CISA KEV: 2026.09.30 (2026-09-30), 1730 items
+  MITRE CWE: 4.20 (2026-04-30), 944 items
+  NVD: lazy (on demand), 0 items
+  OWASP Cheat Sheet Series: 127 cheat sheets @ 84fec22a9ed3, 3768 items
+  online lookups: on; NVD key: yes (lazy mode); Context7: yes
+Findings: NodeGoat scan run 20261013062102 @ 765e1949 (hardcoded in nodegoat_findings.json)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+ CASE 1/1   docker-compose.yml   (Snyk Container, 7 finding(s))
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  1) Finding(s) from the scan   (SARIF → ASVA normaliser → triage batch asva_container_765e1949)
+     [critical · CVSS 9.8] Medium severity - CVE-2026-8376 vulnerability in perl
+         perl@5.30.0-9ubuntu0.5  →  upgrade to perl/perl-base@5.30.0-9ubuntu0.5+esm2
+           (CVE-2026-8376)
+     [critical · CVSS 9.8] Medium severity - Improper Null Termination vulnerability in gnutls28
+         gnutls28@3.6.13-2ubuntu1.12  →  upgrade to gnutls28/libgnutls30@3.6.13-2ubuntu1.12+esm2
+           (CVE-2026-42010)
+     [critical · CVSS 9.1] Low severity - Off-by-one Error vulnerability in libtasn1-6
+         libtasn1-6@4.16.0-2ubuntu0.1  →  upgrade to libtasn1-6@4.16.0-2ubuntu0.1+esm1
+           (CVE-2021-46848)
+     [critical · CVSS 9.1] Medium severity - CVE-2026-13221 vulnerability in perl
+         perl@5.30.0-9ubuntu0.5  →  upgrade to perl/perl-base@5.30.0-9ubuntu0.5+esm3
+           (CVE-2026-13221)
+     … and 3 more
+
+  2) Identifiers from the scan
+     CWE: 4 distinct, from the scanner's rule tags in the SARIF file — CWE-170, CWE-193, CWE-191,
+       CWE-787
+     CVE: 7 distinct — CVE-2026-8376, CVE-2026-42010, CVE-2021-46848, CVE-2026-13221 …
+     image: mongo:4.4;  OS packages: perl ×3, gnutls28 ×2, libtasn1-6, gnupg2
+
+  3) What the service did   (POST /v1/context, fix_type version_upgrade)
+     OWASP search: skipped (no prose guidance for version_upgrade)
+     NVD: 7 of 7 CVEs found;  CISA KEV: 0 known exploited
+     CWE lookup: CWE-680, CWE-170, CWE-626, CWE-193, CWE-190, CWE-22, CWE-59, CWE-191 … (10 in all)
+     OSV.dev (Ubuntu's security data), Ubuntu 20.04: 7 CVEs checked — 7 fixed for subscribers only,
+       0 in the standard repositories
+     Docker Hub: newer lines of mongo:4.4 → 5.0, 6.0, 7.0, 8.0, 8.2, 8.3, 9.0;  suggested by rule:
+       7.0
+
+  4) Context for the LLM prompt   (1 item(s), 1,271 / 2,500 chars ≈ 317 tokens)   [preview; --full for the exact text]
+     [Container]  Container image summary
+         Container image mongo:4.4 (Ubuntu 20.04): 7 CVE(s) in 4 OS package(s) (perl ×3, gnutls28
+           ×2, libtasn1-6, gnupg2).
+         OSV.dev (the distribution's own security data): for Ubuntu 20.04, 7 of 7 checked fixes are
+           published only as "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro", not
+           in the standard package repositories.
+         Newer release lines of mongo (Docker Hub; support dates: endoflife.date; "resolved" = fixed
+           in that base OS's standard packages, or not affected):
+         - mongo:7.0: 7.0.43 on Ubuntu 22.04, 7/7 checked CVEs resolved, supported until 2027-08-31
+         - mongo:8.0: 8.0.32 on Ubuntu 24.04, 7/7 checked CVEs resolved, supported until 2029-10-31
+         - mongo:8.3: 8.3.11 on Ubuntu 24.04, 7/7 checked CVEs resolved, supported until 2029-10-31
+         - mongo:9.0: 9.0.2 on Ubuntu 24.04, 7/7 checked CVEs resolved, supported until 2031-10-31
+         (past end of life, not listed: 5.0, 6.0, 8.2)
+         Compatible fix (same major version, 4.x): none. The lines that resolve these CVEs are new
+           major versions of mongo: moving to one is a migration (the application's client library
+           and stored data may need changes), not a drop-in tag bump.
+         Migration target: mongo:7.0, the nearest supported line whose base OS resolves the checked
+           CVEs; mongo:8.0 is supported longest (until 2029-10-31).
+
+  5) Upgrade data   (1 entry, as data for the agent and the PR)
+     image mongo:4.4 (Ubuntu 20.04)  →  compatible fix: none;  migration target: mongo:7.0
+       [newer_line_needed, MAJOR change]
+         mongo:5.0  5.0.33 on Ubuntu 20.04, 0/7 CVEs resolved, past end of life
+         mongo:6.0  6.0.28 on Ubuntu 22.04, 7/7 CVEs resolved, past end of life
+         mongo:7.0  7.0.43 on Ubuntu 22.04, 7/7 CVEs resolved, supported until 2027-08-31
+         mongo:8.0  8.0.32 on Ubuntu 24.04, 7/7 CVEs resolved, supported until 2029-10-31
+         mongo:8.2  8.2.12 on Ubuntu 24.04, 7/7 CVEs resolved, past end of life
+         mongo:8.3  8.3.11 on Ubuntu 24.04, 7/7 CVEs resolved, supported until 2029-10-31
+         mongo:9.0  9.0.2 on Ubuntu 24.04, 7/7 CVEs resolved, supported until 2031-10-31
+
+  6) References for the PR / UI   (26, not sent to the LLM)
+     [NVD]    CVE-2026-8376  CVSS 9.8 CRITICAL  CWE-680
+     [NVD]    CVE-2026-42010  CVSS 9.8 CRITICAL  CWE-170, CWE-626
+     [NVD]    CVE-2021-46848  CVSS 9.1 CRITICAL  CWE-193
+     [NVD]    CVE-2026-13221  CVSS 9.1 CRITICAL  CWE-190
+     [NVD]    CVE-2026-42496  CVSS 9.1 CRITICAL  CWE-59, CWE-22
+     … and 2 more CVEs
+     [CWE]    CWE-680: Integer Overflow to Buffer Overflow
+     [CWE]    CWE-170: Improper Null Termination
+     [CWE]    CWE-626: Null Byte Interaction Error (Poison Null Byte)
+     [CWE]    CWE-193: Off-by-one Error
+     [CWE]    CWE-190: Integer Overflow or Wraparound
+     … and 5 more CWEs
+         each with MITRE's definition and mitigations, e.g. CWE-680: The product performs a
+           calculation to determine how much memory to allocate, but an integer overflow can occur
+           that causes less memory to be allocated …
+         mitigation: [Implementation; Input Validation] Perform input validation on any numeric
+           input by ensuring that it is within the expected range. Enforce that the input meets both
+           the m …
+     [OSV]    UBUNTU-CVE-2026-8376  perl fixed in 5.30.0-9ubuntu0.5+esm2  —  Available with Ubuntu
+       Pro (Infra-only): https://ubuntu.com/pro
+     [OSV]    UBUNTU-CVE-2026-42010  gnutls28 fixed in 3.6.13-2ubuntu1.12+esm2  —  Available with
+       Ubuntu Pro (Infra-only): https://ubuntu.com/pro
+     … and 5 more OS-package fixes with their availability
+     [Image]  mongo: release lines and base images  (Docker Hub: https://hub.docker.com/_/mongo)
+     [Image]  mongodb: release and end-of-life dates  (endoflife.date:
+       https://endoflife.date/mongodb)
+
+  7) Check: PASS
+     ✓ size 1,271 ≤ 2,500 chars
+     ✓ 7 CVE(s) enriched from NVD (CVSS, CWE)
+     ✓ 10 CWE(s) resolved for these findings
+     ✓ fixes are subscription-only, in the source's words
+     ✓ newer release lines listed with their base OS
+     ✓ says there is no compatible (same major version) fix
+     ✓ names the migration target
+     ✓ warns a new major version is not a drop-in change
+     ✓ upgrade data: migration target as data, and no compatible target
+
+  ────────────────────────────────────────────────────────────────────────────────────────────────
+  WITHOUT OSV   (same request, exclude_sources: [osv])
+     prompt context: 1,271 → 951 chars (-320);  references: 26 → 19;  upgrade entries: 1 → 1
+     context without it:
+         [Container]  Container image summary
+             Container image mongo:4.4 (Ubuntu 20.04): 7 CVE(s) in 4 OS package(s) (perl ×3,
+               gnutls28 ×2, libtasn1-6, gnupg2).
+             The scanner lists fixed package versions; a newer image tag that ships them resolves
+               these findings.
+             Newer release lines of mongo (Docker Hub; support dates: endoflife.date):
+             - mongo:7.0: 7.0.43 on Ubuntu 22.04, supported until 2027-08-31
+             - mongo:8.0: 8.0.32 on Ubuntu 24.04, supported until 2029-10-31
+             - mongo:8.3: 8.3.11 on Ubuntu 24.04, supported until 2029-10-31
+             - mongo:9.0: 9.0.2 on Ubuntu 24.04, supported until 2031-10-31
+             (past end of life, not listed: 5.0, 6.0, 8.2)
+             Compatible fix (same major version, 4.x): none. The newer lines are new major versions
+               of mongo: moving to one is a migration (the application's client library and stored
+               data may need changes), not a drop-in tag bump.
+             Migration target: mongo:7.0, the nearest supported line on a newer base OS than this
+               image; mongo:8.0 is supported longest (until 2029-10-31).
+     checks that no longer hold:
+         ✗ fixes are subscription-only, in the source's words
+     references: advisory 7 → 0
+         references with availability: 7 → 0
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+ SUMMARY
+════════════════════════════════════════════════════════════════════════════════════════════════════
+  File                             Type       Findings   Prompt context  References  Result
+  docker-compose.yml               container         7      1,271 chars          26  PASS
+
+  Total prompt context: 1,271 chars (≈ 317 tokens)
+  ALL PASSED

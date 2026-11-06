@@ -1,0 +1,42 @@
+name: NodeGoat - Remove Kubernetes deployment
+
+on:
+  # workflow_dispatch:
+  push:
+    branches:
+      - feat/nodegoat
+      - rel/26.07 
+    paths:
+      - '.github/workflows/nodegoat-demolish.yml'
+
+# Edit according to deployment target 
+env:
+  DEPLOY_TARGET: blue # blue|green
+  DEPLOY_NODEPORT: ${{ vars.NODEPORT_BLUE }} # NODE_PORT_BLUE|GREEN
+  
+jobs:
+  demolish:
+    name: Remove Kubernetes deployment (blue)
+    runs-on:
+      ${{ vars.ASVA_K8S_RUNNER }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            target-apps/NodeGoat/kubernetes/dvng.yaml.template
+          sparse-checkout-cone-mode: true
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+           version: 'latest'
+
+      - name: Delete NodeGoat Kubernetes resources
+        run: |
+          sed \
+          -e "s|\${DEPLOY_TARGET}|$DEPLOY_TARGET|g" \
+          -e "s|\${DEPLOY_NODEPORT}|$DEPLOY_NODEPORT|g" \
+          target-apps/NodeGoat/kubernetes/dvng.yaml.template > target-apps/NodeGoat/kubernetes/dvng.yaml
+          kubectl delete -f target-apps/NodeGoat/kubernetes/dvng.yaml

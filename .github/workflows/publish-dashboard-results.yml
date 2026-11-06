@@ -1,0 +1,108 @@
+name: ASVA - Publish dashboard evidence
+
+on:
+  workflow_call:
+    inputs:
+      app-code:
+        type: string
+        required: true
+      outcomes:
+        description: JSON object containing the upstream job outcomes
+        type: string
+        required: true
+      legacy-uploads:
+        description: Also keep the previous raw scan blob names for existing readers
+        type: boolean
+        default: false
+      scan-kind:
+        type: string
+        default: initial
+      after-fix-of:
+        type: string
+        default: ''
+    secrets:
+      AZURE_CREDENTIALS:
+        required: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.app-code }} results to Azure
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      APP_CODE: ${{ inputs.app-code }}
+      STAGE_OUTCOMES: ${{ inputs.outcomes }}
+      GH_TOKEN: ${{ github.token }}
+      SCAN_KIND: ${{ inputs.scan-kind }}
+      AFTER_FIX_OF: ${{ inputs.after-fix-of }}
+      ASVA_AZURE_STORAGE_ACCOUNT: ${{ vars.ASVA_AZURE_STORAGE_ACCOUNT }}
+      ASVA_AZURE_STORAGE_CONTAINER: ${{ vars.ASVA_AZURE_STORAGE_CONTAINER }}
+    steps:
+      - name: Checkout evidence packaging scripts
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download available evidence from this run
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ inputs.app-code }}-*
+          path: asva-results/artifacts
+          merge-multiple: false
+
+      - name: Read run metadata and build Peter's v0.1 package
+        env:
+          EVIDENCE_DOWNLOAD_RESULT: ${{ steps.download.outcome }}
+        run: |
+          mkdir -p asva-results
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > asva-results/run-metadata.json
+          python scripts/dashboard_evidence.py package --app "$APP_CODE" \
+            --artifacts asva-results/artifacts --output asva-results/dashboard \
+            --metadata asva-results/run-metadata.json
+
+      - name: Save dashboard package for inspection
+        id: package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app-code }}-dashboard-package-${{ github.run_attempt }}
+          path: asva-results/dashboard/
+          retention-days: 14
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Link the dashboard package for verification
+        if: always() && steps.package.outputs.artifact-url != ''
+        env:
+          PACKAGE_URL: ${{ steps.package.outputs.artifact-url }}
+        run: echo "[Download $APP_CODE dashboard evidence]($PACKAGE_URL)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Authenticate to Azure
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Upload evidence and publish manifest last
+        env:
+          LEGACY_UPLOADS: ${{ inputs.legacy-uploads }}
+        run: |
+          args=()
+          if [ "$LEGACY_UPLOADS" = 'true' ]; then args+=(--legacy); fi
+          python scripts/dashboard_evidence.py upload --directory asva-results/dashboard \
+            --app "$APP_CODE" --run-id "$GITHUB_RUN_ID" "${args[@]}"
+
+      - name: Show dashboard availability in the run summary
+        run: |
+          echo "### Dashboard evidence published" >> "$GITHUB_STEP_SUMMARY"
+          echo "App: $APP_CODE; run: $GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
+          echo "Azure: $ASVA_AZURE_STORAGE_ACCOUNT / $ASVA_AZURE_STORAGE_CONTAINER / $APP_CODE/$GITHUB_RUN_ID/manifest.json" >> "$GITHUB_STEP_SUMMARY"
+          echo "The dashboard can read this run on its next refresh. Candidate failures remain recorded as failures." >> "$GITHUB_STEP_SUMMARY"

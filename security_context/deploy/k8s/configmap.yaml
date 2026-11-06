@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: security-context-config
+data:
+  # Always-on: keep a full local NVD copy, updated incrementally by the CronJob.
+  NVD_SYNC_MODE: "full"
+  ONLINE_LOOKUPS: "true"      # missing CVEs / OSV.dev / Context7 / registries are still looked up on demand
+  # Sources to answer without, e.g. "dockerhub,endoflife" if the cluster may not reach them.
+  DISABLED_SOURCES: ""
+  DEFAULT_MAX_CHARS: "2500"
+  PASSAGE_MAX_CHARS: "800"
+  GUIDANCE_TOP_K: "3"
+  MIN_SIMILARITY: "0.35"
+  MAX_LIBRARY_NOTES: "2"
+  LIBRARY_NOTES_IN_PROMPT: "false"
+  IMAGE_LINES_IN_PROMPT: "false"
+  KEYWORD_FALLBACK_BELOW: "0.62"
+  KEYWORD_FALLBACK_RESULTS: "2"
+  NVD_CACHE_DAYS: "7"
+  OSV_CACHE_HOURS: "24"
+  REGISTRY_CACHE_HOURS: "24"
+  PACKAGES_CACHE_HOURS: "24"
+  LIFECYCLE_CACHE_DAYS: "7"
+  CONTEXT7_CACHE_DAYS: "30"

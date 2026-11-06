@@ -1,0 +1,77 @@
+{
+ "id": "UBUNTU-CVE-2022-23219",
+ "upstream": [
+  "CVE-2022-23219"
+ ],
+ "affected": [
+  {
+   "package": {
+    "name": "glibc",
+    "ecosystem": "Ubuntu:Pro:16.04:LTS",
+    "purl": "pkg:deb/ubuntu/glibc@2.23-0ubuntu11.3+esm1?arch=source&distro=esm-infra/xenial"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.23-0ubuntu11.3+esm1"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "glibc",
+    "ecosystem": "Ubuntu:18.04:LTS",
+    "purl": "pkg:deb/ubuntu/glibc@2.27-3ubuntu1.5?arch=source&distro=bionic"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.27-3ubuntu1.5"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  },
+  {
+   "package": {
+    "name": "glibc",
+    "ecosystem": "Ubuntu:20.04:LTS",
+    "purl": "pkg:deb/ubuntu/glibc@2.31-0ubuntu9.7?arch=source&distro=focal"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.31-0ubuntu9.7"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  }
+ ]
+}

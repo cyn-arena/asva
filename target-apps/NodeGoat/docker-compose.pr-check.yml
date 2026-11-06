@@ -1,0 +1,11 @@
+# Used alongside docker-compose.yml (not instead of it) by nodegoat-orchestrator.yml's
+# pr-check job. The base compose file publishes host port 4000 -> container port 4000,
+# but the app's own hardcoded default listen port is 4043 -- only docker-compose.override.yml
+# sets PORT=4000, and pr-check can't use that file because it also downgrades mongo to 3.2
+# (pr-check needs mongo:4.4, matching what's actually scanned/deployed). Confirmed locally:
+# without this, `npm start` connects to mongo and runs fine, but Express binds 4043, so
+# nothing ever answers on the published port 4000 and every pre-merge check just times out.
+services:
+  web:
+    environment:
+      PORT: 4000

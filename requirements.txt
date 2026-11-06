@@ -1,0 +1,5 @@
+# ASVA agent — Python dependencies (pinned for reproducible builds — security project).
+
+python-dotenv==1.2.2   # .env loading (gitops/config.py, llm/llm_client.py)
+httpx==0.28.1          # LLM backend HTTP client (llm/llm_client.py)
+packaging==24.2        # version comparison for SCA package upgrades (agent/agent_loop.py)

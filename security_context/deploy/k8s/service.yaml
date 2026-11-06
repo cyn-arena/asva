@@ -1,0 +1,14 @@
+# Internal only. The ASVA fix job (on the in-cluster runner) calls
+#   http://svc-security-context.<namespace>.svc.cluster.local:8000
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-security-context
+spec:
+  type: ClusterIP
+  selector:
+    app: security-context
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

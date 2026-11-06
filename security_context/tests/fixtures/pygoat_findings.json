@@ -1,0 +1,3101 @@
+{
+ "description": "Real PyGoat findings from the ASVA pipeline, hardcoded for the RAG demo and evaluation. Built by tools/build_fixture.py from ASVA's triage batches (normalised + triaged Snyk findings) plus each rule's CWE ids from the Snyk SARIF files ('sarif_cwes'). Nothing reads the asva folder at runtime.",
+ "extracted_at": "2026-10-23",
+ "source": {
+  "scan_run_id": "20261017084553",
+  "commit_sha": "23be8e20",
+  "batches": [
+   "asva-pygoat_sast_23be8e20_1",
+   "asva-pygoat_sca_23be8e20"
+  ],
+  "sarif": [
+   "container.sarif.json",
+   "sast.sarif.json",
+   "sca.sarif.json"
+  ],
+  "pipeline_run": "pygoat_39018400376"
+ },
+ "files": [
+  {
+   "file": "introduction/mitre.py",
+   "batch_id": "asva-pygoat_sast_23be8e20_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Code Injection",
+     "summary": "Unsanitized input from an HTTP parameter flows into eval, where it is executed as Python code. This may result in a Code Injection vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into eval, where it is executed as Python code. This may result in a Code Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-94",
+      "rule_id": "python/CodeInjection"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/mitre.py",
+      "line": 218,
+      "package": null,
+      "display": "introduction/mitre.py:218",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/mitre.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Command Injection",
+     "summary": "Unsanitized input from an HTTP parameter flows into subprocess.Popen, where it is used as a shell command. This may result in a Command Injection vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into subprocess.Popen, where it is used as a shell command. This may result in a Command Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-78",
+      "rule_id": "python/CommandInjection"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/mitre.py",
+      "line": 233,
+      "package": null,
+      "display": "introduction/mitre.py:233",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/mitre.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-78"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Use of Hardcoded Cryptographic Key",
+     "summary": "A hardcoded string value is used as a cipher key in jwt.decode. Generate the value with a cryptographically strong random number generator instead.",
+     "description": "A hardcoded string value is used as a cipher key in jwt.decode. Generate the value with a cryptographically strong random number generator instead.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-321",
+      "rule_id": "python/HardcodedKey"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/mitre.py",
+      "line": 182,
+      "package": null,
+      "display": "introduction/mitre.py:182",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/mitre.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-321"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Use of Hardcoded Cryptographic Key",
+     "summary": "A hardcoded string value is used as a cipher key in jwt.decode. Generate the value with a cryptographically strong random number generator instead.",
+     "description": "A hardcoded string value is used as a cipher key in jwt.decode. Generate the value with a cryptographically strong random number generator instead.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-321",
+      "rule_id": "python/HardcodedKey"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/mitre.py",
+      "line": 194,
+      "package": null,
+      "display": "introduction/mitre.py:194",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/mitre.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-321"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "introduction/views.py",
+   "batch_id": "asva-pygoat_sast_23be8e20_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Code Injection",
+     "summary": "Unsanitized input from an HTTP parameter flows into eval, where it is executed as Python code. This may result in a Code Injection vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into eval, where it is executed as Python code. This may result in a Code Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-94",
+      "rule_id": "python/CodeInjection"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 460,
+      "package": null,
+      "display": "introduction/views.py:460",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Deserialization of Untrusted Data",
+     "summary": "Unsanitized input from cookies flows into pickle.loads, where it is used to deserialize an object. This may result in an Unsafe Deserialization vulnerability.",
+     "description": "Unsanitized input from cookies flows into pickle.loads, where it is used to deserialize an object. This may result in an Unsafe Deserialization vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-502",
+      "rule_id": "python/Deserialization"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 214,
+      "package": null,
+      "display": "introduction/views.py:214",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-502"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Deserialization of Untrusted Data",
+     "summary": "Unsanitized input from an uploaded file flows into yaml.load, where it is used to deserialize an object. This may result in an Unsafe Deserialization vulnerability.",
+     "description": "Unsanitized input from an uploaded file flows into yaml.load, where it is used to deserialize an object. This may result in an Unsafe Deserialization vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-502",
+      "rule_id": "python/Deserialization"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 560,
+      "package": null,
+      "display": "introduction/views.py:560",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-502"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Path Traversal",
+     "summary": "Unsanitized input from an HTTP parameter flows into open, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.",
+     "description": "Unsanitized input from an HTTP parameter flows into open, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-23",
+      "rule_id": "python/PT"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 927,
+      "package": null,
+      "display": "introduction/views.py:927",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-23"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Server-Side Request Forgery (SSRF)",
+     "summary": "Unsanitized input from an HTTP parameter flows into requests.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into requests.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-918",
+      "rule_id": "python/Ssrf"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 963,
+      "package": null,
+      "display": "introduction/views.py:963",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-918"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "SQL Injection",
+     "summary": "Unsanitized input from an HTTP parameter flows into django.contrib.auth.login.objects.raw, where it is used in an SQL query. This may result in an SQL Injection vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into django.contrib.auth.login.objects.raw, where it is used in an SQL query. This may result in an SQL Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-89",
+      "rule_id": "python/Sqli"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 162,
+      "package": null,
+      "display": "introduction/views.py:162",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "SQL Injection",
+     "summary": "Unsanitized input from an HTTP parameter flows into introduction.models.sql_lab_table.objects.raw, where it is used in an SQL query. This may result in an SQL Injection vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into introduction.models.sql_lab_table.objects.raw, where it is used in an SQL query. This may result in an SQL Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-89",
+      "rule_id": "python/Sqli"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 878,
+      "package": null,
+      "display": "introduction/views.py:878",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "XML External Entity (XXE) Injection",
+     "summary": "Unsanitized user input from the HTTP request body flows into xml.dom.pulldom.parseString, with external entities being enabled. This introduces the risk of XML External Entity Injection (XXE) attacks, which can lead to disclosure of confidential data, Denial of Service (DOS), Server-Side Request Forgery (SSRF) and other threats.",
+     "description": "Unsanitized user input from the HTTP request body flows into xml.dom.pulldom.parseString, with external entities being enabled. This introduces the risk of XML External Entity Injection (XXE) attacks, which can lead to disclosure of confidential data, Denial of Service (DOS), Server-Side Request Forgery (SSRF) and other threats.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-611",
+      "rule_id": "python/XXE"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/views.py",
+      "line": 260,
+      "package": null,
+      "display": "introduction/views.py:260",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/views.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-611"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "dockerized_labs/insec_des_lab/main.py",
+   "batch_id": "asva-pygoat_sast_23be8e20_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Deserialization of Untrusted Data",
+     "summary": "Unsanitized input from a web form flows into pickle.loads, where it is used to deserialize an object. This may result in an Unsafe Deserialization vulnerability.",
+     "description": "Unsanitized input from a web form flows into pickle.loads, where it is used to deserialize an object. This may result in an Unsafe Deserialization vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-502",
+      "rule_id": "python/Deserialization"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "dockerized_labs/insec_des_lab/main.py",
+      "line": 36,
+      "package": null,
+      "display": "dockerized_labs/insec_des_lab/main.py:36",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "dockerized_labs/insec_des_lab/main.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-502"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "introduction/static/js/a9.js",
+   "batch_id": "asva-pygoat_sast_23be8e20_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Hardcoded Non-Cryptographic Secret",
+     "summary": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+     "description": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-547",
+      "rule_id": "javascript/HardcodedNonCryptoSecret"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/static/js/a9.js",
+      "line": 18,
+      "package": null,
+      "display": "introduction/static/js/a9.js:18",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/static/js/a9.js"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-547"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "pygoat/settings.py",
+   "batch_id": "asva-pygoat_sast_23be8e20_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Hardcoded Non-Cryptographic Secret",
+     "summary": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+     "description": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-547",
+      "rule_id": "python/HardcodedNonCryptoSecret"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "pygoat/settings.py",
+      "line": 25,
+      "package": null,
+      "display": "pygoat/settings.py:25",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "pygoat/settings.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-547"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "introduction/apis.py",
+   "batch_id": "asva-pygoat_sast_23be8e20_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Path Traversal",
+     "summary": "Unsanitized input from an HTTP parameter flows into open, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.",
+     "description": "Unsanitized input from an HTTP parameter flows into open, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-23",
+      "rule_id": "python/PT"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "introduction/apis.py",
+      "line": 38,
+      "package": null,
+      "display": "introduction/apis.py:38",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "introduction/apis.py"
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-23"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "requirements.txt",
+   "batch_id": "asva-pygoat_sca_23be8e20",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.8,
+     "has_real_score": true,
+     "title": "Critical severity - Arbitrary Code Execution vulnerability in pyyaml",
+     "summary": "Critical severity - Arbitrary Code Execution vulnerability in pyyaml",
+     "description": "(CVE-2020-1747) pyyaml@5.1",
+     "identifiers": {
+      "cve": "CVE-2020-1747",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYYAML-559098"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyyaml@5.1",
+      "display": "pyyaml@5.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyyaml@5.3.1"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyyaml@5.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-20"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.8,
+     "has_real_score": true,
+     "title": "Critical severity - Arbitrary Code Execution vulnerability in pyyaml",
+     "summary": "Critical severity - Arbitrary Code Execution vulnerability in pyyaml",
+     "description": "(CVE-2020-14343) pyyaml@5.1",
+     "identifiers": {
+      "cve": "CVE-2020-14343",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYYAML-590151"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyyaml@5.1",
+      "display": "pyyaml@5.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyyaml@5.4"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyyaml@5.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.8,
+     "has_real_score": true,
+     "title": "Critical severity - Improper Access Control vulnerability in pyyaml",
+     "summary": "Critical severity - Improper Access Control vulnerability in pyyaml",
+     "description": "(CVE-2019-20477) pyyaml@5.1",
+     "identifiers": {
+      "cve": "CVE-2019-20477",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYYAML-550022"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyyaml@5.1",
+      "display": "pyyaml@5.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyyaml@5.2"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyyaml@5.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-284"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.8,
+     "has_real_score": true,
+     "title": "Critical severity - Improper Following of a Certificate's Chain of Trust vulnerability in certifi",
+     "summary": "Critical severity - Improper Following of a Certificate's Chain of Trust vulnerability in certifi",
+     "description": "(CVE-2023-37920) certifi@2022.12.7",
+     "identifiers": {
+      "cve": "CVE-2023-37920",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CERTIFI-5805047"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "certifi@2022.12.7",
+      "display": "certifi@2022.12.7 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "certifi@2023.7.22"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "certifi@2022.12.7"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-296"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.6,
+     "has_real_score": true,
+     "title": "Critical severity - Heap-based Buffer Overflow vulnerability in pillow",
+     "summary": "Critical severity - Heap-based Buffer Overflow vulnerability in pillow",
+     "description": "(CVE-2023-4863) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2023-4863",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-5918878"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@10.0.1"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-122"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - Arbitrary Code Injection vulnerability in sqlparse",
+     "summary": "Critical severity - Arbitrary Code Injection vulnerability in sqlparse",
+     "description": "(CVE-2026-59894) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2026-59894",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-18905644"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.6.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - Improper Verification of Cryptographic Signature vulnerability in pyjwt",
+     "summary": "Critical severity - Improper Verification of Cryptographic Signature vulnerability in pyjwt",
+     "description": "(CVE-2026-102268) pyjwt@2.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-102268",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYJWT-20249112"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyjwt@2.4.0",
+      "display": "pyjwt@2.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyjwt@2.14.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyjwt@2.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-347"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - SQL Injection vulnerability in django",
+     "summary": "Critical severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2026-1312) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2026-1312",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-15198931"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.28"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - SQL Injection vulnerability in django",
+     "summary": "Critical severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2026-1287) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2026-1287",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-15198932"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.28"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - SQL Injection vulnerability in django",
+     "summary": "Critical severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2024-42005) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2024-42005",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-7642814"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.15"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - SQL Injection vulnerability in django",
+     "summary": "Critical severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2024-53908) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2024-53908",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-8456316"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.17"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.1,
+     "has_real_score": true,
+     "title": "Critical severity - Open Redirect vulnerability in pyjwt",
+     "summary": "Critical severity - Open Redirect vulnerability in pyjwt",
+     "description": "(CVE-2026-102267) pyjwt@2.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-102267",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYJWT-20250951"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyjwt@2.4.0",
+      "display": "pyjwt@2.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyjwt@2.14.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyjwt@2.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-601"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.9,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in urllib3",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in urllib3",
+     "description": "(CVE-2025-66418) urllib3@1.26.9",
+     "identifiers": {
+      "cve": "CVE-2025-66418",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-URLLIB3-14192443"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "urllib3@1.26.9",
+      "display": "urllib3@1.26.9 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "urllib3@2.6.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "urllib3@1.26.9"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.9,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in urllib3",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in urllib3",
+     "description": "(CVE-2026-97689) urllib3@1.26.9",
+     "identifiers": {
+      "cve": "CVE-2026-97689",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-URLLIB3-20302846"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "urllib3@1.26.9",
+      "display": "urllib3@1.26.9 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "urllib3@2.8.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "urllib3@1.26.9"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.9,
+     "has_real_score": true,
+     "title": "High severity - Improper Handling of Highly Compressed Data (Data Amplification) vulnerability in urllib3",
+     "summary": "High severity - Improper Handling of Highly Compressed Data (Data Amplification) vulnerability in urllib3",
+     "description": "(CVE-2025-66471) urllib3@1.26.9",
+     "identifiers": {
+      "cve": "CVE-2025-66471",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-URLLIB3-14192442"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "urllib3@1.26.9",
+      "display": "urllib3@1.26.9 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "urllib3@2.6.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "urllib3@1.26.9"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-409"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.9,
+     "has_real_score": true,
+     "title": "High severity - Improper Handling of Highly Compressed Data (Data Amplification) vulnerability in urllib3",
+     "summary": "High severity - Improper Handling of Highly Compressed Data (Data Amplification) vulnerability in urllib3",
+     "description": "(CVE-2026-21441) urllib3@1.26.9",
+     "identifiers": {
+      "cve": "CVE-2026-21441",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-URLLIB3-14896210"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "urllib3@1.26.9",
+      "display": "urllib3@1.26.9 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "urllib3@2.6.3"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "urllib3@1.26.9"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-409"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.8,
+     "has_real_score": true,
+     "title": "High severity - Improper Authentication vulnerability in pyjwt",
+     "summary": "High severity - Improper Authentication vulnerability in pyjwt",
+     "description": "(CVE-2026-48526) pyjwt@2.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-48526",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYJWT-17053408"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyjwt@2.4.0",
+      "display": "pyjwt@2.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyjwt@2.13.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyjwt@2.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-287"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.8,
+     "has_real_score": true,
+     "title": "High severity - Out-of-bounds Write vulnerability in pillow",
+     "summary": "High severity - Out-of-bounds Write vulnerability in pillow",
+     "description": "(CVE-2026-59197) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-59197",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17972386"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-787"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in cryptography",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in cryptography",
+     "description": "(CVE-2026-69249) cryptography@39.0.1",
+     "identifiers": {
+      "cve": "CVE-2026-69249",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CRYPTOGRAPHY-18516622"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "cryptography@39.0.1",
+      "display": "cryptography@39.0.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "cryptography@49.0.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "cryptography@39.0.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in django",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in django",
+     "description": "(CVE-2025-26699) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2025-26699",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-9296408"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.20"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in pillow",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in pillow",
+     "description": "(CVE-2026-59200) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-59200",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17972384"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in sqlparse",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in sqlparse",
+     "description": "sqlparse@0.3.1",
+     "identifiers": {
+      "cve": null,
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-14157217"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.5.4"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in sqlparse",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in sqlparse",
+     "description": "(CVE-2026-71491) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2026-71491",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-18905009"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.6.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-407"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Improper Verification of Cryptographic Signature vulnerability in pyjwt",
+     "summary": "High severity - Improper Verification of Cryptographic Signature vulnerability in pyjwt",
+     "description": "(CVE-2026-32597) pyjwt@2.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-32597",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYJWT-15518059"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyjwt@2.4.0",
+      "display": "pyjwt@2.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyjwt@2.12.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyjwt@2.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-347"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Inefficient Algorithmic Complexity vulnerability in django",
+     "summary": "High severity - Inefficient Algorithmic Complexity vulnerability in django",
+     "description": "(CVE-2025-64458) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2025-64458",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-13837025"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.26"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-407"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Inefficient Algorithmic Complexity vulnerability in django",
+     "summary": "High severity - Inefficient Algorithmic Complexity vulnerability in django",
+     "description": "(CVE-2025-64460) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2025-64460",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-14157807"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.27"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-407"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "summary": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "description": "(CVE-2026-54059) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-54059",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17824465"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-789"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "summary": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "description": "(CVE-2026-54060) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-54060",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17824466"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-789"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "summary": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "description": "(CVE-2026-55379) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-55379",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17824468"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-789"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "summary": "High severity - Memory Allocation with Excessive Size Value vulnerability in pillow",
+     "description": "(CVE-2026-55380) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-55380",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17824469"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-789"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Out-of-bounds Read vulnerability in cryptography",
+     "summary": "High severity - Out-of-bounds Read vulnerability in cryptography",
+     "description": "(CVE-2026-34180) cryptography@39.0.1",
+     "identifiers": {
+      "cve": "CVE-2026-34180",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CRYPTOGRAPHY-17344551"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "cryptography@39.0.1",
+      "display": "cryptography@39.0.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "cryptography@48.0.1"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "cryptography@39.0.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-125"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Out-of-bounds Write vulnerability in pillow",
+     "summary": "High severity - Out-of-bounds Write vulnerability in pillow",
+     "description": "(CVE-2026-59205) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-59205",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17972376"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-787"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "description": "(CVE-2026-54284) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2026-54284",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-18905413"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.6.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-1333",
+      "CWE-407"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "description": "(CVE-2026-59893) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2026-59893",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-18905471"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.6.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-1333"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.3,
+     "has_real_score": true,
+     "title": "High severity - Improper Certificate Validation vulnerability in cryptography",
+     "summary": "High severity - Improper Certificate Validation vulnerability in cryptography",
+     "description": "(CVE-2026-69248) cryptography@39.0.1",
+     "identifiers": {
+      "cve": "CVE-2026-69248",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CRYPTOGRAPHY-18516620"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "cryptography@39.0.1",
+      "display": "cryptography@39.0.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "cryptography@49.0.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "cryptography@39.0.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-295"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.3,
+     "has_real_score": true,
+     "title": "High severity - Improper Certificate Validation vulnerability in django-allauth",
+     "summary": "High severity - Improper Certificate Validation vulnerability in django-allauth",
+     "description": "(CVE-2025-65431) django-allauth@0.52.0",
+     "identifiers": {
+      "cve": "CVE-2025-65431",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGOALLAUTH-14425069"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django-allauth@0.52.0",
+      "display": "django-allauth@0.52.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django-allauth@65.13.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django-allauth@0.52.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-295"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.3,
+     "has_real_score": true,
+     "title": "High severity - Improper Verification of Cryptographic Signature vulnerability in pyjwt",
+     "summary": "High severity - Improper Verification of Cryptographic Signature vulnerability in pyjwt",
+     "description": "(CVE-2026-102275) pyjwt@2.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-102275",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PYJWT-20245319"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pyjwt@2.4.0",
+      "display": "pyjwt@2.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pyjwt@2.15.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pyjwt@2.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-347"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.3,
+     "has_real_score": true,
+     "title": "High severity - Out-of-bounds Read vulnerability in pillow",
+     "summary": "High severity - Out-of-bounds Read vulnerability in pillow",
+     "description": "(CVE-2026-59198) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2026-59198",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-17972377"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@12.3.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-125"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.2,
+     "has_real_score": true,
+     "title": "High severity - Insertion of Sensitive Information Into Sent Data vulnerability in urllib3",
+     "summary": "High severity - Insertion of Sensitive Information Into Sent Data vulnerability in urllib3",
+     "description": "(CVE-2026-44431) urllib3@1.26.9",
+     "identifiers": {
+      "cve": "CVE-2026-44431",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-URLLIB3-16642024"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "urllib3@1.26.9",
+      "display": "urllib3@1.26.9 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "urllib3@2.7.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "urllib3@1.26.9"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-201"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.2,
+     "has_real_score": true,
+     "title": "High severity - Insufficient Verification of Data Authenticity vulnerability in cryptography",
+     "summary": "High severity - Insufficient Verification of Data Authenticity vulnerability in cryptography",
+     "description": "(CVE-2026-26007) cryptography@39.0.1",
+     "identifiers": {
+      "cve": "CVE-2026-26007",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CRYPTOGRAPHY-15263096"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "cryptography@39.0.1",
+      "display": "cryptography@39.0.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "cryptography@46.0.5"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "cryptography@39.0.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-345"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.2,
+     "has_real_score": true,
+     "title": "High severity - Type Confusion vulnerability in cryptography",
+     "summary": "High severity - Type Confusion vulnerability in cryptography",
+     "description": "(CVE-2024-6119) cryptography@39.0.1",
+     "identifiers": {
+      "cve": "CVE-2024-6119",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CRYPTOGRAPHY-7886970"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "cryptography@39.0.1",
+      "display": "cryptography@39.0.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "cryptography@43.0.1"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "cryptography@39.0.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-843"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.1,
+     "has_real_score": true,
+     "title": "High severity - Eval Injection vulnerability in pillow",
+     "summary": "High severity - Eval Injection vulnerability in pillow",
+     "description": "(CVE-2023-50447) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2023-50447",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-6182918"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@10.2.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-95"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.7,
+     "has_real_score": true,
+     "title": "High severity - SQL Injection vulnerability in django",
+     "summary": "High severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2026-1207) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2026-1207",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-15183335"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.28"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.6,
+     "has_real_score": true,
+     "title": "High severity - Improper Certificate Validation vulnerability in urllib3",
+     "summary": "High severity - Improper Certificate Validation vulnerability in urllib3",
+     "description": "(CVE-2026-97687) urllib3@1.26.9",
+     "identifiers": {
+      "cve": "CVE-2026-97687",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-URLLIB3-20302844"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "urllib3@1.26.9",
+      "display": "urllib3@1.26.9 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "urllib3@2.8.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "urllib3@1.26.9"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-295"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.6,
+     "has_real_score": true,
+     "title": "High severity - Timing Attack vulnerability in oauthlib",
+     "summary": "High severity - Timing Attack vulnerability in oauthlib",
+     "description": "(CVE-2026-49265) oauthlib@3.2.2",
+     "identifiers": {
+      "cve": "CVE-2026-49265",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-OAUTHLIB-20305255"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "oauthlib@3.2.2",
+      "display": "oauthlib@3.2.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "oauthlib@4.0.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "oauthlib@3.2.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-208"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in django",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in django",
+     "description": "(CVE-2023-41164) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2023-41164",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-5880505"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.5"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in django",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in django",
+     "description": "(CVE-2024-24680) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2024-24680",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-6230369"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.10"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in pillow",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in pillow",
+     "description": "pillow@9.4.0",
+     "identifiers": {
+      "cve": null,
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-6219984"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@10.2.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in pillow",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in pillow",
+     "description": "pillow@9.4.0",
+     "identifiers": {
+      "cve": null,
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-6219986"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@10.2.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in werkzeug",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in werkzeug",
+     "description": "(CVE-2023-25577) werkzeug@2.1.2",
+     "identifiers": {
+      "cve": "CVE-2023-25577",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-WERKZEUG-3319936"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "werkzeug@2.1.2",
+      "display": "werkzeug@2.1.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "werkzeug@2.2.3"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "werkzeug@2.1.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Observable Timing Discrepancy vulnerability in cryptography",
+     "summary": "High severity - Observable Timing Discrepancy vulnerability in cryptography",
+     "description": "(CVE-2023-50782) cryptography@39.0.1",
+     "identifiers": {
+      "cve": "CVE-2023-50782",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CRYPTOGRAPHY-6126975"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "cryptography@39.0.1",
+      "display": "cryptography@39.0.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "cryptography@42.0.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "cryptography@39.0.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-203"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in django",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in django",
+     "description": "(CVE-2023-36053) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2023-36053",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-5750790"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.3"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-1333"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "description": "(CVE-2021-32839) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2021-32839",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-1584201"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.4.2"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in sqlparse",
+     "description": "(CVE-2023-30608) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2023-30608",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-5426157"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.4.4"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-1333"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Remote Code Execution (RCE) vulnerability in werkzeug",
+     "summary": "High severity - Remote Code Execution (RCE) vulnerability in werkzeug",
+     "description": "(CVE-2024-34069) werkzeug@2.1.2",
+     "identifiers": {
+      "cve": "CVE-2024-34069",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-WERKZEUG-6808933"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "werkzeug@2.1.2",
+      "display": "werkzeug@2.1.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "werkzeug@3.0.3"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "werkzeug@2.1.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Timing Attack vulnerability in django-allauth",
+     "summary": "High severity - Timing Attack vulnerability in django-allauth",
+     "description": "django-allauth@0.52.0",
+     "identifiers": {
+      "cve": null,
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGOALLAUTH-5406296"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django-allauth@0.52.0",
+      "display": "django-allauth@0.52.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django-allauth@0.54.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django-allauth@0.52.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-208"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Uncontrolled Recursion vulnerability in sqlparse",
+     "summary": "High severity - Uncontrolled Recursion vulnerability in sqlparse",
+     "description": "(CVE-2024-4340) sqlparse@0.3.1",
+     "identifiers": {
+      "cve": "CVE-2024-4340",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-SQLPARSE-6615674"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "sqlparse@0.3.1",
+      "display": "sqlparse@0.3.1 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "sqlparse@0.5.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "sqlparse@0.3.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-674"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Uncontrolled Resource Consumption ('Resource Exhaustion') vulnerability in pillow",
+     "summary": "High severity - Uncontrolled Resource Consumption ('Resource Exhaustion') vulnerability in pillow",
+     "description": "(CVE-2023-44271) pillow@9.4.0",
+     "identifiers": {
+      "cve": "CVE-2023-44271",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-PILLOW-6043904"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "pillow@9.4.0",
+      "display": "pillow@9.4.0 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "pillow@10.0.0"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "pillow@9.4.0"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.1,
+     "has_real_score": true,
+     "title": "High severity - Command Injection vulnerability in django",
+     "summary": "High severity - Command Injection vulnerability in django",
+     "description": "(CVE-2024-53907) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2024-53907",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-8456315"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.17"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-78"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.1,
+     "has_real_score": true,
+     "title": "High severity - Relative Path Traversal vulnerability in django",
+     "summary": "High severity - Relative Path Traversal vulnerability in django",
+     "description": "(CVE-2025-59682) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2025-59682",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-13179425"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.25"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-23"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.1,
+     "has_real_score": true,
+     "title": "High severity - SQL Injection vulnerability in django",
+     "summary": "High severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2025-57833) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2025-57833",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-12485156"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.24"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.1,
+     "has_real_score": true,
+     "title": "High severity - SQL Injection vulnerability in django",
+     "summary": "High severity - SQL Injection vulnerability in django",
+     "description": "(CVE-2025-13372) django@4.2",
+     "identifiers": {
+      "cve": "CVE-2025-13372",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-DJANGO-14157810"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "requirements.txt",
+      "line": null,
+      "package": "django@4.2",
+      "display": "django@4.2 in requirements.txt",
+      "image_name": null,
+      "image_tag": null,
+      "observed_file": "requirements.txt"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "django@4.2.27"
+     },
+     "ecosystem": "pip",
+     "dependency": {
+      "path": [
+       "app@0.0.0",
+       "django@4.2"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-89"
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,90 @@
+# Source updates. Each job only asks the running service to sync (POST /admin/sync); the
+# service does the work and only re-processes sources that changed.
+#   every 6 hours  CISA KEV + NVD (incremental: CVEs modified since the last sync)
+#   weekly         MITRE CWE + OWASP Cheat Sheets (re-embeds only changed cheat sheets)
+# The first NVD run downloads the full NVD (resumable) and takes a while.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: security-context-sync-frequent
+spec:
+  schedule: "15 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: trigger
+              image: asva-security-context
+              command: ["python", "-m", "app.trigger", "kev", "nvd"]
+              env:
+                - name: SERVICE_URL
+                  value: http://svc-security-context:8000
+                - name: ADMIN_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: security-context-secrets
+                      key: ADMIN_TOKEN
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests: {cpu: 10m, memory: 32Mi}
+                limits: {cpu: 100m, memory: 128Mi}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: security-context-sync-weekly
+spec:
+  schedule: "30 3 * * 0"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: trigger
+              image: asva-security-context
+              command: ["python", "-m", "app.trigger", "cwe", "owasp"]
+              env:
+                - name: SERVICE_URL
+                  value: http://svc-security-context:8000
+                - name: ADMIN_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: security-context-secrets
+                      key: ADMIN_TOKEN
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests: {cpu: 10m, memory: 32Mi}
+                limits: {cpu: 100m, memory: 128Mi}

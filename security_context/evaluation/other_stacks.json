@@ -1,0 +1,1624 @@
+{
+ "meta": {
+  "generated_at": "2026-10-13 19:55 UTC"
+ },
+ "sources": [
+  {
+   "id": "owasp",
+   "name": "OWASP Cheat Sheet Series",
+   "cases": 10,
+   "prompt_cases": 0,
+   "data_cases": 0,
+   "outcome_changed": [],
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": []
+  },
+  {
+   "id": "cwe",
+   "name": "MITRE CWE",
+   "cases": 10,
+   "prompt_cases": 0,
+   "data_cases": 9,
+   "outcome_changed": [],
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": [
+    "weakness defined (references)",
+    "weakness defined, with OWASP Top 10 category (references)"
+   ]
+  },
+  {
+   "id": "keyword",
+   "name": "Keyword fallback",
+   "cases": 10,
+   "prompt_cases": 0,
+   "data_cases": 0,
+   "outcome_changed": [],
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": []
+  },
+  {
+   "id": "nvd",
+   "name": "NVD",
+   "cases": 10,
+   "prompt_cases": 0,
+   "data_cases": 10,
+   "outcome_changed": [],
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": [
+    "CVSS score and severity per CVE (references)"
+   ]
+  },
+  {
+   "id": "kev",
+   "name": "CISA KEV",
+   "cases": 10,
+   "prompt_cases": 4,
+   "data_cases": 4,
+   "outcome_changed": [
+    "pom.xml",
+    "requirements.txt"
+   ],
+   "prompt_chars": 911,
+   "lost_prompt": [
+    "warning that a CVE is known to be exploited"
+   ],
+   "lost_data": [
+    "known-exploited flag per CVE (references)"
+   ]
+  },
+  {
+   "id": "osv",
+   "name": "OSV.dev",
+   "cases": 10,
+   "prompt_cases": 10,
+   "data_cases": 10,
+   "outcome_changed": [
+    "pom.xml",
+    "requirements.txt",
+    "package.json (another Node app)",
+    "app.csproj",
+    "go.mod",
+    "Gemfile",
+    "docker-compose.yml (node:18, Debian 12)",
+    "docker-compose.yml (redis:6.2-alpine, Alpine 3.18)",
+    "docker-compose.yml (postgres:13, Debian 12)",
+    "docker-compose.yml (ghcr.io/acme/api:1.4.2, Debian 12)"
+   ],
+   "prompt_chars": 1255,
+   "lost_prompt": [
+    "for a major upgrade: the compatible fix, or that there is none",
+    "independent confirmation of the scanner's target",
+    "that no tag change is needed (the OS publishes the fixes)",
+    "where the fixes stand for the image's OS release"
+   ],
+   "lost_data": [
+    "advisories that stay open after the upgrade (references)",
+    "compatible target for a major upgrade (upgrades)",
+    "fix version per CVE for the OS release (references)",
+    "reason a major upgrade is held back (upgrades)",
+    "smallest fixed version per package (upgrades)"
+   ]
+  },
+  {
+   "id": "context7",
+   "name": "Context7",
+   "cases": 10,
+   "prompt_cases": 0,
+   "data_cases": 2,
+   "outcome_changed": [],
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": [
+    "breaking-change notes for a major upgrade (references)"
+   ]
+  },
+  {
+   "id": "dockerhub",
+   "name": "Docker Hub",
+   "cases": 10,
+   "prompt_cases": 2,
+   "data_cases": 3,
+   "outcome_changed": [
+    "docker-compose.yml (node:18, Debian 12)",
+    "docker-compose.yml (redis:6.2-alpine, Alpine 3.18)",
+    "docker-compose.yml (postgres:13, Debian 12)"
+   ],
+   "prompt_chars": 746,
+   "lost_prompt": [
+    "compatible fix, or that there is none",
+    "that the image's release line is past end of life"
+   ],
+   "lost_data": [
+    "migration target (upgrades)",
+    "newer release lines with their base OS (upgrades)",
+    "support dates per release line (upgrades)"
+   ]
+  },
+  {
+   "id": "endoflife",
+   "name": "endoflife.date",
+   "cases": 10,
+   "prompt_cases": 2,
+   "data_cases": 3,
+   "outcome_changed": [
+    "docker-compose.yml (node:18, Debian 12)",
+    "docker-compose.yml (redis:6.2-alpine, Alpine 3.18)",
+    "docker-compose.yml (postgres:13, Debian 12)"
+   ],
+   "prompt_chars": 130,
+   "lost_prompt": [
+    "that the image's release line is past end of life"
+   ],
+   "lost_data": [
+    "migration target (upgrades)",
+    "support dates per release line (upgrades)"
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "file": "pom.xml",
+   "stack": "Java / Maven",
+   "type": "sca",
+   "findings": 4,
+   "chars": 930,
+   "outcome": [
+    "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+    "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+    "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+    "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+   ],
+   "text": "Known exploited in the wild (CISA KEV), fix these first:\n- CVE-2021-44228: Apache Log4j2 Remote Code Execution Vulnerability (added 2021-12-10; ransomware use: Known)\n- CVE-2021-45046: Apache Log4j2 Deserialization of Untrusted Data Vulnerability (added 2023-05-01; ransomware use: Known)\n- CVE-2022-22965: Spring Framework JDK 9+ Remote Code Execution Vulnerability (added 2022-04-04; ransomware use: Unknown)\n\nDependency upgrade notes (scanner targets, cross-checked with OSV.dev):\n- org.apache.commons:commons-text 1.9 → 1.10.0: fixes org.apache.commons:commons-text@1.9 (CVE-2022-42889). OSV.dev confirms 1 of these.\n- org.apache.logging.log4j:log4j-core 2.14.1 → 2.16.0: fixes org.apache.logging.log4j:log4j-core@2.14.1 (CVE-2021-44228, CVE-2021-45046). OSV.dev confirms 2 of these.\n- org.springframework:spring-beans 5.3.17 → 5.3.18: fixes org.springframework:spring-beans@5.3.17 (CVE-2022-22965). OSV.dev confirms 1 of these.",
+   "facts_present": [
+    "independent confirmation of the scanner's target",
+    "warning that a CVE is known to be exploited",
+    "smallest fixed version per package",
+    "CVSS score and severity per CVE",
+    "known-exploited flag per CVE",
+    "weakness defined, with OWASP Top 10 category",
+    "advisories that stay open after the upgrade"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined, with OWASP Top 10 category (references)"
+     ],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "kev": {
+     "chars_saved": 410,
+     "lost_prompt": [
+      "warning that a CVE is known to be exploited"
+     ],
+     "lost_data": [
+      "known-exploited flag per CVE (references)"
+     ],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18"
+     ]
+    },
+    "osv": {
+     "chars_saved": 115,
+     "lost_prompt": [
+      "independent confirmation of the scanner's target"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "advisories that stay open after the upgrade (references)"
+     ],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "org.apache.commons:commons-text 1.9 → scanner 1.10.0 | compatible fix 1.10.0 | apply | smallest fixed 1.10.0",
+      "org.apache.logging.log4j:log4j-core 2.14.1 → scanner 2.16.0 | compatible fix 2.16.0 | apply | smallest fixed 2.16.0",
+      "org.springframework:spring-beans 5.3.17 → scanner 5.3.18 | compatible fix 5.3.18 | apply | smallest fixed 5.3.18",
+      "known exploited (CISA KEV): CVE-2021-44228, CVE-2021-45046, CVE-2022-22965"
+     ]
+    }
+   }
+  },
+  {
+   "file": "requirements.txt",
+   "stack": "Python / pip",
+   "type": "sca",
+   "findings": 6,
+   "chars": 1168,
+   "outcome": [
+    "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+    "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+    "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+    "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+    "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+    "known exploited (CISA KEV): CVE-2023-4863"
+   ],
+   "text": "Known exploited in the wild (CISA KEV), fix these first:\n- CVE-2023-4863: Google Chromium WebP Heap-Based Buffer Overflow Vulnerability (added 2023-09-13; ransomware use: Unknown)\n\nDependency upgrade notes (scanner targets, cross-checked with OSV.dev):\n- certifi 2022.12.7 → 2023.7.22: fixes certifi@2022.12.7 (CVE-2023-37920). OSV.dev confirms 1 of these.\n- django 4.2 → 4.2.15: fixes django@4.2 (CVE-2024-42005). OSV.dev confirms 1 of these.\n- pillow 9.4.0 → 10.0.1: MAJOR version change (9.x → 10.x), check for breaking API changes. Fixes pillow@9.4.0 (CVE-2023-4863). OSV.dev confirms 1 of these. OSV.dev lists no fix within 9.x (fixed in 10.0.0 to 12.3.0), so no compatible version bump resolves this.\n- pyyaml 5.1 → 5.4: fixes pyyaml@5.1 (CVE-2020-14343). OSV.dev confirms 1 of these.\n- urllib3 1.26.9 → 2.6.0: MAJOR version change (1.x → 2.x), check for breaking API changes. Fixes urllib3@1.26.9 (CVE-2023-43804, CVE-2025-66418). OSV.dev confirms 2 of these. OSV.dev lists a fix within 1.x for 3 of its 10 vulnerabilities in urllib3 1.26.9: urllib3 1.26.19 resolves those without a major version change; the rest have no fix within 1.x (fixed in 2.5.0 to 2.8.0).",
+   "facts_present": [
+    "independent confirmation of the scanner's target",
+    "for a major upgrade: the compatible fix, or that there is none",
+    "warning that a CVE is known to be exploited",
+    "smallest fixed version per package",
+    "compatible target for a major upgrade",
+    "reason a major upgrade is held back",
+    "CVSS score and severity per CVE",
+    "known-exploited flag per CVE",
+    "weakness defined, with OWASP Top 10 category",
+    "advisories that stay open after the upgrade",
+    "breaking-change notes for a major upgrade"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined, with OWASP Top 10 category (references)"
+     ],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "kev": {
+     "chars_saved": 179,
+     "lost_prompt": [
+      "warning that a CVE is known to be exploited"
+     ],
+     "lost_data": [
+      "known-exploited flag per CVE (references)"
+     ],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0"
+     ]
+    },
+    "osv": {
+     "chars_saved": 483,
+     "lost_prompt": [
+      "independent confirmation of the scanner's target",
+      "for a major upgrade: the compatible fix, or that there is none"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "compatible target for a major upgrade (upgrades)",
+      "reason a major upgrade is held back (upgrades)",
+      "advisories that stay open after the upgrade (references)"
+     ],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix none | major change: held back",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "breaking-change notes for a major upgrade (references)"
+     ],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "certifi 2022.12.7 → scanner 2023.7.22 | compatible fix 2023.7.22 | apply | smallest fixed 2023.7.22",
+      "django 4.2 → scanner 4.2.15 | compatible fix 4.2.15 | apply | smallest fixed 4.2.15",
+      "pillow 9.4.0 → scanner 10.0.1 | compatible fix none | major change: held back | smallest fixed 10.0.1",
+      "pyyaml 5.1 → scanner 5.4 | compatible fix 5.4 | apply | smallest fixed 5.4",
+      "urllib3 1.26.9 → scanner 2.6.0 | compatible fix 1.26.19 (partial) | major change: apply the compatible fix | smallest fixed 2.6.0",
+      "known exploited (CISA KEV): CVE-2023-4863"
+     ]
+    }
+   }
+  },
+  {
+   "file": "package.json (another Node app)",
+   "stack": "JavaScript / npm",
+   "type": "sca",
+   "findings": 3,
+   "chars": 550,
+   "outcome": [
+    "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+    "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+    "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+   ],
+   "text": "Dependency upgrade notes (scanner targets, cross-checked with OSV.dev):\n- express 4.17.1 → 4.19.2: fixes express@4.17.1 (CVE-2024-29041). OSV.dev confirms 1 of these.\n- jsonwebtoken 8.5.1 → 9.0.0: MAJOR version change (8.x → 9.x), check for breaking API changes. Fixes jsonwebtoken@8.5.1 (CVE-2022-23540). OSV.dev confirms 1 of these. OSV.dev lists no fix within 8.x (first fixed in 9.0.0), so no compatible version bump resolves this.\n- lodash 4.17.15 → 4.17.21: fixes lodash@4.17.15 (CVE-2021-23337). OSV.dev disagrees: CVE-2021-23337 needs 4.18.0.",
+   "facts_present": [
+    "independent confirmation of the scanner's target",
+    "for a major upgrade: the compatible fix, or that there is none",
+    "smallest fixed version per package",
+    "reason a major upgrade is held back",
+    "CVSS score and severity per CVE",
+    "weakness defined, with OWASP Top 10 category",
+    "advisories that stay open after the upgrade",
+    "breaking-change notes for a major upgrade"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined, with OWASP Top 10 category (references)"
+     ],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "kev": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "osv": {
+     "chars_saved": 235,
+     "lost_prompt": [
+      "independent confirmation of the scanner's target",
+      "for a major upgrade: the compatible fix, or that there is none"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "reason a major upgrade is held back (upgrades)",
+      "advisories that stay open after the upgrade (references)"
+     ],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "breaking-change notes for a major upgrade (references)"
+     ],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "express 4.17.1 → scanner 4.19.2 | compatible fix 4.19.2 | apply | smallest fixed 4.19.2",
+      "jsonwebtoken 8.5.1 → scanner 9.0.0 | compatible fix none | major change: held back | smallest fixed 9.0.0",
+      "lodash 4.17.15 → scanner 4.17.21 | compatible fix 4.17.21 | apply (OSV.dev disagrees with the target) | smallest fixed 4.18.0"
+     ]
+    }
+   }
+  },
+  {
+   "file": "app.csproj",
+   "stack": ".NET / NuGet",
+   "type": "sca",
+   "findings": 1,
+   "chars": 353,
+   "outcome": [
+    "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+   ],
+   "text": "Dependency upgrade notes (scanner targets, cross-checked with OSV.dev):\n- Newtonsoft.Json 12.0.3 → 13.0.1: MAJOR version change (12.x → 13.x), check for breaking API changes. Fixes Newtonsoft.Json@12.0.3 (CVE-2024-21907). OSV.dev confirms 1 of these. OSV.dev lists no fix within 12.x (first fixed in 13.0.1), so no compatible version bump resolves this.",
+   "facts_present": [
+    "independent confirmation of the scanner's target",
+    "for a major upgrade: the compatible fix, or that there is none",
+    "smallest fixed version per package",
+    "reason a major upgrade is held back",
+    "CVSS score and severity per CVE",
+    "weakness defined, with OWASP Top 10 category"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined, with OWASP Top 10 category (references)"
+     ],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "kev": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "osv": {
+     "chars_saved": 160,
+     "lost_prompt": [
+      "independent confirmation of the scanner's target",
+      "for a major upgrade: the compatible fix, or that there is none"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "reason a major upgrade is held back (upgrades)"
+     ],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "Newtonsoft.Json 12.0.3 → scanner 13.0.1 | compatible fix none | major change: held back | smallest fixed 13.0.1"
+     ]
+    }
+   }
+  },
+  {
+   "file": "go.mod",
+   "stack": "Go modules",
+   "type": "sca",
+   "findings": 1,
+   "chars": 197,
+   "outcome": [
+    "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+   ],
+   "text": "Dependency upgrade notes (scanner targets, cross-checked with OSV.dev):\n- github.com/gin-gonic/gin 1.6.3 → 1.7.7: fixes github.com/gin-gonic/gin@1.6.3 (CVE-2020-28483). OSV.dev confirms 1 of these.",
+   "facts_present": [
+    "independent confirmation of the scanner's target",
+    "smallest fixed version per package",
+    "CVSS score and severity per CVE",
+    "weakness defined, with OWASP Top 10 category",
+    "advisories that stay open after the upgrade"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined, with OWASP Top 10 category (references)"
+     ],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "kev": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "osv": {
+     "chars_saved": 57,
+     "lost_prompt": [
+      "independent confirmation of the scanner's target"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "advisories that stay open after the upgrade (references)"
+     ],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "github.com/gin-gonic/gin 1.6.3 → scanner 1.7.7 | compatible fix 1.7.7 | apply | smallest fixed 1.7.7"
+     ]
+    }
+   }
+  },
+  {
+   "file": "Gemfile",
+   "stack": "Ruby / RubyGems",
+   "type": "sca",
+   "findings": 1,
+   "chars": 159,
+   "outcome": [
+    "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+   ],
+   "text": "Dependency upgrade notes (scanner targets, cross-checked with OSV.dev):\n- rack 2.2.3 → 2.2.3.1: fixes rack@2.2.3 (CVE-2022-30122). OSV.dev confirms 1 of these.",
+   "facts_present": [
+    "independent confirmation of the scanner's target",
+    "smallest fixed version per package",
+    "CVSS score and severity per CVE",
+    "advisories that stay open after the upgrade"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "kev": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "osv": {
+     "chars_saved": 57,
+     "lost_prompt": [
+      "independent confirmation of the scanner's target"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "advisories that stay open after the upgrade (references)"
+     ],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "rack 2.2.3 → scanner 2.2.3.1 | compatible fix 2.2.3.1 | apply | smallest fixed 2.2.3.1"
+     ]
+    }
+   }
+  },
+  {
+   "file": "docker-compose.yml (node:18, Debian 12)",
+   "stack": "Node runtime image on Debian",
+   "type": "container",
+   "findings": 2,
+   "chars": 722,
+   "outcome": [
+    "image node:18 on Debian 12; status newer_line_needed",
+    "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+    "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+    "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+    "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+    "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+    "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+    "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+    "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+    "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+    "compatible fix: none; migration target: 26"
+   ],
+   "text": "Known exploited in the wild (CISA KEV), fix these first:\n- CVE-2023-4911: GNU C Library Buffer Overflow Vulnerability (added 2023-11-21; ransomware use: Unknown)\n\nContainer image node:18 (Debian 12): 2 CVE(s) in 2 OS package(s) (zlib, glibc).\nnode 18 is past end of life since 2025-04-30 (endoflife.date).\nOSV.dev (the distribution's own security data): for Debian 12, 1 of 2 checked CVEs have a fix in the standard repositories; 1 have no fix yet.\nCompatible fix (same major version, 18.x): none. The lines that resolve these CVEs are new major versions of node: moving to one is a migration (what runs on or connects to this image may need changes: application code, client libraries, stored data), not a drop-in tag bump.",
+   "facts_present": [
+    "where the fixes stand for the image's OS release",
+    "that the image's release line is past end of life",
+    "compatible fix, or that there is none",
+    "warning that a CVE is known to be exploited",
+    "known-exploited flag per CVE",
+    "support dates per release line",
+    "fix version per CVE for the OS release",
+    "newer release lines with their base OS",
+    "migration target",
+    "CVSS score and severity per CVE",
+    "weakness defined"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined (references)"
+     ],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "kev": {
+     "chars_saved": 161,
+     "lost_prompt": [
+      "warning that a CVE is known to be exploited"
+     ],
+     "lost_data": [
+      "known-exploited flag per CVE (references)"
+     ],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "osv": {
+     "chars_saved": -40,
+     "lost_prompt": [
+      "where the fixes stand for the image's OS release"
+     ],
+     "lost_data": [
+      "fix version per CVE for the OS release (references)"
+     ],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: none found",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, CVEs not checked, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, CVEs not checked, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, CVEs not checked, past end of life",
+      "  line 24: 24.21.0 on Debian 12, CVEs not checked, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, CVEs not checked, past end of life",
+      "  line 26: 26.11.1 on Debian 13, CVEs not checked, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, past end of life",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, past end of life",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, supported until 2027-04-30",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, supported until 2028-04-30",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, past end of life",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, supported until 2029-04-30",
+      "compatible fix: none; migration target: 26"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 339,
+     "lost_prompt": [
+      "that the image's release line is past end of life",
+      "compatible fix, or that there is none"
+     ],
+     "lost_data": [
+      "support dates per release line (upgrades)",
+      "newer release lines with their base OS (upgrades)",
+      "migration target (upgrades)"
+     ],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 63,
+     "lost_prompt": [
+      "that the image's release line is past end of life"
+     ],
+     "lost_data": [
+      "support dates per release line (upgrades)",
+      "migration target (upgrades)"
+     ],
+     "outcome": [
+      "image node:18 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 1 without a fix, of 2 checked",
+      "  line 19: 19.9.0 on unknown OS, CVEs not checked, support dates unknown",
+      "  line 20: 20.20.2 on Debian 12, 1/2 CVEs resolved, support dates unknown",
+      "  line 21: 21.7.3 on unknown OS, CVEs not checked, support dates unknown",
+      "  line 22: 22.23.3 on Debian 12, 1/2 CVEs resolved, support dates unknown",
+      "  line 23: 23.11.1 on Debian 12, 1/2 CVEs resolved, support dates unknown",
+      "  line 24: 24.21.0 on Debian 12, 1/2 CVEs resolved, support dates unknown",
+      "  line 25: 25.9.0 on Debian 12, 1/2 CVEs resolved, support dates unknown",
+      "  line 26: 26.11.1 on Debian 13, 2/2 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    }
+   }
+  },
+  {
+   "file": "docker-compose.yml (redis:6.2-alpine, Alpine 3.18)",
+   "stack": "Redis image on Alpine",
+   "type": "container",
+   "findings": 1,
+   "chars": 458,
+   "outcome": [
+    "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+    "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+    "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+    "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+    "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+    "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+    "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+    "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+    "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+    "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+    "compatible fix: none; migration target: None"
+   ],
+   "text": "Container image redis:6.2-alpine (Alpine 3.18): 1 CVE(s) in 1 OS package(s) (openssl).\nOSV.dev (the distribution's own security data): Alpine 3.18 publishes fixes for all 1 checked CVEs in its standard repositories, so a rebuilt or newer patch release of the same image line may already include them.\nNo tag change is needed for these CVEs: re-pull or rebuild redis:6.2-alpine to pick the fixes up (Docker Hub's current build of this tag is from 2026-09-17).",
+   "facts_present": [
+    "where the fixes stand for the image's OS release",
+    "that no tag change is needed (the OS publishes the fixes)",
+    "support dates per release line",
+    "fix version per CVE for the OS release",
+    "newer release lines with their base OS",
+    "CVSS score and severity per CVE",
+    "weakness defined"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined (references)"
+     ],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "kev": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "osv": {
+     "chars_saved": 13,
+     "lost_prompt": [
+      "where the fixes stand for the image's OS release",
+      "that no tag change is needed (the OS publishes the fixes)"
+     ],
+     "lost_data": [
+      "fix version per CVE for the OS release (references)"
+     ],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status unknown",
+      "fix data for this OS release: none found",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, CVEs not checked, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, CVEs not checked, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, CVEs not checked, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, CVEs not checked, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, CVEs not checked, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, CVEs not checked, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, CVEs not checked, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, CVEs not checked, support dates unknown",
+      "compatible fix: none; migration target: 7.2-alpine"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, supported until 2029-12-01",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, supported until 2026-12-01",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, supported until 2030-09-01",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 60,
+     "lost_prompt": [],
+     "lost_data": [
+      "support dates per release line (upgrades)",
+      "newer release lines with their base OS (upgrades)"
+     ],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "support dates per release line (upgrades)"
+     ],
+     "outcome": [
+      "image redis:6.2-alpine on Alpine 3.18; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "  line 7.2-alpine: 7.2.16 on Alpine 3.21, 1/1 CVEs resolved, support dates unknown",
+      "  line 7.4-alpine: 7.4.11 on Alpine 3.21, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.0-alpine: ? on Alpine 3.21, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.2-alpine: 8.2.10 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.4-alpine: 8.4.7 on Alpine 3.22, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.6-alpine: 8.6.7 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.8-alpine: 8.8.3 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "  line 8.10-alpine: 8.10.2 on Alpine 3.23, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    }
+   }
+  },
+  {
+   "file": "docker-compose.yml (postgres:13, Debian 12)",
+   "stack": "PostgreSQL image on Debian",
+   "type": "container",
+   "findings": 1,
+   "chars": 566,
+   "outcome": [
+    "image postgres:13 on Debian 12; status newer_line_needed",
+    "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+    "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+    "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+    "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+    "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+    "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+    "compatible fix: none; migration target: 15"
+   ],
+   "text": "Container image postgres:13 (Debian 12): 1 CVE(s) in 1 OS package(s) (zlib).\npostgres 13 is past end of life since 2025-11-13 (endoflife.date).\nOSV.dev (the distribution's own security data): for Debian 12, 0 of 1 checked CVEs have a fix in the standard repositories; 1 have no fix yet.\nCompatible fix (same major version, 13.x): none. The lines that resolve these CVEs are new major versions of postgres: moving to one is a migration (what runs on or connects to this image may need changes: application code, client libraries, stored data), not a drop-in tag bump.",
+   "facts_present": [
+    "where the fixes stand for the image's OS release",
+    "that the image's release line is past end of life",
+    "compatible fix, or that there is none",
+    "support dates per release line",
+    "newer release lines with their base OS",
+    "migration target",
+    "CVSS score and severity per CVE",
+    "weakness defined"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined (references)"
+     ],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "kev": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "osv": {
+     "chars_saved": -40,
+     "lost_prompt": [
+      "where the fixes stand for the image's OS release"
+     ],
+     "lost_data": [],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: none found",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, CVEs not checked, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, CVEs not checked, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, CVEs not checked, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, CVEs not checked, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, CVEs not checked, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2026-11-12",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2027-11-11",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2028-11-09",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2029-11-08",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, supported until 2030-11-14",
+      "compatible fix: none; migration target: 15"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 347,
+     "lost_prompt": [
+      "that the image's release line is past end of life",
+      "compatible fix, or that there is none"
+     ],
+     "lost_data": [
+      "support dates per release line (upgrades)",
+      "newer release lines with their base OS (upgrades)",
+      "migration target (upgrades)"
+     ],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 67,
+     "lost_prompt": [
+      "that the image's release line is past end of life"
+     ],
+     "lost_data": [
+      "support dates per release line (upgrades)",
+      "migration target (upgrades)"
+     ],
+     "outcome": [
+      "image postgres:13 on Debian 12; status newer_line_needed",
+      "fix data for this OS release: 0 in the standard repositories, 0 subscription-only, 1 without a fix, of 1 checked",
+      "  line 14: 14.24-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, support dates unknown",
+      "  line 15: 15.19-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, support dates unknown",
+      "  line 16: 16.15-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, support dates unknown",
+      "  line 17: 17.11-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, support dates unknown",
+      "  line 18: 18.6-1.pgdg13+2 on Debian 13, 1/1 CVEs resolved, support dates unknown",
+      "compatible fix: none; migration target: None"
+     ]
+    }
+   }
+  },
+  {
+   "file": "docker-compose.yml (ghcr.io/acme/api:1.4.2, Debian 12)",
+   "stack": "Image from another registry",
+   "type": "container",
+   "findings": 1,
+   "chars": 565,
+   "outcome": [
+    "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+    "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+    "compatible fix: none; migration target: None"
+   ],
+   "text": "Known exploited in the wild (CISA KEV), fix these first:\n- CVE-2023-4911: GNU C Library Buffer Overflow Vulnerability (added 2023-11-21; ransomware use: Unknown)\n\nContainer image ghcr.io/acme/api:1.4.2 (Debian 12): 1 CVE(s) in 1 OS package(s) (glibc).\nOSV.dev (the distribution's own security data): Debian 12 publishes fixes for all 1 checked CVEs in its standard repositories, so a rebuilt or newer patch release of the same image line may already include them.\nNo tag change is needed for these CVEs: re-pull or rebuild ghcr.io/acme/api:1.4.2 to pick the fixes up.",
+   "facts_present": [
+    "where the fixes stand for the image's OS release",
+    "that no tag change is needed (the OS publishes the fixes)",
+    "warning that a CVE is known to be exploited",
+    "known-exploited flag per CVE",
+    "fix version per CVE for the OS release",
+    "CVSS score and severity per CVE",
+    "weakness defined"
+   ],
+   "warnings": [],
+   "without": {
+    "owasp": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "cwe": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness defined (references)"
+     ],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "keyword": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "nvd": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "kev": {
+     "chars_saved": 161,
+     "lost_prompt": [
+      "warning that a CVE is known to be exploited"
+     ],
+     "lost_data": [
+      "known-exploited flag per CVE (references)"
+     ],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "osv": {
+     "chars_saved": 215,
+     "lost_prompt": [
+      "where the fixes stand for the image's OS release",
+      "that no tag change is needed (the OS publishes the fixes)"
+     ],
+     "lost_data": [
+      "fix version per CVE for the OS release (references)"
+     ],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status unknown",
+      "fix data for this OS release: none found",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "context7": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "dockerhub": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    },
+    "endoflife": {
+     "chars_saved": 0,
+     "lost_prompt": [],
+     "lost_data": [],
+     "outcome": [
+      "image ghcr.io/acme/api:1.4.2 on Debian 12; status rebuild_may_suffice",
+      "fix data for this OS release: 1 in the standard repositories, 0 subscription-only, 0 without a fix, of 1 checked",
+      "compatible fix: none; migration target: None"
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,615 @@
+{
+  "batch_id": "asva_container_e6919194",
+  "batch_type": "container",
+  "repo_name": "asva",
+  "commit_sha": "e6919194",
+  "scan_run_id": "20260620185149",
+  "generated_at": "2026-06-25T17:38:22Z",
+  "total_files": 1,
+  "total_findings": 17,
+  "files_to_fix": [
+    {
+      "file": "docker-compose.yml",
+      "fix_type": "version_upgrade",
+      "finding_type": "container",
+      "findings": [
+        {
+          "finding_id": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-23219",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-GLIBC-2356812"
+          },
+          "title": "Low severity - Buffer Overflow vulnerability in glibc",
+          "summary": "Low severity - Buffer Overflow vulnerability in glibc",
+          "description": "(CVE-2022-23219) glibc/libc-bin@2.23-0ubuntu11.3",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "glibc@2.23-0ubuntu11.3",
+            "display": "glibc@2.23-0ubuntu11.3 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "glibc/libc-bin@2.23-0ubuntu11.3"
+          },
+          "ecosystem": "deb",
+          "priority": 1,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Root fix for docker-compose.yml — agent edits this file once to address all 17 finding(s)."
+        },
+        {
+          "finding_id": "dad56d9c-84a7-4613-adc5-93b8ce89d9d9",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-23218",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-GLIBC-2356860"
+          },
+          "title": "Low severity - Buffer Overflow vulnerability in glibc",
+          "summary": "Low severity - Buffer Overflow vulnerability in glibc",
+          "description": "(CVE-2022-23218) glibc/libc-bin@2.23-0ubuntu11.3",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "glibc@2.23-0ubuntu11.3",
+            "display": "glibc@2.23-0ubuntu11.3 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "glibc/libc-bin@2.23-0ubuntu11.3"
+          },
+          "ecosystem": "deb",
+          "priority": 2,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "ba53ef5f-2d26-47da-bb0c-c657bab009ac",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-28321",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-PAM-3033895"
+          },
+          "title": "Low severity - Improper Authentication vulnerability in pam",
+          "summary": "Low severity - Improper Authentication vulnerability in pam",
+          "description": "(CVE-2022-28321) pam/libpam-modules@1.1.8-3.2ubuntu2.3",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "pam@1.1.8-3.2ubuntu2.3",
+            "display": "pam@1.1.8-3.2ubuntu2.3 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "pam/libpam-modules@1.1.8-3.2ubuntu2.3"
+          },
+          "ecosystem": "deb",
+          "priority": 3,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "53e23451-61e9-4848-944c-91e30f06153c",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2017-15088",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-KRB5-395796"
+          },
+          "title": "Low severity - Out-of-Bounds vulnerability in krb5",
+          "summary": "Low severity - Out-of-Bounds vulnerability in krb5",
+          "description": "(CVE-2017-15088) krb5/krb5-locales@1.13.2+dfsg-5ubuntu2.2",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "krb5@1.13.2+dfsg-5ubuntu2.2",
+            "display": "krb5@1.13.2+dfsg-5ubuntu2.2 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "krb5/krb5-locales@1.13.2"
+          },
+          "ecosystem": "deb",
+          "priority": 4,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "54e128dc-c947-43c9-8694-676eefe0a45b",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2017-10684",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-NCURSES-367698"
+          },
+          "title": "Low severity - Out-of-Bounds vulnerability in ncurses",
+          "summary": "Low severity - Out-of-Bounds vulnerability in ncurses",
+          "description": "(CVE-2017-10684) ncurses/libtinfo5@6.0+20160213-1ubuntu1",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "ncurses@6.0+20160213-1ubuntu1",
+            "display": "ncurses@6.0+20160213-1ubuntu1 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "ncurses/libtinfo5@6.0"
+          },
+          "ecosystem": "deb",
+          "priority": 5,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "633d336c-5b52-465b-b4d0-696dbeaa810f",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2017-12424",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-SHADOW-306274"
+          },
+          "title": "Low severity - Out-of-Bounds vulnerability in shadow",
+          "summary": "Low severity - Out-of-Bounds vulnerability in shadow",
+          "description": "(CVE-2017-12424) shadow/passwd@1:4.2-3.1ubuntu5.4",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "shadow@1:4.2-3.1ubuntu5.4",
+            "display": "shadow@1:4.2-3.1ubuntu5.4 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "shadow/passwd@1"
+          },
+          "ecosystem": "deb",
+          "priority": 6,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "b2b0ee33-1b75-414c-89e9-eddcca8a4c62",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2017-10685",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-NCURSES-367750"
+          },
+          "title": "Low severity - Use of Externally-Controlled Format String vulnerability in ncurses",
+          "summary": "Low severity - Use of Externally-Controlled Format String vulnerability in ncurses",
+          "description": "(CVE-2017-10685) ncurses/libtinfo5@6.0+20160213-1ubuntu1",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "ncurses@6.0+20160213-1ubuntu1",
+            "display": "ncurses@6.0+20160213-1ubuntu1 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "ncurses/libtinfo5@6.0"
+          },
+          "ecosystem": "deb",
+          "priority": 8,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "ee4f1791-fb85-43e0-bb1d-12889ff54767",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-44640",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-HEIMDAL-3120982"
+          },
+          "title": "Medium severity - CVE-2022-44640 vulnerability in heimdal",
+          "summary": "Medium severity - CVE-2022-44640 vulnerability in heimdal",
+          "description": "(CVE-2022-44640) heimdal/libroken18-heimdal@1.7~git20150920+dfsg-4ubuntu1.16.04.1",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "heimdal@1.7~git20150920+dfsg-4ubuntu1.16.04.1",
+            "display": "heimdal@1.7~git20150920+dfsg-4ubuntu1.16.04.1 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "heimdal/libroken18-heimdal@1.7"
+          },
+          "ecosystem": "deb",
+          "priority": 9,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "4a407f7b-f7d9-4efc-8782-3b25ae2d485c",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-1664",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-DPKG-2848000"
+          },
+          "title": "Medium severity - Directory Traversal vulnerability in dpkg",
+          "summary": "Medium severity - Directory Traversal vulnerability in dpkg",
+          "description": "(CVE-2022-1664) dpkg@1.18.4ubuntu1.7",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "dpkg@1.18.4ubuntu1.7",
+            "display": "dpkg@1.18.4ubuntu1.7 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "dpkg@1.18.4ubuntu1.7"
+          },
+          "ecosystem": "deb",
+          "priority": 11,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "061fe5be-d04b-45e6-bb18-844637538577",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2021-3520",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-LZ4-1298099"
+          },
+          "title": "Medium severity - Out-of-bounds Write vulnerability in lz4",
+          "summary": "Medium severity - Out-of-bounds Write vulnerability in lz4",
+          "description": "(CVE-2021-3520) lz4/liblz4-1@0.0~r131-2ubuntu2",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "lz4@0.0~r131-2ubuntu2",
+            "display": "lz4@0.0~r131-2ubuntu2 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "lz4/liblz4-1@0.0"
+          },
+          "ecosystem": "deb",
+          "priority": 14,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "4c95b025-2da9-43f6-a672-4d8bdb1d1133",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-37434",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-ZLIB-2975639"
+          },
+          "title": "Medium severity - Out-of-bounds Write vulnerability in zlib",
+          "summary": "Medium severity - Out-of-bounds Write vulnerability in zlib",
+          "description": "(CVE-2022-37434) zlib/zlib1g@1:1.2.8.dfsg-2ubuntu4.3",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "zlib@1:1.2.8.dfsg-2ubuntu4.3",
+            "display": "zlib@1:1.2.8.dfsg-2ubuntu4.3 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "zlib/zlib1g@1"
+          },
+          "ecosystem": "deb",
+          "priority": 16,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "bb58e652-c036-4f13-8fd5-7694b0af658c",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.1,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2021-35942",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-GLIBC-1614451"
+          },
+          "title": "Low severity - Integer Overflow or Wraparound vulnerability in glibc",
+          "summary": "Low severity - Integer Overflow or Wraparound vulnerability in glibc",
+          "description": "(CVE-2021-35942) glibc/libc-bin@2.23-0ubuntu11.3",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "glibc@2.23-0ubuntu11.3",
+            "display": "glibc@2.23-0ubuntu11.3 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "glibc/libc-bin@2.23-0ubuntu11.3"
+          },
+          "ecosystem": "deb",
+          "priority": 20,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "c0da93eb-3214-46ec-825b-8cb6cf610665",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.1,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2024-37371",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-KRB5-7413886"
+          },
+          "title": "Medium severity - CVE-2024-37371 vulnerability in krb5",
+          "summary": "Medium severity - CVE-2024-37371 vulnerability in krb5",
+          "description": "(CVE-2024-37371) krb5/krb5-locales@1.13.2+dfsg-5ubuntu2.2",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "krb5@1.13.2+dfsg-5ubuntu2.2",
+            "display": "krb5@1.13.2+dfsg-5ubuntu2.2 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "krb5/krb5-locales@1.13.2"
+          },
+          "ecosystem": "deb",
+          "priority": 22,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "75136155-ab06-4f4e-be16-4fc25ff31d24",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "critical",
+          "score": 9.0,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2024-3596",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-KRB5-8348486"
+          },
+          "title": "Medium severity - Improper Validation of Integrity Check Value vulnerability in krb5",
+          "summary": "Medium severity - Improper Validation of Integrity Check Value vulnerability in krb5",
+          "description": "(CVE-2024-3596) krb5/krb5-locales@1.13.2+dfsg-5ubuntu2.2",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "krb5@1.13.2+dfsg-5ubuntu2.2",
+            "display": "krb5@1.13.2+dfsg-5ubuntu2.2 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "krb5/krb5-locales@1.13.2"
+          },
+          "ecosystem": "deb",
+          "priority": 23,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "60e42c62-bf5a-4c4e-b6bc-4c16e4b643af",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "high",
+          "score": 8.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2022-24407",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-CYRUSSASL2-2408945"
+          },
+          "title": "High severity - SQL Injection vulnerability in cyrus-sasl2",
+          "summary": "High severity - SQL Injection vulnerability in cyrus-sasl2",
+          "description": "(CVE-2022-24407) cyrus-sasl2/libsasl2-modules@2.1.26.dfsg1-14ubuntu0.2",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "cyrus-sasl2@2.1.26.dfsg1-14ubuntu0.2",
+            "display": "cyrus-sasl2@2.1.26.dfsg1-14ubuntu0.2 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "cyrus-sasl2/libsasl2-modules@2.1.26.dfsg1-14ubuntu0.2"
+          },
+          "ecosystem": "deb",
+          "priority": 25,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "80412226-9bd0-4d8b-a1ba-a3cc66ed8282",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "high",
+          "score": 7.0,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2025-68973",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-GNUPG-14905990"
+          },
+          "title": "High severity - Out-of-bounds Write vulnerability in gnupg",
+          "summary": "High severity - Out-of-bounds Write vulnerability in gnupg",
+          "description": "(CVE-2025-68973) gnupg@1.4.20-1ubuntu3.3",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "gnupg@1.4.20-1ubuntu3.3",
+            "display": "gnupg@1.4.20-1ubuntu3.3 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "gnupg@1.4.20-1ubuntu3.3"
+          },
+          "ecosystem": "deb",
+          "priority": 61,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "c3a7b002-90f9-4542-9fb4-82fae0ba1a4a",
+          "finding_type": "container",
+          "scan_run_id": "20260620185149",
+          "severity": "high",
+          "score": 5.5,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2021-33910",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU1604-SYSTEMD-1320131"
+          },
+          "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in systemd",
+          "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in systemd",
+          "description": "(CVE-2021-33910) systemd/libsystemd0@229-4ubuntu21.31",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "systemd@229-4ubuntu21.31",
+            "display": "systemd@229-4ubuntu21.31 in mongo_4.0"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "systemd/libsystemd0@229-4ubuntu21.31"
+          },
+          "ecosystem": "deb",
+          "priority": 62,
+          "covered_by": "815c1f00-a1fb-4d94-be85-4f862d75438b",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        }
+      ],
+      "finding_count": 17
+    }
+  ]
+}

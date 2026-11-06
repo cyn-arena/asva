@@ -1,0 +1,149 @@
+name: NodeGoat - Pipeline
+
+on:
+  push:
+    branches:
+      - 'feat/**'
+    paths:
+      - 'target-apps/NodeGoat/**'
+      - '.github/workflows/nodegoat-*.yml'
+      - '.github/workflows/publish-dashboard-results.yml'
+      - 'scripts/dashboard_evidence.py'
+      - 'scripts/candidate_rescan.py'
+      - '.github/workflows/candidate-rescan.yml'
+      - 'normaliser/**'
+      - 'triage/**'
+      - 'agent/candidate_source.py'
+  workflow_dispatch:
+    inputs:
+      scan_kind:
+        description: Initial scan, or a new scan after reviewed fixes were applied
+        type: choice
+        options: [initial, after_fix]
+        default: initial
+      after_fix_of:
+        description: Original Actions run ID (required only for an after-fix run)
+        type: string
+        default: ''
+      run_build_deploy:
+        description: >-
+          Build and publish this branch's application image, deploy to shared green,
+          and test the deployed application. Build starts after fix generation,
+          alongside candidate validation; fix PRs are not merged by this option.
+          Available only for manual runs. Uncheck to skip build, deployment and E2E tests.
+        type: boolean
+        default: false # Set to true when deployment is safe
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read        # must cover nodegoat-fix.yml's own actions:read grant
+  issues: write        # must cover nodegoat-fix.yml's own issues:write grant
+  packages: read       # must cover nodegoat-fix.yml's own packages:read grant (RAG image)
+
+jobs:
+  scan:
+    name: NodeGoat - Scan vulnerabilities
+    uses: ./.github/workflows/nodegoat-scan.yml
+    secrets: inherit
+
+  test-unit:
+    name: NodeGoat - Test ASVA components
+    uses: ./.github/workflows/nodegoat-test.yml
+    with:
+      stage: unit
+
+  fix:
+    name: NodeGoat - Normalise, triage and generate candidates
+    needs: [scan, test-unit]
+    if: inputs.scan_kind != 'after_fix'
+    uses: ./.github/workflows/nodegoat-fix.yml
+    with:
+      use_artifacts: true # change to false to gets latest/specific scan (for standalone)
+      source_branch: ${{ github.ref_name }}
+      source_sha: ${{ github.sha }}
+      ## ---------- specify scan run id to fix specified scan ---------- 
+      # scan_run_id: "29006193665" 
+    secrets: inherit
+
+  pr-check:
+    name: NodeGoat - Validate fix candidates
+    needs: fix
+    if: always() && needs.fix.outputs.prs != '' && needs.fix.outputs.prs != '[]'
+    uses: ./.github/workflows/nodegoat-pr-check.yml
+    with:
+      prs: ${{ needs.fix.outputs.prs }}
+    secrets: inherit
+
+  # Deployment is owned by ST and stays off (run_build_deploy defaults to false) until ST enables it.
+  build:
+    name: NodeGoat - Build and publish image
+    needs: fix
+    if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
+    uses: ./.github/workflows/nodegoat-build.yml
+    secrets: inherit
+
+  deploy:
+    name: NodeGoat - Deploy to Kubernetes (green)
+    needs: build
+    if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
+    uses: ./.github/workflows/nodegoat-deploy.yml
+    with:
+      deploy_target: green
+      deploy_nodeport: ${{ vars.NODEPORT_GREEN }}
+
+  test-e2e:
+    name: NodeGoat - Test deployed application
+    needs: deploy
+    if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
+    uses: ./.github/workflows/nodegoat-test.yml
+    with:
+      stage: e2e
+      base_url: ${{ vars.NODEGOAT_BASE_URL }}
+      run_misuse: false  # flip on once fix PRs are merged onto this branch and redeployed
+
+
+  after-fix:
+    name: NodeGoat - Scan each independent candidate
+    needs: fix
+    if: always() && needs.fix.outputs.prs != '' && needs.fix.outputs.prs != '[]'
+    uses: ./.github/workflows/candidate-rescan.yml
+    with:
+      app-code: nodegoat
+      app-path: target-apps/NodeGoat
+      ecosystem: npm
+      manifest: package.json
+      container-file: docker-compose.yml
+      container-mode: third-party
+      node-version: '20.19.0'
+      npm-version: '8.19.4'
+      compose-files: docker-compose.yml docker-compose.pr-check.yml
+      prs: ${{ needs.fix.outputs.prs }}
+    secrets: inherit
+
+  pr-summary:
+    name: NodeGoat - Compare options on each PR
+    needs: [fix, pr-check, after-fix]
+    if: always() && needs.fix.outputs.prs != '' && needs.fix.outputs.prs != '[]'
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    uses: ./.github/workflows/pr-summary.yml
+    with:
+      app-code: nodegoat
+    secrets: inherit
+
+  publish:
+    name: NodeGoat - Publish dashboard evidence
+    needs: [scan, test-unit, fix, pr-check, build, deploy, test-e2e, after-fix]
+    if: always()
+    uses: ./.github/workflows/publish-dashboard-results.yml
+    with:
+      app-code: nodegoat
+      scan-kind: ${{ inputs.scan_kind || 'initial' }}
+      after-fix-of: ${{ inputs.after_fix_of || '' }}
+      legacy-uploads: true
+      outcomes: >-
+        {"scan":"${{ needs.scan.result }}","unit_tests":"${{ needs.test-unit.result }}","fix":"${{ needs.fix.result }}","validate":"${{ needs.pr-check.result }}","after_fix":"${{ needs.after-fix.result }}"}
+    secrets: inherit

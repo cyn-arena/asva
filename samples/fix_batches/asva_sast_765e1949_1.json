@@ -1,0 +1,311 @@
+{
+  "batch_id": "asva_sast_765e1949_1",
+  "batch_type": "sast",
+  "repo_name": "asva",
+  "commit_sha": "765e1949",
+  "scan_run_id": "20261013062102",
+  "generated_at": "2026-10-13T06:21:02Z",
+  "total_files": 5,
+  "total_findings": 7,
+  "files_to_fix": [
+    {
+      "file": "app/routes/contributions.js",
+      "fix_type": "code_change",
+      "finding_type": "sast",
+      "findings": [
+        {
+          "finding_id": "2724fffc-e865-4297-87c2-595ae8e44af1",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 8.5,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-94",
+            "rule_id": "javascript/CodeInjection"
+          },
+          "title": "Code Injection",
+          "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+          "description": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+          "location": {
+            "kind": "source_file",
+            "file": "app/routes/contributions.js",
+            "line": 32,
+            "package": null,
+            "display": "app/routes/contributions.js:32",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 52,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Root fix for app/routes/contributions.js — agent edits this file once to address all 3 finding(s)."
+        },
+        {
+          "finding_id": "6b8d8378-19f8-440f-b6c6-63ba20308454",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 8.5,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-94",
+            "rule_id": "javascript/CodeInjection"
+          },
+          "title": "Code Injection",
+          "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+          "description": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+          "location": {
+            "kind": "source_file",
+            "file": "app/routes/contributions.js",
+            "line": 33,
+            "package": null,
+            "display": "app/routes/contributions.js:33",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 53,
+          "covered_by": "2724fffc-e865-4297-87c2-595ae8e44af1",
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Covered by root fix for app/routes/contributions.js — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "d5e9b6c6-9a79-4335-a653-fef515e58066",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 8.5,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-94",
+            "rule_id": "javascript/CodeInjection"
+          },
+          "title": "Code Injection",
+          "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+          "description": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+          "location": {
+            "kind": "source_file",
+            "file": "app/routes/contributions.js",
+            "line": 34,
+            "package": null,
+            "display": "app/routes/contributions.js:34",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 54,
+          "covered_by": "2724fffc-e865-4297-87c2-595ae8e44af1",
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Covered by root fix for app/routes/contributions.js — will be addressed in the same commit."
+        }
+      ],
+      "finding_count": 3
+    },
+    {
+      "file": "config/env/development.js",
+      "fix_type": "code_change",
+      "finding_type": "sast",
+      "findings": [
+        {
+          "finding_id": "a26c5ae0-a59e-4c86-a43f-407d4e7a0de6",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 8.5,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-547",
+            "rule_id": "javascript/HardcodedNonCryptoSecret"
+          },
+          "title": "Hardcoded Non-Cryptographic Secret",
+          "summary": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+          "description": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+          "location": {
+            "kind": "source_file",
+            "file": "config/env/development.js",
+            "line": 6,
+            "package": null,
+            "display": "config/env/development.js:6",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 60,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Root fix for config/env/development.js — agent edits this file once to address all 1 finding(s)."
+        }
+      ],
+      "finding_count": 1
+    },
+    {
+      "file": "app/routes/profile.js",
+      "fix_type": "code_change",
+      "finding_type": "sast",
+      "findings": [
+        {
+          "finding_id": "335a7d6f-5d7a-4cb0-ad45-c724ac471280",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 8.5,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-400",
+            "rule_id": "javascript/reDOSPolynomial"
+          },
+          "title": "Regular Expression Denial of Service (ReDoS)",
+          "summary": "The method test is using a vulnerable regular expression /([0-9]+)+\\#/ on the HTTP request body. This may result in a Regular expression Denial of Service attack (reDOS).",
+          "description": "The method test is using a vulnerable regular expression /([0-9]+)+\\#/ on the HTTP request body. This may result in a Regular expression Denial of Service attack (reDOS).",
+          "location": {
+            "kind": "source_file",
+            "file": "app/routes/profile.js",
+            "line": 61,
+            "package": null,
+            "display": "app/routes/profile.js:61",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 72,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Root fix for app/routes/profile.js — agent edits this file once to address all 1 finding(s)."
+        }
+      ],
+      "finding_count": 1
+    },
+    {
+      "file": "app/routes/research.js",
+      "fix_type": "code_change",
+      "finding_type": "sast",
+      "findings": [
+        {
+          "finding_id": "c5ef1c21-749b-47bb-ba14-1a53909c56e0",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 8.5,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-918",
+            "rule_id": "javascript/Ssrf"
+          },
+          "title": "Server-Side Request Forgery (SSRF)",
+          "summary": "Unsanitized input from an HTTP parameter flows into needle.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+          "description": "Unsanitized input from an HTTP parameter flows into needle.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+          "location": {
+            "kind": "source_file",
+            "file": "app/routes/research.js",
+            "line": 16,
+            "package": null,
+            "display": "app/routes/research.js:16",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 73,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Root fix for app/routes/research.js — agent edits this file once to address all 1 finding(s)."
+        }
+      ],
+      "finding_count": 1
+    },
+    {
+      "file": "app/routes/index.js",
+      "fix_type": "code_change",
+      "finding_type": "sast",
+      "findings": [
+        {
+          "finding_id": "1429d086-f72d-4485-b198-052fbbd8c6f3",
+          "finding_type": "sast",
+          "scan_run_id": "20261013062102",
+          "severity": "medium",
+          "score": 5.0,
+          "has_real_score": false,
+          "identifiers": {
+            "cve": null,
+            "cwe": "CWE-601",
+            "rule_id": "javascript/OR"
+          },
+          "title": "Open Redirect",
+          "summary": "Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.",
+          "description": "Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.",
+          "location": {
+            "kind": "source_file",
+            "file": "app/routes/index.js",
+            "line": 72,
+            "package": null,
+            "display": "app/routes/index.js:72",
+            "image_name": null,
+            "image_tag": null
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "code_change",
+            "fixable": true,
+            "upgrade_to": null
+          },
+          "ecosystem": "unknown",
+          "priority": 256,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "code_change",
+          "triage_reason": "Root fix for app/routes/index.js — agent edits this file once to address all 1 finding(s)."
+        }
+      ],
+      "finding_count": 1
+    }
+  ]
+}

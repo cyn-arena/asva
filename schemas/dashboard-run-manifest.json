@@ -1,0 +1,122 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "app": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "commit_sha": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "workflow": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "workflow_url": {
+      "type": "string"
+    },
+    "stages": {
+      "type": "object",
+      "properties": {
+        "scan": {
+          "type": "string"
+        },
+        "normalise": {
+          "type": "string"
+        },
+        "triage": {
+          "type": "string"
+        },
+        "fix": {
+          "type": "string"
+        },
+        "validate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "scan",
+        "normalise",
+        "triage",
+        "fix",
+        "validate"
+      ]
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "findings": {
+          "type": "string"
+        },
+        "triage": {
+          "type": "string"
+        },
+        "fix_batches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remediation": {
+          "type": "string"
+        },
+        "fixes": {
+          "type": "string"
+        },
+        "baseline_validation": {
+          "type": "string"
+        },
+        "normalisation_audit": {
+          "type": "string"
+        },
+        "scan_status": {
+          "type": "string"
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": []
+    },
+    "scan_kind": {
+      "enum": [
+        "initial",
+        "after_fix"
+      ]
+    },
+    "after_fix_of": {
+      "type": "string"
+    },
+    "baseline_status": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "app",
+    "run_id",
+    "commit_sha",
+    "branch",
+    "workflow",
+    "created_at",
+    "workflow_url",
+    "stages",
+    "artifacts",
+    "scan_kind"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Pipeline manifest extension: failed scans may omit findings; additive evidence fields retain v0.1 readers for completed scans."
+}

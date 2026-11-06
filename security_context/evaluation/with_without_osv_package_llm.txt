@@ -1,0 +1,15 @@
+===== service answer without osv: 703 prompt characters
+Dependency upgrade notes (scanner targets):
+- body-parser 1.18.3 → 1.20.4: fixes 3 finding(s) in body-parser, qs.
+- express 4.16.4 → 4.16.4: already at the target, so editing package.json cannot fix proxy-addr; it needs a lockfile refresh or npm overrides (reviewer decision).
+- forever 2.0.0 → 2.0.0: already at the target, so editing package.json cannot fix brace-expansion, ini, minimatch, mixin-deep, set-value, y18n; it needs a lockfile refresh or npm overrides (reviewer decision).
+- marked 0.3.5 → 0.3.18: fixes 5 finding(s) in marked.
+- mongodb 2.2.36 → 3.1.13: MAJOR version change (2.x → 3.x); fixes 3 finding(s) in bson, mongodb.
+- underscore 1.9.1 → 1.13.8: fixes 1 finding(s) in underscore.
+===== LLM runs (way B prompt, without osv):
+run 1: answered in 48s
+run 1: body-parser 1.20.4, express 4.16.4, marked 0.3.18, mongodb 3.1.13, underscore 1.13.8 | major changes: ['mongodb'] | app: DOES NOT START
+run 2: answered in 42s
+run 2: body-parser 1.20.4, marked 0.3.18, underscore 1.13.8 | major changes: none | app: starts
+run 3: answered in 58s
+run 3: body-parser 1.20.4, marked 0.3.18, underscore 1.13.8 | major changes: none | app: starts

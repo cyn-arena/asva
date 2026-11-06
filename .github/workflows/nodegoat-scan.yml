@@ -1,0 +1,74 @@
+name: NodeGoat - Scan vulnerabilities
+
+on:
+  workflow_call:
+    inputs:
+      app-code:
+        description: Application code used in scan evidence
+        default: nodegoat
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Vulnerability scans
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      APP_CODE: ${{ inputs.app-code }}
+      SOURCE_SHA: ${{ github.sha }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_CFG_ORG: ${{ secrets.SNYK_ORG }}
+    steps:
+      - name: Checkout exact application source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up the candidate scanning toolchain
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+
+      - name: Install pinned npm for version-2 lockfiles
+        run: npm install --global npm@8.19.4 --ignore-scripts --no-audit --no-fund
+
+      - name: Install pinned Snyk CLI
+        run: |
+          INSTALL_DIR="$HOME/.local/bin" bash scripts/install-snyk.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Scan initial source using the candidate scan policy
+        if: always()
+        run: |
+          python -m scripts.candidate_rescan --scan-kind initial \
+            --app "$APP_CODE" --app-path target-apps/NodeGoat --sha "$SOURCE_SHA" \
+            --batch-id initial --pr-url '' --run-id "$GITHUB_RUN_ID" \
+            --output asva-results/scan --ecosystem npm --manifest package.json --npm-version 8.19.4 \
+            --container-file docker-compose.yml --container-mode third-party \
+            --compose-file docker-compose.yml --compose-file docker-compose.pr-check.yml
+
+      - name: Preserve the existing container artifact filename
+        if: always()
+        run: |
+          if [ -f asva-results/scan/container.sarif.json ]; then
+            mv asva-results/scan/container.sarif.json asva-results/scan/image.sarif.json
+          fi
+
+      - name: Save initial scan evidence even after failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nodegoat-scan-results
+          path: asva-results/scan/
+          retention-days: 14
+          if-no-files-found: error
+          overwrite: true

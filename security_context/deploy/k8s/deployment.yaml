@@ -1,0 +1,74 @@
+# One replica: SQLite has a single writer. Hardening mirrors the NodeGoat deployment
+# (non-root, read-only root filesystem, no privilege escalation, all capabilities dropped).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: security-context
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # the ReadWriteOnce volume can only be mounted by one pod at a time
+  selector:
+    matchLabels:
+      app: security-context
+  template:
+    metadata:
+      labels:
+        app: security-context
+    spec:
+      automountServiceAccountToken: false
+      # imagePullSecrets:          # if the image is in a private registry (NodeGoat uses this one)
+      #   - name: sec-docker-registry
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000              # lets the non-root user write to the data volume
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: security-context
+          image: asva-security-context
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: security-context-config
+            - secretRef:
+                name: security-context-secrets    # NVD_API_KEY, CONTEXT7_API_KEY, ADMIN_TOKEN
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          startupProbe:            # first start copies the snapshot and loads the model
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 5
+            failureThreshold: 36
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 30
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: security-context-data
+        - name: tmp
+          emptyDir: {}

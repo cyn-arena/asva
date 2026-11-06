@@ -1,0 +1,120 @@
+name: PyGoat - Scan vulnerabilities
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      SNYK_TOKEN:
+        required: true
+      SNYK_ORG:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: PyGoat - Scan source, dependencies and application image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_CFG_ORG: ${{ secrets.SNYK_ORG }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prepare report directory and verify credentials
+        run: |
+          mkdir -p asva-results/scan
+          test -n "$SNYK_TOKEN" || { echo '::error::SNYK_TOKEN is required'; exit 1; }
+      - name: Install pinned Snyk CLI
+        run: |
+          INSTALL_DIR="$HOME/.local/bin" bash scripts/install-snyk.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Build the actual PyGoat application image
+        run: docker build -f target-apps/PyGoat/Dockerfile.asva -t asva-pygoat:scan target-apps/PyGoat
+      - name: Scan Python source (SAST)
+        id: sast
+        continue-on-error: true
+        working-directory: target-apps/PyGoat
+        run: |
+          set +e
+          snyk code test --sarif-file-output="$GITHUB_WORKSPACE/asva-results/scan/sast.sarif.json"
+          rc=$?
+          echo "SAST CLI exit code: $rc"
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          if [ "$rc" -gt 1 ]; then exit "$rc"; fi
+      - name: Scan installed Python dependencies (SCA)
+        id: sca
+        continue-on-error: true
+        # Run inside the built image: Python and installed packages match the app.
+        # Override the app entrypoint so migrations and Gunicorn do not run.
+        run: |
+          set +e
+          docker run --rm --entrypoint /opt/asva-snyk \
+            -e SNYK_TOKEN -e SNYK_CFG_ORG \
+            -v "$HOME/.local/bin/snyk:/opt/asva-snyk:ro" \
+            -v "$GITHUB_WORKSPACE/asva-results/scan:/reports" \
+            asva-pygoat:scan test --file=requirements.txt \
+            --package-manager=pip --command=python \
+            --sarif-file-output=/reports/sca.sarif.json
+          rc=$?
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          if [ "$rc" -gt 1 ]; then exit "$rc"; fi
+      - name: Scan the built application image
+        id: container
+        continue-on-error: true
+        run: |
+          set +e
+          snyk container test asva-pygoat:scan \
+            --file=target-apps/PyGoat/Dockerfile.asva \
+            --sarif-file-output=asva-results/scan/container.sarif.json
+          rc=$?
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          if [ "$rc" -gt 1 ]; then exit "$rc"; fi
+      - name: Verify complete scan evidence
+        if: always()
+        env:
+          SAST_EXIT: ${{ steps.sast.outputs.exit_code }}
+          SCA_EXIT: ${{ steps.sca.outputs.exit_code }}
+          CONTAINER_EXIT: ${{ steps.container.outputs.exit_code }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          reports = Path('asva-results/scan')
+          reports.mkdir(parents=True, exist_ok=True)
+          status = {}
+          for kind in ('sast', 'sca', 'container'):
+              code = os.environ[kind.upper() + '_EXIT']
+              status[kind] = {'exit_code': code, 'status': 'failed'}
+              path = reports / (kind + '.sarif.json')
+              if code in ('0', '1') and path.is_file():
+                  try:
+                      data = json.loads(path.read_text(encoding='utf-8'))
+                      if isinstance(data, dict) and isinstance(data.get('runs'), list) and data['runs']:
+                          status[kind]['status'] = 'completed'
+                      else:
+                          status[kind]['detail'] = 'SARIF has no scan run'
+                  except (ValueError, OSError) as exc:
+                      status[kind]['detail'] = str(exc)
+              else:
+                  status[kind]['detail'] = 'Scan did not complete or report is missing'
+          (reports / 'scan-status.json').write_text(json.dumps({
+              'app': 'pygoat', 'run_id': os.environ['GITHUB_RUN_ID'],
+              'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'commit_sha': os.environ['GITHUB_SHA'], 'scans': status,
+          }, indent=2))
+          if any(s['status'] != 'completed' for s in status.values()):
+              raise SystemExit('Incomplete scan evidence; do not proceed to triage')
+          PY
+      - name: Save scan evidence even when scanning fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pygoat-scan-results
+          path: asva-results/scan/
+          if-no-files-found: warn
+          retention-days: 14
+          overwrite: true

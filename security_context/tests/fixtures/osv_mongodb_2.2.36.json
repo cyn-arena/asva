@@ -1,0 +1,48 @@
+{
+ "vulns": [
+  {
+   "id": "GHSA-mh5c-679w-hh4r",
+   "summary": "Denial of Service in mongodb",
+   "modified": "2020-08-31T18:51:01Z",
+   "published": "2020-09-03T21:12:01Z",
+   "affected": [
+    {
+     "package": {
+      "name": "mongodb",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/mongodb"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "3.1.13"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/09/GHSA-mh5c-679w-hh4r/GHSA-mh5c-679w-hh4r.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "WEB",
+     "url": "https://www.npmjs.com/advisories/1203"
+    }
+   ],
+   "database_specific": {
+    "github_reviewed": true,
+    "github_reviewed_at": "2020-08-31T18:51:01Z",
+    "nvd_published_at": null,
+    "cwe_ids": [],
+    "severity": "HIGH"
+   }
+  }
+ ]
+}

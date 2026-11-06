@@ -1,0 +1,3135 @@
+{
+ "methods": {
+  "similarity only": {
+   "issues": 46,
+   "top": 0.6521739130434783,
+   "any": 0.8043478260869565,
+   "on_topic": 0.6521739130434783,
+   "chars": 1811,
+   "none_returned": 0
+  },
+  "keyword only": {
+   "issues": 46,
+   "top": 0.391304347826087,
+   "any": 0.6739130434782609,
+   "on_topic": 0.3840579710144927,
+   "chars": 1667,
+   "none_returned": 0
+  },
+  "similarity + keyword fallback (service default)": {
+   "issues": 46,
+   "top": 0.6521739130434783,
+   "any": 0.8260869565217391,
+   "on_topic": 0.6014492753623188,
+   "chars": 1710,
+   "none_returned": 0
+  },
+  "default, without the CWE name in the query": {
+   "issues": 46,
+   "top": 0.717391304347826,
+   "any": 0.8478260869565217,
+   "on_topic": 0.6666666666666667,
+   "chars": 1684,
+   "none_returned": 0
+  }
+ },
+ "amounts": [
+  {
+   "sections": 1,
+   "default": false,
+   "issues": 46,
+   "top": 0.6521739130434783,
+   "any": 0.6521739130434783,
+   "on_topic": 0.6521739130434783,
+   "chars": 571,
+   "none_returned": 0
+  },
+  {
+   "sections": 2,
+   "default": false,
+   "issues": 46,
+   "top": 0.6521739130434783,
+   "any": 0.7391304347826086,
+   "on_topic": 0.6195652173913043,
+   "chars": 1163,
+   "none_returned": 0
+  },
+  {
+   "sections": 3,
+   "default": true,
+   "issues": 46,
+   "top": 0.6521739130434783,
+   "any": 0.8260869565217391,
+   "on_topic": 0.6014492753623188,
+   "chars": 1710,
+   "none_returned": 0
+  },
+  {
+   "sections": 4,
+   "default": false,
+   "issues": 46,
+   "top": 0.6521739130434783,
+   "any": 0.8260869565217391,
+   "on_topic": 0.6195652173913043,
+   "chars": 2362,
+   "none_returned": 0
+  }
+ ],
+ "by_language": {
+  "csharp": {
+   "issues": 2,
+   "top": 1.0,
+   "any": 1.0,
+   "on_topic": 1.0,
+   "chars": 1656,
+   "none_returned": 0
+  },
+  "go": {
+   "issues": 2,
+   "top": 0.5,
+   "any": 1.0,
+   "on_topic": 0.6666666666666666,
+   "chars": 1050,
+   "none_returned": 0
+  },
+  "java": {
+   "issues": 12,
+   "top": 0.5833333333333334,
+   "any": 0.8333333333333334,
+   "on_topic": 0.5277777777777778,
+   "chars": 1768,
+   "none_returned": 0
+  },
+  "javascript": {
+   "issues": 14,
+   "top": 0.6428571428571429,
+   "any": 0.7857142857142857,
+   "on_topic": 0.5238095238095238,
+   "chars": 1746,
+   "none_returned": 0
+  },
+  "php": {
+   "issues": 2,
+   "top": 1.0,
+   "any": 1.0,
+   "on_topic": 0.8333333333333333,
+   "chars": 1829,
+   "none_returned": 0
+  },
+  "python": {
+   "issues": 13,
+   "top": 0.6153846153846154,
+   "any": 0.7692307692307693,
+   "on_topic": 0.6410256410256411,
+   "chars": 1742,
+   "none_returned": 0
+  },
+  "ruby": {
+   "issues": 1,
+   "top": 1.0,
+   "any": 1.0,
+   "on_topic": 0.6666666666666666,
+   "chars": 1314,
+   "none_returned": 0
+  }
+ },
+ "issues": {
+  "javascript/Sqli": {
+   "title": "SQL Injection",
+   "cwe": "CWE-89",
+   "expect": [
+    "SQL Injection Prevention",
+    "Query Parameterization",
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.588,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1601,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › What Is a SQL Injection Attack?",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1890,
+    "returned": [
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] GraphQL › Common Attacks",
+     "[keyword] Injection Prevention › Other Injection Cheatsheets"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2074,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] GraphQL › Common Attacks"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1801,
+    "returned": [
+     "SQL Injection Prevention › What Is a SQL Injection Attack?",
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Defense Option 1: Prepared Statements (with Parameterized Queries)"
+    ]
+   }
+  },
+  "javascript/XSS": {
+   "title": "Cross-site Scripting (XSS)",
+   "cwe": "CWE-79",
+   "expect": [
+    "Cross Site Scripting Prevention",
+    "DOM based XSS Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.742,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1124,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "NodeJS Security › Perform output escaping",
+     "Browser Extension Security Vulnerabilities › Mitigation: Cross-Site Scripting (XSS)"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1530,
+    "returned": [
+     "[keyword] DOM based XSS Prevention › RULE \\#7 - Fixing DOM Cross-site Scripting Vulnerabilities",
+     "[keyword] Browser Extension Security Vulnerabilities › Vulnerability: Cross-Site Scripting (XSS)",
+     "[keyword] Input Validation › Preventing XSS and Content Security Policy"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1124,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "NodeJS Security › Perform output escaping",
+     "Browser Extension Security Vulnerabilities › Mitigation: Cross-Site Scripting (XSS)"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1400,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "Cross Site Scripting Prevention › Common Anti-patterns: Ineffective Approaches to Avoid",
+     "NodeJS Security › Use appropriate security headers"
+    ]
+   }
+  },
+  "javascript/DOMXSS": {
+   "title": "DOM-based Cross-site Scripting (XSS)",
+   "cwe": "CWE-79",
+   "expect": [
+    "DOM based XSS Prevention",
+    "Cross Site Scripting Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.79,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1892,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "DOM based XSS Prevention › RULE \\#7 - Fixing DOM Cross-site Scripting Vulnerabilities",
+     "DOM based XSS Prevention › N-Levels of Encoding"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 986,
+    "returned": [
+     "[keyword] Browser Extension Security Vulnerabilities › Mitigation: Cross-Site Scripting (XSS)",
+     "[keyword] Browser Extension Security Vulnerabilities › Vulnerability: Cross-Site Scripting (XSS)",
+     "[keyword] Input Validation › Preventing XSS and Content Security Policy"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1892,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "DOM based XSS Prevention › RULE \\#7 - Fixing DOM Cross-site Scripting Vulnerabilities",
+     "DOM based XSS Prevention › N-Levels of Encoding"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1251,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "DOM based XSS Prevention › Guidelines for Developing Secure Applications Utilizing JavaScript",
+     "DOM based XSS Prevention › GUIDELINE \\#9 - Run your JavaScript in a ECMAScript 5 canopy or sandbox"
+    ]
+   }
+  },
+  "javascript/CommandInjection": {
+   "title": "Command Injection",
+   "cwe": "CWE-78",
+   "expect": [
+    "OS Command Injection Defense",
+    "Injection Prevention",
+    "NodeJS Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.576,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2122,
+    "returned": [
+     "NodeJS Security › Use strict mode",
+     "NodeJS Security › Perform input validation",
+     "NodeJS Security › Perform output escaping"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1735,
+    "returned": [
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] OS Command Injection Defense › Defense option 3: Parameterization in conjunction with Input Validation",
+     "[keyword] OS Command Injection Defense › Argument Injection"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1754,
+    "returned": [
+     "NodeJS Security › Use strict mode",
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] OS Command Injection Defense › Defense option 3: Parameterization in conjunction with Input Validation"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2127,
+    "returned": [
+     "NodeJS Security › Perform input validation",
+     "NodeJS Security › Do not use dangerous functions",
+     "NodeJS Security › Perform output escaping"
+    ]
+   }
+  },
+  "javascript/NoSqli": {
+   "title": "NoSQL Injection",
+   "cwe": "CWE-943",
+   "expect": [
+    "NoSQL Security",
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.706,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1831,
+    "returned": [
+     "NoSQL Security › Prevent NoSQL Injection",
+     "NodeJS Security › Prevent HTTP Parameter Pollution",
+     "NoSQL Security › Use Secure Driver / ODM Patterns"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1906,
+    "returned": [
+     "[keyword] Secure Code Review › Injection Vulnerabilities",
+     "[keyword] Java Security › How to prevent",
+     "[keyword] gRPC Security › Prevent Injection Attacks"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1831,
+    "returned": [
+     "NoSQL Security › Prevent NoSQL Injection",
+     "NodeJS Security › Prevent HTTP Parameter Pollution",
+     "NoSQL Security › Use Secure Driver / ODM Patterns"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1294,
+    "returned": [
+     "NoSQL Security › Prevent NoSQL Injection",
+     "NoSQL Security › Use Secure Driver / ODM Patterns",
+     "NoSQL Security › Configuration Hardening"
+    ]
+   }
+  },
+  "javascript/PrototypePollution": {
+   "title": "Prototype Pollution",
+   "cwe": "CWE-1321",
+   "expect": [
+    "Prototype Pollution Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.925,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1331,
+    "returned": [
+     "Prototype Pollution Prevention › Node.js configuration flag",
+     "Prototype Pollution Prevention › Use object \"freeze\" and \"seal\" mechanisms",
+     "JavaScript and TypeScript Security › Object and Property Safety (Including Prototype Pollution)"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 924,
+    "returned": [
+     "[keyword] Prototype Pollution Prevention › If objects or object literals are required",
+     "[keyword] JavaScript and TypeScript Security › Strict Mode",
+     "[keyword] Prototype Pollution Prevention › Other resources"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1331,
+    "returned": [
+     "Prototype Pollution Prevention › Node.js configuration flag",
+     "Prototype Pollution Prevention › Use object \"freeze\" and \"seal\" mechanisms",
+     "JavaScript and TypeScript Security › Object and Property Safety (Including Prototype Pollution)"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 908,
+    "returned": [
+     "Prototype Pollution Prevention › Node.js configuration flag",
+     "Prototype Pollution Prevention › Explanation",
+     "Prototype Pollution Prevention › Use object \"freeze\" and \"seal\" mechanisms"
+    ]
+   }
+  },
+  "javascript/JwtVerificationBypass": {
+   "title": "JWT Signature Verification Bypass",
+   "cwe": "CWE-347",
+   "expect": [
+    "JSON Web Token"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.636,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2130,
+    "returned": [
+     "JSON Web Token › JWT denylist",
+     "JSON Web Token › Unsecured JWTs",
+     "REST Security › JWT"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2358,
+    "returned": [
+     "[keyword] JSON Web Token › Token Structure",
+     "[keyword] JSON Web Token › Header fields",
+     "[keyword] JSON Web Token › Key type confusion"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2130,
+    "returned": [
+     "JSON Web Token › JWT denylist",
+     "JSON Web Token › Unsecured JWTs",
+     "REST Security › JWT"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2130,
+    "returned": [
+     "JSON Web Token › JWT denylist",
+     "JSON Web Token › Unsecured JWTs",
+     "REST Security › JWT"
+    ]
+   }
+  },
+  "javascript/HardcodedSecret": {
+   "title": "Hardcoded Secret",
+   "cwe": "CWE-798",
+   "expect": [
+    "Secrets Management"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.598,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1192,
+    "returned": [
+     "Web Frontend Security › Never transmit secrets to the client",
+     "GitHub Actions Security › Secure handling of static credentials (if elimination is unavoidable)",
+     "NodeJS Security › Use appropriate security headers"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1822,
+    "returned": [
+     "[keyword] Secrets Management › 5.1 Injection of Secrets (file, in-memory)",
+     "[keyword] Django REST Framework (DRF) › Secret Management",
+     "[keyword] Secrets Management › 1 Introduction"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1148,
+    "returned": [
+     "Web Frontend Security › Never transmit secrets to the client",
+     "[keyword] Secrets Management › 5.1 Injection of Secrets (file, in-memory)",
+     "[keyword] Django REST Framework (DRF) › Secret Management"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1148,
+    "returned": [
+     "Web Frontend Security › Never transmit secrets to the client",
+     "[keyword] Secrets Management › 5.1 Injection of Secrets (file, in-memory)",
+     "[keyword] Django REST Framework (DRF) › Secret Management"
+    ]
+   }
+  },
+  "javascript/WebCookieSecureDisabledByDefault": {
+   "title": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute",
+   "cwe": "CWE-614",
+   "expect": [
+    "Session Management",
+    "Cookie Theft Mitigation"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.732,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2117,
+    "returned": [
+     "NodeJS Security › Set cookie flags appropriately",
+     "Transport Layer Security › Use the \"Secure\" Cookie Flag",
+     "Session Management › Transport Layer Security"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2111,
+    "returned": [
+     "[keyword] Session Management › HttpOnly Attribute",
+     "[keyword] Session Management › Secure Attribute",
+     "[keyword] Session Management › Cookie Name Prefixes"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2117,
+    "returned": [
+     "NodeJS Security › Set cookie flags appropriately",
+     "Transport Layer Security › Use the \"Secure\" Cookie Flag",
+     "Session Management › Transport Layer Security"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2117,
+    "returned": [
+     "NodeJS Security › Set cookie flags appropriately",
+     "Transport Layer Security › Use the \"Secure\" Cookie Flag",
+     "Session Management › Secure Attribute"
+    ]
+   }
+  },
+  "javascript/DisablePoweredBy": {
+   "title": "Information Exposure",
+   "cwe": "CWE-200",
+   "expect": [
+    "HTTP Security Response Headers",
+    "NodeJS Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.558,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1609,
+    "returned": [
+     "Web Frontend Security › Never transmit secrets to the client",
+     "Third Party JavaScript Management › Risk 3: Disclosure of sensitive information to 3rd parties",
+     "NodeJS Security › Use appropriate security headers"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1820,
+    "returned": [
+     "[keyword] Cloud Architecture Security › Logging",
+     "[keyword] Cryptographic Storage › Defense in Depth",
+     "[keyword] Abuse Case (Historical) › A3:2017-Sensitive Data Exposure"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1141,
+    "returned": [
+     "Web Frontend Security › Never transmit secrets to the client",
+     "[keyword] Cloud Architecture Security › Logging",
+     "[keyword] Cryptographic Storage › Defense in Depth"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1268,
+    "returned": [
+     "NodeJS Security › Use appropriate security headers",
+     "[keyword] Prototype Pollution Prevention › Node.js configuration flag",
+     "[keyword] Django REST Framework (DRF) › API3:2019 Excessive Data Exposure"
+    ]
+   }
+  },
+  "javascript/NoRateLimitingForExpensiveWebOperation": {
+   "title": "Allocation of Resources Without Limits or Throttling",
+   "cwe": "CWE-770",
+   "expect": [
+    "Denial of Service",
+    "NodeJS Security",
+    "Bot Management and Anti-Automation"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.626,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2329,
+    "returned": [
+     "NodeJS Security › Set request size limits",
+     "NodeJS Security › Take precautions against brute-forcing",
+     "NodeJS Security › Monitor the event loop"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2185,
+    "returned": [
+     "[keyword] REST Assessment › Rate Limiting and Throttling Assessment",
+     "[keyword] Secure Coding with AI › Don't",
+     "[keyword] WebSocket Security › Framework-Specific Best Practices"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2329,
+    "returned": [
+     "NodeJS Security › Set request size limits",
+     "NodeJS Security › Take precautions against brute-forcing",
+     "NodeJS Security › Monitor the event loop"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2329,
+    "returned": [
+     "NodeJS Security › Set request size limits",
+     "NodeJS Security › Take precautions against brute-forcing",
+     "NodeJS Security › Monitor the event loop"
+    ]
+   }
+  },
+  "javascript/InsecureTLSConfig": {
+   "title": "Improper Certificate Validation",
+   "cwe": "CWE-295",
+   "expect": [
+    "Transport Layer Security",
+    "Pinning"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.609,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2248,
+    "returned": [
+     "NodeJS Security › Perform input validation",
+     "NodeJS Security › Use strict mode",
+     "NodeJS Security › Use appropriate security headers"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1290,
+    "returned": [
+     "[keyword] WebSocket Security › Framework-Specific Best Practices",
+     "[keyword] Secure Code Review › Input Validation Vulnerabilities",
+     "[keyword] Prototype Pollution Prevention › Node.js configuration flag"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1729,
+    "returned": [
+     "NodeJS Security › Perform input validation",
+     "[keyword] WebSocket Security › Framework-Specific Best Practices",
+     "[keyword] Secure Code Review › Input Validation Vulnerabilities"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1729,
+    "returned": [
+     "NodeJS Security › Perform input validation",
+     "[keyword] WebSocket Security › Framework-Specific Best Practices",
+     "[keyword] Secure Code Review › Input Validation Vulnerabilities"
+    ]
+   }
+  },
+  "python/Sqli": {
+   "title": "SQL Injection",
+   "cwe": "CWE-89",
+   "expect": [
+    "SQL Injection Prevention",
+    "Query Parameterization",
+    "Injection Prevention",
+    "Django Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.621,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1601,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › What Is a SQL Injection Attack?"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1890,
+    "returned": [
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] GraphQL › Common Attacks",
+     "[keyword] Injection Prevention › Other Injection Cheatsheets"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1601,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › What Is a SQL Injection Attack?"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1801,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › What Is a SQL Injection Attack?",
+     "SQL Injection Prevention › Defense Option 1: Prepared Statements (with Parameterized Queries)"
+    ]
+   }
+  },
+  "python/CommandInjection": {
+   "title": "Command Injection",
+   "cwe": "CWE-78",
+   "expect": [
+    "OS Command Injection Defense",
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.607,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1980,
+    "returned": [
+     "OS Command Injection Defense › Defense Option 1: Avoid calling OS commands directly",
+     "OS Command Injection Defense › Introduction",
+     "OS Command Injection Defense › Layer 2"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1416,
+    "returned": [
+     "[keyword] OS Command Injection Defense › Defense option 3: Parameterization in conjunction with Input Validation",
+     "[keyword] OS Command Injection Defense › Argument Injection",
+     "[keyword] OS Command Injection Defense › Defense option 2: Escape values added to OS commands specific to each OS"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1319,
+    "returned": [
+     "OS Command Injection Defense › Defense Option 1: Avoid calling OS commands directly",
+     "[keyword] OS Command Injection Defense › Defense option 3: Parameterization in conjunction with Input Validation",
+     "[keyword] OS Command Injection Defense › Argument Injection"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1118,
+    "returned": [
+     "OS Command Injection Defense › Defense option 3: Parameterization in conjunction with Input Validation",
+     "[keyword] OS Command Injection Defense › Argument Injection",
+     "[keyword] Injection Prevention › Application Types"
+    ]
+   }
+  },
+  "python/CodeInjection": {
+   "title": "Code Injection",
+   "cwe": "CWE-94",
+   "expect": [
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.535,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1190,
+    "returned": [
+     "Injection Prevention › Rule \\#1 (Perform proper input validation)",
+     "Injection Prevention › Rule \\#2 (Use a safe API)",
+     "Injection Prevention › Scripting languages"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1456,
+    "returned": [
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Retrieval-Augmented Generation (RAG) Security › Do",
+     "[keyword] Injection Prevention › Introduction"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 884,
+    "returned": [
+     "Injection Prevention › Rule \\#1 (Perform proper input validation)",
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Retrieval-Augmented Generation (RAG) Security › Do"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1202,
+    "returned": [
+     "Injection Prevention › Rule \\#1 (Perform proper input validation)",
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Injection Prevention › Introduction"
+    ]
+   }
+  },
+  "python/Deserialization": {
+   "title": "Deserialization of Untrusted Data",
+   "cwe": "CWE-502",
+   "expect": [
+    "Deserialization"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.697,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1357,
+    "returned": [
+     "Deserialization › Introduction",
+     "Deserialization › Clear-box Review",
+     "Deserialization › Other Deserialization Libraries and Formats"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1844,
+    "returned": [
+     "[keyword] Serverless / FaaS Security › 4. Event Data Validation",
+     "[keyword] Secure Code Review › Deserialization Vulnerabilities",
+     "[keyword] Deserialization › References"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1357,
+    "returned": [
+     "Deserialization › Introduction",
+     "Deserialization › Clear-box Review",
+     "Deserialization › Other Deserialization Libraries and Formats"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1133,
+    "returned": [
+     "Deserialization › Using Alternative Data Formats",
+     "Deserialization › Clear-box Review",
+     "Deserialization › Introduction"
+    ]
+   }
+  },
+  "python/XXE": {
+   "title": "XML External Entity (XXE) Injection",
+   "cwe": "CWE-611",
+   "expect": [
+    "XML External Entity Prevention",
+    "XML Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.814,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1745,
+    "returned": [
+     "XML External Entity Prevention › Python",
+     "XML External Entity Prevention › libxerces-c",
+     "XML External Entity Prevention › Minimal XML Hardening Rules"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1912,
+    "returned": [
+     "[keyword] XML External Entity Prevention › Introduction",
+     "[keyword] Secure Code Review › Deserialization Vulnerabilities",
+     "[keyword] XML External Entity Prevention › PHP"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1745,
+    "returned": [
+     "XML External Entity Prevention › Python",
+     "XML External Entity Prevention › libxerces-c",
+     "XML External Entity Prevention › Minimal XML Hardening Rules"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1977,
+    "returned": [
+     "XML External Entity Prevention › Python",
+     "XML External Entity Prevention › General Guidance",
+     "XML External Entity Prevention › libxerces-c"
+    ]
+   }
+  },
+  "python/Ssrf": {
+   "title": "Server-Side Request Forgery (SSRF)",
+   "cwe": "CWE-918",
+   "expect": [
+    "Server-Side Request Forgery Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.696,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2122,
+    "returned": [
+     "Server-Side Request Forgery Prevention › IP address",
+     "Server-Side Request Forgery Prevention › Cases",
+     "Server-Side Request Forgery Prevention › Network layer"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1881,
+    "returned": [
+     "[keyword] Server-Side Request Forgery Prevention › Semgrep Rules",
+     "[keyword] Server-Side Request Forgery Prevention › Overview of a SSRF common flow",
+     "[keyword] Server-Side Request Forgery Prevention › Tools and code used for schemas"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2122,
+    "returned": [
+     "Server-Side Request Forgery Prevention › IP address",
+     "Server-Side Request Forgery Prevention › Cases",
+     "Server-Side Request Forgery Prevention › Network layer"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2122,
+    "returned": [
+     "Server-Side Request Forgery Prevention › IP address",
+     "Server-Side Request Forgery Prevention › Cases",
+     "Server-Side Request Forgery Prevention › Network layer"
+    ]
+   }
+  },
+  "python/HardcodedKey": {
+   "title": "Use of Hardcoded Cryptographic Key",
+   "cwe": "CWE-321",
+   "expect": [
+    "Key Management",
+    "Secrets Management",
+    "Cryptographic Storage"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.55,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2201,
+    "returned": [
+     "Django Security › Key Management",
+     "Key Management › Generation",
+     "Cryptographic Storage › Key Lifetimes and Rotation"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1470,
+    "returned": [
+     "[keyword] JSON Web Token › Key type confusion",
+     "[keyword] Key Management › Cryptographic Module Topics",
+     "[keyword] Key Management › General Guidelines and Considerations"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1874,
+    "returned": [
+     "Django Security › Key Management",
+     "[keyword] JSON Web Token › Key type confusion",
+     "[keyword] Key Management › Cryptographic Module Topics"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1874,
+    "returned": [
+     "Django Security › Key Management",
+     "[keyword] JSON Web Token › Key type confusion",
+     "[keyword] Key Management › Cryptographic Module Topics"
+    ]
+   }
+  },
+  "python/InsecureHash": {
+   "title": "Use of Password Hash With Insufficient Computational Effort",
+   "cwe": "CWE-916",
+   "expect": [
+    "Password Storage"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.639,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2362,
+    "returned": [
+     "Password Storage › PBKDF2 Pre-Hashing",
+     "Password Storage › Using Work Factors",
+     "Password Storage › Password Hashing Algorithms"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1882,
+    "returned": [
+     "[keyword] Django Security › Authentication",
+     "[keyword] Password Storage › Pre-Hashing Passwords with bcrypt",
+     "[keyword] Password Storage › Post-hashing peppers"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2362,
+    "returned": [
+     "Password Storage › PBKDF2 Pre-Hashing",
+     "Password Storage › Using Work Factors",
+     "Password Storage › Password Hashing Algorithms"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2362,
+    "returned": [
+     "Password Storage › PBKDF2 Pre-Hashing",
+     "Password Storage › Password Hashing Algorithms",
+     "Password Storage › Using Work Factors"
+    ]
+   }
+  },
+  "python/DisablesCSRFProtection": {
+   "title": "Cross-Site Request Forgery (CSRF)",
+   "cwe": "CWE-352",
+   "expect": [
+    "Cross-Site Request Forgery Prevention",
+    "Django Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.817,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2344,
+    "returned": [
+     "Cross-Site Request Forgery Prevention › Dealing with Client-Side CSRF Attacks (IMPORTANT)",
+     "Cross-Site Request Forgery Prevention › Client-side CSRF Mitigation Techniques",
+     "Cross-Site Request Forgery Prevention › Checking the Referer Header if Origin Header Is Not Present"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1347,
+    "returned": [
+     "[keyword] Web Frontend Security › Use CSRF Protection",
+     "[keyword] Cross-Site Request Forgery Prevention › CSRF",
+     "[keyword] Webhook Security › Cross-Site Request Forgery (CSRF) Considerations"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2344,
+    "returned": [
+     "Cross-Site Request Forgery Prevention › Dealing with Client-Side CSRF Attacks (IMPORTANT)",
+     "Cross-Site Request Forgery Prevention › Client-side CSRF Mitigation Techniques",
+     "Cross-Site Request Forgery Prevention › Checking the Referer Header if Origin Header Is Not Present"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2351,
+    "returned": [
+     "Cross-Site Request Forgery Prevention › Dealing with Client-Side CSRF Attacks (IMPORTANT)",
+     "Cross-Site Request Forgery Prevention › XMLHttpRequest (Native JavaScript)",
+     "Cross-Site Request Forgery Prevention › Client-side CSRF Mitigation Techniques"
+    ]
+   }
+  },
+  "python/WebCookieMissesCallToSetHttpOnly": {
+   "title": "Sensitive Cookie Without 'HttpOnly' Flag",
+   "cwe": "CWE-1004",
+   "expect": [
+    "Session Management",
+    "Cookie Theft Mitigation"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.602,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1835,
+    "returned": [
+     "Django Security › Cookies",
+     "Transport Layer Security › Use the \"Secure\" Cookie Flag",
+     "Session Management › HttpOnly Attribute"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2390,
+    "returned": [
+     "[keyword] NodeJS Security › Set cookie flags appropriately",
+     "[keyword] Cross-Site Request Forgery Prevention › Pseudo-Code For Implementing HMAC CSRF Tokens",
+     "[keyword] Session Management › Use Case"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2158,
+    "returned": [
+     "Django Security › Cookies",
+     "[keyword] NodeJS Security › Set cookie flags appropriately",
+     "[keyword] Cross-Site Request Forgery Prevention › Pseudo-Code For Implementing HMAC CSRF Tokens"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2125,
+    "returned": [
+     "Transport Layer Security › Use the \"Secure\" Cookie Flag",
+     "[keyword] NodeJS Security › Set cookie flags appropriately",
+     "[keyword] Cross-Site Request Forgery Prevention › Pseudo-Code For Implementing HMAC CSRF Tokens"
+    ]
+   }
+  },
+  "python/NoHardcodedPasswords": {
+   "title": "Use of Hardcoded Passwords",
+   "cwe": "CWE-259",
+   "expect": [
+    "Secrets Management"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.562,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2172,
+    "returned": [
+     "Credential Stuffing Prevention › Identifying Leaked Passwords",
+     "Django Security › Authentication",
+     "Authentication › Implement Proper Password Strength Controls"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2062,
+    "returned": [
+     "[keyword] Multifactor Authentication › Passwords and PINs",
+     "[keyword] Password Storage › Common requirements for peppering strategies",
+     "[keyword] Password Storage › PBKDF2 Pre-Hashing"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1881,
+    "returned": [
+     "Credential Stuffing Prevention › Identifying Leaked Passwords",
+     "[keyword] Multifactor Authentication › Passwords and PINs",
+     "[keyword] Password Storage › Common requirements for peppering strategies"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1614,
+    "returned": [
+     "Password Storage › Upgrading the Work Factor",
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Secure Product Design › 4. Code"
+    ]
+   }
+  },
+  "python/NoHardcodedCredentials": {
+   "title": "Use of Hardcoded Credentials",
+   "cwe": "CWE-798",
+   "expect": [
+    "Secrets Management"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.548,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1974,
+    "returned": [
+     "Authentication › Protect Against Automated Attacks",
+     "GitHub Actions Security › Secure handling of static credentials (if elimination is unavoidable)",
+     "Credential Stuffing Prevention › Multi-Step Login Processes"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1429,
+    "returned": [
+     "[keyword] Secrets Management › 1 Introduction",
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Deserialization › Clear-box Review"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1769,
+    "returned": [
+     "Authentication › Protect Against Automated Attacks",
+     "[keyword] Secrets Management › 1 Introduction",
+     "[keyword] Injection Prevention › Application Types"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1350,
+    "returned": [
+     "GitHub Actions Security › Secure handling of static credentials (if elimination is unavoidable)",
+     "[keyword] Secrets Management › 1 Introduction",
+     "[keyword] Injection Prevention › Application Types"
+    ]
+   }
+  },
+  "java/Sqli": {
+   "title": "SQL Injection",
+   "cwe": "CWE-89",
+   "expect": [
+    "SQL Injection Prevention",
+    "Query Parameterization",
+    "Injection Prevention in Java",
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.759,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1848,
+    "returned": [
+     "SQL Injection Prevention › Safe Java Prepared Statement Example",
+     "SQL Injection Prevention › Anatomy of a Typical SQL Injection Vulnerability",
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1583,
+    "returned": [
+     "[keyword] Injection Prevention › Other Injection Cheatsheets",
+     "[keyword] Java Security › General advice to prevent Injection",
+     "[keyword] OS Command Injection Defense › Introduction"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1848,
+    "returned": [
+     "SQL Injection Prevention › Safe Java Prepared Statement Example",
+     "SQL Injection Prevention › Anatomy of a Typical SQL Injection Vulnerability",
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1848,
+    "returned": [
+     "SQL Injection Prevention › Safe Java Prepared Statement Example",
+     "SQL Injection Prevention › Anatomy of a Typical SQL Injection Vulnerability",
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input"
+    ]
+   }
+  },
+  "java/XXE": {
+   "title": "XML External Entity (XXE) Injection",
+   "cwe": "CWE-611",
+   "expect": [
+    "XML External Entity Prevention",
+    "XML Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.848,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1625,
+    "returned": [
+     "XML External Entity Prevention › XMLInputFactory",
+     "XML External Entity Prevention › Java",
+     "XML External Entity Prevention › DOM: DocumentBuilderFactory"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1912,
+    "returned": [
+     "[keyword] XML External Entity Prevention › Introduction",
+     "[keyword] Secure Code Review › Deserialization Vulnerabilities",
+     "[keyword] XML External Entity Prevention › PHP"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1625,
+    "returned": [
+     "XML External Entity Prevention › XMLInputFactory",
+     "XML External Entity Prevention › Java",
+     "XML External Entity Prevention › DOM: DocumentBuilderFactory"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1625,
+    "returned": [
+     "XML External Entity Prevention › XMLInputFactory",
+     "XML External Entity Prevention › Java",
+     "XML External Entity Prevention › DOM: DocumentBuilderFactory"
+    ]
+   }
+  },
+  "java/Deserialization": {
+   "title": "Deserialization of Untrusted Data",
+   "cwe": "CWE-502",
+   "expect": [
+    "Deserialization"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.876,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1686,
+    "returned": [
+     "Deserialization › Other Deserialization Libraries and Formats",
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering",
+     "Deserialization › Introduction"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1621,
+    "returned": [
+     "[keyword] XML External Entity Prevention › java.beans.XMLDecoder",
+     "[keyword] Deserialization › Prevent Deserialization of Domain Objects",
+     "[keyword] Deserialization › References"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1686,
+    "returned": [
+     "Deserialization › Other Deserialization Libraries and Formats",
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering",
+     "Deserialization › Introduction"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1985,
+    "returned": [
+     "Deserialization › Other Deserialization Libraries and Formats",
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering",
+     "Deserialization › Prevent Deserialization of Domain Objects"
+    ]
+   }
+  },
+  "java/LdapInjection": {
+   "title": "LDAP Injection",
+   "cwe": "CWE-90",
+   "expect": [
+    "LDAP Injection Prevention",
+    "Injection Prevention in Java"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.733,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2020,
+    "returned": [
+     "Injection Prevention › Use the right LDAP encoding function",
+     "LDAP Injection Prevention › Safe Java Escaping Example",
+     "LDAP Injection Prevention › Search Filter Escaping"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1083,
+    "returned": [
+     "[keyword] Injection Prevention › During code review",
+     "[keyword] Java Security › How to prevent",
+     "[keyword] Injection Prevention › LDAP Injection"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2020,
+    "returned": [
+     "Injection Prevention › Use the right LDAP encoding function",
+     "LDAP Injection Prevention › Safe Java Escaping Example",
+     "LDAP Injection Prevention › Search Filter Escaping"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1647,
+    "returned": [
+     "LDAP Injection Prevention › Enabling Bind Authentication",
+     "LDAP Injection Prevention › Safe Java Escaping Example",
+     "Injection Prevention › Use the right LDAP encoding function"
+    ]
+   }
+  },
+  "java/XPathInjection": {
+   "title": "XPath Injection",
+   "cwe": "CWE-643",
+   "expect": [
+    "XPath Injection Prevention",
+    "Injection Prevention in Java"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.735,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1707,
+    "returned": [
+     "Java Security › Symptom",
+     "XPath Injection Prevention › Bind Values to Fixed Expressions",
+     "Java Security › Example"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1306,
+    "returned": [
+     "[keyword] XPath Injection Prevention › Introduction",
+     "[keyword] XPath Injection Prevention › Limit Exposure and Review Usage",
+     "[keyword] Injection Prevention › Application Types"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1707,
+    "returned": [
+     "Java Security › Symptom",
+     "XPath Injection Prevention › Bind Values to Fixed Expressions",
+     "Java Security › Example"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1719,
+    "returned": [
+     "XPath Injection Prevention › Limit Exposure and Review Usage",
+     "XPath Injection Prevention › Keep Query Structure Under Application Control",
+     "Java Security › Symptom"
+    ]
+   }
+  },
+  "java/InsecureCipher": {
+   "title": "Use of a Broken or Risky Cryptographic Algorithm",
+   "cwe": "CWE-327",
+   "expect": [
+    "Cryptographic Storage"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.607,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1114,
+    "returned": [
+     "Java Security › General cryptography guidance",
+     "Secure Code Review › Cryptographic Implementation Flaws",
+     "Java Security › Encryption for storage"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1174,
+    "returned": [
+     "[keyword] Java Security › Encryption for transmission",
+     "[keyword] Transport Layer Security › Use Strong Cryptographic Hashing Algorithms",
+     "[keyword] Key Management › Algorithms and Protocols"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1178,
+    "returned": [
+     "Java Security › General cryptography guidance",
+     "[keyword] Java Security › Encryption for transmission",
+     "[keyword] Transport Layer Security › Use Strong Cryptographic Hashing Algorithms"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1111,
+    "returned": [
+     "Java Security › General cryptography guidance",
+     "Java Security › Encryption for storage",
+     "Java Security › Encryption for transmission"
+    ]
+   }
+  },
+  "java/OR": {
+   "title": "Open Redirect",
+   "cwe": "CWE-601",
+   "expect": [
+    "Unvalidated Redirects and Forwards"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.594,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2300,
+    "returned": [
+     "Unvalidated Redirects and Forwards › Safe URL Redirects",
+     "Unvalidated Redirects and Forwards › Preventing Unvalidated Redirects and Forwards",
+     "Unvalidated Redirects and Forwards › Dangerous URL Redirect Example 1"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1974,
+    "returned": [
+     "[keyword] Symfony › Open Redirection",
+     "[keyword] Laravel › Open Redirection",
+     "[keyword] Unvalidated Redirects and Forwards › Dangerous URL Redirect Example 2"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2140,
+    "returned": [
+     "Unvalidated Redirects and Forwards › Safe URL Redirects",
+     "[keyword] Symfony › Open Redirection",
+     "[keyword] Laravel › Open Redirection"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2140,
+    "returned": [
+     "Unvalidated Redirects and Forwards › Safe URL Redirects",
+     "[keyword] Symfony › Open Redirection",
+     "[keyword] Laravel › Open Redirection"
+    ]
+   }
+  },
+  "java/LogInjection": {
+   "title": "Log Forging",
+   "cwe": "CWE-117",
+   "expect": [
+    "Logging",
+    "Application Logging Vocabulary"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.589,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1648,
+    "returned": [
+     "Java Security › How to prevent",
+     "Java Security › Example using Log4j Core 2",
+     "Java Security › Example using Logback"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 866,
+    "returned": [
+     "[keyword] Java Security › General advice to prevent Injection",
+     "[keyword] Logging › Accountability",
+     "[keyword] Java Security › How to prevent"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1263,
+    "returned": [
+     "Java Security › How to prevent",
+     "[keyword] Java Security › General advice to prevent Injection",
+     "[keyword] Logging › Accountability"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1115,
+    "returned": [
+     "Java Security › How to prevent",
+     "[keyword] Java Security › How to prevent",
+     "[keyword] Java Security › Symptom"
+    ]
+   }
+  },
+  "csharp/Sqli": {
+   "title": "SQL Injection",
+   "cwe": "CWE-89",
+   "expect": [
+    "SQL Injection Prevention",
+    "Query Parameterization",
+    "DotNet Security",
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.742,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1767,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Safe C\\# .NET Prepared Statement Example",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1890,
+    "returned": [
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] GraphQL › Common Attacks",
+     "[keyword] Injection Prevention › Other Injection Cheatsheets"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1767,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Safe C\\# .NET Prepared Statement Example",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2097,
+    "returned": [
+     "SQL Injection Prevention › Safe C\\# .NET Prepared Statement Example",
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "DotNet Security › SQL Injection"
+    ]
+   }
+  },
+  "csharp/XSS": {
+   "title": "Cross-site Scripting (XSS)",
+   "cwe": "CWE-79",
+   "expect": [
+    "Cross Site Scripting Prevention",
+    "DotNet Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.729,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1544,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "Cross Site Scripting Prevention › Problem 1 - Encoding for specific context not satisfactory for all URI paths",
+     "Cross Site Scripting Prevention › Related Articles"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1166,
+    "returned": [
+     "[keyword] Browser Extension Security Vulnerabilities › Mitigation: Cross-Site Scripting (XSS)",
+     "[keyword] DOM based XSS Prevention › RULE \\#7 - Fixing DOM Cross-site Scripting Vulnerabilities",
+     "[keyword] Browser Extension Security Vulnerabilities › Vulnerability: Cross-Site Scripting (XSS)"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1544,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "Cross Site Scripting Prevention › Problem 1 - Encoding for specific context not satisfactory for all URI paths",
+     "Cross Site Scripting Prevention › Related Articles"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1483,
+    "returned": [
+     "Cross Site Scripting Prevention › Problem 3 - Interceptors not effective against DOM-based XSS",
+     "Cross Site Scripting Prevention › Related Articles",
+     "Cross Site Scripting Prevention › Common Anti-patterns: Ineffective Approaches to Avoid"
+    ]
+   }
+  },
+  "php/Sqli": {
+   "title": "SQL Injection",
+   "cwe": "CWE-89",
+   "expect": [
+    "SQL Injection Prevention",
+    "Query Parameterization",
+    "Injection Prevention",
+    "Laravel",
+    "Symfony"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.712,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1620,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Defense Option 1: Prepared Statements (with Parameterized Queries)"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2369,
+    "returned": [
+     "[keyword] OS Command Injection Defense › Argument Injection",
+     "[keyword] Laravel › Raw Query SQL Injection",
+     "[keyword] OS Command Injection Defense › Introduction"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1620,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Defense Option 1: Prepared Statements (with Parameterized Queries)"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1801,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Defense Option 1: Prepared Statements (with Parameterized Queries)",
+     "SQL Injection Prevention › What Is a SQL Injection Attack?"
+    ]
+   }
+  },
+  "php/UnrestrictedFileUpload": {
+   "title": "Unrestricted Upload of File with Dangerous Type",
+   "cwe": "CWE-434",
+   "expect": [
+    "File Upload"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.77,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2038,
+    "returned": [
+     "File Upload › Content-Type Validation",
+     "Symfony › Validate file type and size",
+     "File Upload › Extension Validation"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1799,
+    "returned": [
+     "[keyword] Laravel › Do Not Rely On User Input To Dictate Filenames or Path",
+     "[keyword] Laravel › Always Validate File Type and Size",
+     "[keyword] File Upload › Block Extensions"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2038,
+    "returned": [
+     "File Upload › Content-Type Validation",
+     "Symfony › Validate file type and size",
+     "File Upload › Extension Validation"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2036,
+    "returned": [
+     "File Upload › Content-Type Validation",
+     "Symfony › Validate file type and size",
+     "File Upload › File Content Validation"
+    ]
+   }
+  },
+  "go/Sqli": {
+   "title": "SQL Injection",
+   "cwe": "CWE-89",
+   "expect": [
+    "SQL Injection Prevention",
+    "Query Parameterization",
+    "Injection Prevention"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.665,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1220,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Primary Defenses"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2168,
+    "returned": [
+     "[keyword] gRPC Security › Prevent Injection Attacks",
+     "[keyword] OS Command Injection Defense › Introduction",
+     "[keyword] GraphQL › Common Attacks"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1220,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "Injection Prevention › Defense Option 4: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Primary Defenses"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1801,
+    "returned": [
+     "SQL Injection Prevention › Defense Option 4: STRONGLY DISCOURAGED: Escaping All User-Supplied Input",
+     "SQL Injection Prevention › Defense Option 1: Prepared Statements (with Parameterized Queries)",
+     "SQL Injection Prevention › What Is a SQL Injection Attack?"
+    ]
+   }
+  },
+  "go/InsecureTLSConfig": {
+   "title": "Insecure TLS Configuration",
+   "cwe": "CWE-327",
+   "expect": [
+    "Transport Layer Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.596,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1410,
+    "returned": [
+     "gRPC Security › Go",
+     "Transport Layer Security › Only Support Strong Protocols",
+     "gRPC Security › Always Use TLS in Production"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1345,
+    "returned": [
+     "[keyword] Transport Layer Security › Patch Cryptographic Libraries",
+     "[keyword] Virtual Patching › Testing Steps",
+     "[keyword] gRPC Security › Implement Mutual TLS (mTLS) for Service-to-Service Communication"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 880,
+    "returned": [
+     "gRPC Security › Go",
+     "[keyword] Transport Layer Security › Patch Cryptographic Libraries",
+     "[keyword] Virtual Patching › Testing Steps"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1410,
+    "returned": [
+     "gRPC Security › Go",
+     "Transport Layer Security › Only Support Strong Protocols",
+     "gRPC Security › Always Use TLS in Production"
+    ]
+   }
+  },
+  "ruby/MassAssignment": {
+   "title": "Mass Assignment",
+   "cwe": "CWE-915",
+   "expect": [
+    "Mass Assignment",
+    "Ruby on Rails"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.524,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 1506,
+    "returned": [
+     "Mass Assignment › Exploitability",
+     "Mass Assignment › Example",
+     "Mass Assignment › Definition"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1351,
+    "returned": [
+     "[keyword] Mass Assignment › Alternative Names",
+     "[keyword] REST Assessment › Mass Assignment in JSON APIs",
+     "[keyword] Mass Assignment › GitHub case study"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1314,
+    "returned": [
+     "Mass Assignment › Exploitability",
+     "[keyword] Mass Assignment › Alternative Names",
+     "[keyword] REST Assessment › Mass Assignment in JSON APIs"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 793,
+    "returned": [
+     "Mass Assignment › Exploitability",
+     "[keyword] Mass Assignment › Alternative Names",
+     "[keyword] Mass Assignment › GitHub case study"
+    ]
+   }
+  },
+  "java/SessionFixation": {
+   "title": "Session Fixation",
+   "cwe": "CWE-384",
+   "expect": [
+    "Session Management"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.66,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2386,
+    "returned": [
+     "Session Management › Renew the Session ID After Any Privilege Level Change",
+     "Session Management › Built-in Session Management Implementations",
+     "Session Management › Session Expiration"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2222,
+    "returned": [
+     "[keyword] Session Management › Transport Layer Security",
+     "[keyword] Session Management › Initial Login Timeout",
+     "[keyword] Session Management › Session Management WAF Protections"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2386,
+    "returned": [
+     "Session Management › Renew the Session ID After Any Privilege Level Change",
+     "Session Management › Built-in Session Management Implementations",
+     "Session Management › Session Expiration"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2386,
+    "returned": [
+     "Session Management › Renew the Session ID After Any Privilege Level Change",
+     "Session Management › Built-in Session Management Implementations",
+     "Session Management › Session Expiration"
+    ]
+   }
+  },
+  "java/Idor": {
+   "title": "Authorization Bypass Through User-Controlled Key",
+   "cwe": "CWE-639",
+   "expect": [
+    "Insecure Direct Object Reference Prevention",
+    "Authorization"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.602,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2116,
+    "returned": [
+     "Authorization › Thoroughly Review the Authorization Logic of Chosen Tools and Technologies, Implementing Custom Logic if Necessary",
+     "Transaction Authorization › 2.2 Authorization method should be enforced server-side",
+     "Transaction Authorization › 2.4 Application should prevent authorization credentials brute-forcing"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1319,
+    "returned": [
+     "[keyword] Web Cache Security › 6. Protect Application-Level Caches",
+     "[keyword] XSS Filter Evasion › Stored XSS",
+     "[keyword] LDAP Injection Prevention › Enabling Bind Authentication"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1698,
+    "returned": [
+     "Authorization › Thoroughly Review the Authorization Logic of Chosen Tools and Technologies, Implementing Custom Logic if Necessary",
+     "[keyword] Web Cache Security › 6. Protect Application-Level Caches",
+     "[keyword] XSS Filter Evasion › Stored XSS"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1698,
+    "returned": [
+     "Authorization › Thoroughly Review the Authorization Logic of Chosen Tools and Technologies, Implementing Custom Logic if Necessary",
+     "[keyword] Web Cache Security › 6. Protect Application-Level Caches",
+     "[keyword] XSS Filter Evasion › Stored XSS"
+    ]
+   }
+  },
+  "python/CleartextTransmission": {
+   "title": "Cleartext Transmission of Sensitive Information",
+   "cwe": "CWE-319",
+   "expect": [
+    "Transport Layer Security",
+    "HTTP Strict Transport Security"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.525,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2042,
+    "returned": [
+     "LLM Prompt Injection Prevention › Input Validation and Sanitization",
+     "Deserialization › Clear-box Review",
+     "AI Agent Security › Data Classification and Handling"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1214,
+    "returned": [
+     "[keyword] Top 10 Automotive Security Vulnerabilities › 8. Data Leakage and Privacy Violations",
+     "[keyword] Mobile Application Security › 1. UI Data Masking",
+     "[keyword] Deserialization › Prevent Data Leakage and Trusted Field Clobbering"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1225,
+    "returned": [
+     "LLM Prompt Injection Prevention › Input Validation and Sanitization",
+     "[keyword] Top 10 Automotive Security Vulnerabilities › 8. Data Leakage and Privacy Violations",
+     "[keyword] Mobile Application Security › 1. UI Data Masking"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1225,
+    "returned": [
+     "LLM Prompt Injection Prevention › Input Validation and Sanitization",
+     "[keyword] Top 10 Automotive Security Vulnerabilities › 8. Data Leakage and Privacy Violations",
+     "[keyword] Mobile Application Security › 1. UI Data Masking"
+    ]
+   }
+  },
+  "java/InsecureRandom": {
+   "title": "Use of Insufficiently Random Values",
+   "cwe": "CWE-330",
+   "expect": [
+    "Cryptographic Storage"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.49,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2367,
+    "returned": [
+     "Cryptographic Storage › Secure Random Number Generation",
+     "Cryptographic Storage › UUIDs and GUIDs",
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1272,
+    "returned": [
+     "[keyword] Password Storage › Pre-hashing peppers",
+     "[keyword] Insecure Direct Object Reference Prevention › Mitigation",
+     "[keyword] Java Security › How to prevent"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1973,
+    "returned": [
+     "Cryptographic Storage › Secure Random Number Generation",
+     "[keyword] Password Storage › Pre-hashing peppers",
+     "[keyword] Insecure Direct Object Reference Prevention › Mitigation"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1973,
+    "returned": [
+     "Cryptographic Storage › Secure Random Number Generation",
+     "[keyword] Password Storage › Pre-hashing peppers",
+     "[keyword] Insecure Direct Object Reference Prevention › Mitigation"
+    ]
+   }
+  },
+  "javascript/Clickjacking": {
+   "title": "Improper Restriction of Rendered UI Layers or Frames (Clickjacking)",
+   "cwe": "CWE-1021",
+   "expect": [
+    "Clickjacking Defense",
+    "Content Security Policy",
+    "HTTP Security Response Headers"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.666,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2211,
+    "returned": [
+     "Clickjacking Defense › Restricted zones",
+     "Clickjacking Defense › Best-for-now Legacy Browser Frame Breaking Script",
+     "Clickjacking Defense › X-Frame-Options Header Types"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1970,
+    "returned": [
+     "[keyword] Cross Site Scripting Prevention › Problem 2 - Interceptor approach can lead to broken rendering caused by improper or double encoding",
+     "[keyword] Cross Site Scripting Prevention › Problem 1 - Encoding for specific context not satisfactory for all URI paths",
+     "[keyword] XML Security › Ranges"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2211,
+    "returned": [
+     "Clickjacking Defense › Restricted zones",
+     "Clickjacking Defense › Best-for-now Legacy Browser Frame Breaking Script",
+     "Clickjacking Defense › X-Frame-Options Header Types"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 1.0,
+    "sections": 3,
+    "chars": 2211,
+    "returned": [
+     "Clickjacking Defense › Restricted zones",
+     "Clickjacking Defense › Best-for-now Legacy Browser Frame Breaking Script",
+     "Clickjacking Defense › X-Frame-Options Header Types"
+    ]
+   }
+  },
+  "java/ErrorMessageExposure": {
+   "title": "Generation of Error Message Containing Sensitive Information",
+   "cwe": "CWE-209",
+   "expect": [
+    "Error Handling"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.59,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1108,
+    "returned": [
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering",
+     "Java Security › Injection Prevention in Java",
+     "Java Security › Symptom"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1697,
+    "returned": [
+     "[keyword] Web Service Security › Message Confidentiality",
+     "[keyword] Bean Validation › Error Messages",
+     "[keyword] SAML Security › Validate Message Confidentiality and Integrity"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1686,
+    "returned": [
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering",
+     "[keyword] Web Service Security › Message Confidentiality",
+     "[keyword] Bean Validation › Error Messages"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1686,
+    "returned": [
+     "Deserialization › Prevent Data Leakage and Trusted Field Clobbering",
+     "[keyword] Web Service Security › Message Confidentiality",
+     "[keyword] Bean Validation › Error Messages"
+    ]
+   }
+  },
+  "javascript/HardcodedNonCryptoSecret": {
+   "title": "Hardcoded Non-Cryptographic Secret",
+   "cwe": "CWE-547",
+   "expect": [
+    "Secrets Management"
+   ],
+   "dedicated": true,
+   "best_similarity": 0.637,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1634,
+    "returned": [
+     "NodeJS Security › Run security linters",
+     "Web Frontend Security › Never transmit secrets to the client",
+     "DOM based XSS Prevention › N-Levels of Encoding"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1825,
+    "returned": [
+     "[keyword] Secrets Management › 5.1 Injection of Secrets (file, in-memory)",
+     "[keyword] Django REST Framework (DRF) › Secret Management",
+     "[keyword] WebSocket Security › WebSocket Protocol Configuration"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 1634,
+    "returned": [
+     "NodeJS Security › Run security linters",
+     "Web Frontend Security › Never transmit secrets to the client",
+     "DOM based XSS Prevention › N-Levels of Encoding"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1148,
+    "returned": [
+     "Web Frontend Security › Never transmit secrets to the client",
+     "[keyword] Secrets Management › 5.1 Injection of Secrets (file, in-memory)",
+     "[keyword] Django REST Framework (DRF) › Secret Management"
+    ]
+   }
+  },
+  "python/PT": {
+   "title": "Path Traversal",
+   "cwe": "CWE-23",
+   "expect": [
+    "Input Validation",
+    "File Upload"
+   ],
+   "dedicated": false,
+   "best_similarity": 0.307,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 0,
+    "chars": 0,
+    "returned": []
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 0,
+    "chars": 0,
+    "returned": []
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 0,
+    "chars": 0,
+    "returned": []
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 0,
+    "chars": 0,
+    "returned": []
+   }
+  },
+  "java/PT": {
+   "title": "Path Traversal",
+   "cwe": "CWE-23",
+   "expect": [
+    "Input Validation",
+    "File Upload"
+   ],
+   "dedicated": false,
+   "best_similarity": 0.387,
+   "similarity only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2285,
+    "returned": [
+     "Insecure Direct Object Reference Prevention › Java and Spring Boot example",
+     "Unvalidated Redirects and Forwards › Dangerous Forward Example",
+     "XML External Entity Prevention › DOM: DocumentBuilderFactory"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2010,
+    "returned": [
+     "[keyword] Symfony › Directory Traversal",
+     "[keyword] NodeJS Security › Examples",
+     "[keyword] XSS Filter Evasion › Protocol Resolution Bypass"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2299,
+    "returned": [
+     "Insecure Direct Object Reference Prevention › Java and Spring Boot example",
+     "[keyword] Symfony › Directory Traversal",
+     "[keyword] NodeJS Security › Examples"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2268,
+    "returned": [
+     "Deserialization › Java",
+     "[keyword] Symfony › Directory Traversal",
+     "[keyword] Laravel › Path Traversal"
+    ]
+   }
+  },
+  "python/TarSlip": {
+   "title": "Arbitrary File Write via Archive Extraction (Tar Slip)",
+   "cwe": "CWE-22",
+   "expect": [
+    "File Upload",
+    "Input Validation"
+   ],
+   "dedicated": false,
+   "best_similarity": 0.441,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 2208,
+    "returned": [
+     "File Upload › Filename Safety",
+     "Application Logging Vocabulary › upload_stored[filename,from,to]",
+     "File Upload › File Content Validation"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2239,
+    "returned": [
+     "[keyword] Symfony › Directory Traversal",
+     "[keyword] Laravel › Path Traversal",
+     "[keyword] Application Logging Vocabulary › sensitive_delete:[userid,file|object]"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2362,
+    "returned": [
+     "File Upload › Filename Safety",
+     "[keyword] Symfony › Directory Traversal",
+     "[keyword] Laravel › Path Traversal"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2186,
+    "returned": [
+     "Application Logging Vocabulary › upload_stored[filename,from,to]",
+     "[keyword] Business Logic Security › Use Database Transactions and Locks",
+     "[keyword] NPM Security best practices › 1) Avoid publishing secrets to the npm registry"
+    ]
+   }
+  },
+  "python/Ssti": {
+   "title": "Server-Side Template Injection",
+   "cwe": "CWE-1336",
+   "expect": [
+    "Injection Prevention",
+    "Input Validation"
+   ],
+   "dedicated": false,
+   "best_similarity": 0.445,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1822,
+    "returned": [
+     "Django Security › Cross Site Scripting (XSS)",
+     "Cross Site Scripting Prevention › Framework Security",
+     "Injection Prevention › Rule \\#1 (Perform proper input validation)"
+    ]
+   },
+   "keyword only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 594,
+    "returned": [
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Django REST Framework (DRF) › What is a view in Django?",
+     "[keyword] Secure Code Review › Input Validation Vulnerabilities"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1212,
+    "returned": [
+     "Django Security › Cross Site Scripting (XSS)",
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Django REST Framework (DRF) › What is a view in Django?"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 663,
+    "returned": [
+     "Injection Prevention › Rule \\#2 (Use a safe API)",
+     "[keyword] Injection Prevention › Application Types",
+     "[keyword] Django REST Framework (DRF) › What is a view in Django?"
+    ]
+   }
+  },
+  "php/FileInclusion": {
+   "title": "File Inclusion",
+   "cwe": "CWE-98",
+   "expect": [
+    "Input Validation",
+    "PHP Configuration"
+   ],
+   "dedicated": false,
+   "best_similarity": 0.509,
+   "similarity only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2007,
+    "returned": [
+     "Symfony › Command Injection",
+     "PHP Configuration › PHP executable handling",
+     "File Upload › Extension Validation"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2254,
+    "returned": [
+     "[keyword] Laravel › Do Not Rely On User Input To Dictate Filenames or Path",
+     "[keyword] Laravel › Path Traversal",
+     "[keyword] Input Validation › Upload Storage"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2364,
+    "returned": [
+     "Symfony › Command Injection",
+     "[keyword] Laravel › Do Not Rely On User Input To Dictate Filenames or Path",
+     "[keyword] Laravel › Path Traversal"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2306,
+    "returned": [
+     "File Upload › Extension Validation",
+     "[keyword] Laravel › Do Not Rely On User Input To Dictate Filenames or Path",
+     "[keyword] Symfony › Validate file type and size"
+    ]
+   }
+  },
+  "cpp/BufferOverflow": {
+   "title": "Buffer Overflow",
+   "cwe": "CWE-120",
+   "expect": [
+    "C-Based Toolchain Hardening",
+    "Input Validation"
+   ],
+   "dedicated": false,
+   "best_similarity": 0.423,
+   "similarity only": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.6666666666666666,
+    "sections": 3,
+    "chars": 1662,
+    "returned": [
+     "C-Based Toolchain Hardening › GCC/Binutils",
+     "Secure Code Review › Memory Safety",
+     "C-Based Toolchain Hardening › Warning Suppression"
+    ]
+   },
+   "keyword only": {
+    "top": false,
+    "any": false,
+    "on_topic": 0.0,
+    "sections": 3,
+    "chars": 2304,
+    "returned": [
+     "[keyword] Denial of Service › Input validation",
+     "[keyword] Denial of Service › Software Design Concepts",
+     "[keyword] XML Security › Handling coercive parsing"
+    ]
+   },
+   "similarity + keyword fallback (service default)": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 2386,
+    "returned": [
+     "C-Based Toolchain Hardening › GCC/Binutils",
+     "[keyword] Denial of Service › Input validation",
+     "[keyword] Denial of Service › Software Design Concepts"
+    ]
+   },
+   "default, without the CWE name in the query": {
+    "top": true,
+    "any": true,
+    "on_topic": 0.3333333333333333,
+    "sections": 3,
+    "chars": 1512,
+    "returned": [
+     "C-Based Toolchain Hardening › GCC/Binutils",
+     "[keyword] XML External Entity Prevention › libxerces-c",
+     "[keyword] Injection Prevention › Application Types"
+    ]
+   }
+  }
+ }
+}

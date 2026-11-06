@@ -1,0 +1,118 @@
+# Pipeline through candidate validation, followed by final Azure evidence publishing.
+name: PyGoat - Pipeline
+
+on:
+  push:
+    branches:
+      - 'feat/expand-app-support'
+    paths:
+      - 'target-apps/PyGoat/**'
+      - '.github/workflows/pygoat-*.yml'
+      - 'scripts/pygoat-smoke.py'
+      - '.github/workflows/publish-dashboard-results.yml'
+      - 'scripts/dashboard_evidence.py'
+      - 'scripts/candidate_rescan.py'
+      - '.github/workflows/candidate-rescan.yml'
+      - 'normaliser/**'
+      - 'triage/**'
+      - 'agent/candidate_source.py'
+  workflow_dispatch:
+    inputs:
+      scan_kind:
+        description: Initial scan, or a new scan after reviewed fixes were applied
+        type: choice
+        options: [initial, after_fix]
+        default: initial
+      after_fix_of:
+        description: Original Actions run ID (required only for an after-fix run)
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  issues: write
+  packages: read   # must cover pygoat-fix.yml's own packages:read grant (RAG image)
+
+jobs:
+  baseline:
+    name: PyGoat - Validate original application
+    uses: ./.github/workflows/pygoat-baseline.yml
+
+  scan:
+    name: PyGoat - Scan vulnerabilities
+    needs: baseline
+    uses: ./.github/workflows/pygoat-scan.yml
+    secrets: inherit
+
+  test-unit:
+    name: PyGoat - Test ASVA components
+    needs: baseline
+    uses: ./.github/workflows/pygoat-test.yml
+    with:
+      stage: unit
+
+  fix:
+    name: PyGoat - Normalise, triage and generate fixes
+    needs: [scan, test-unit]
+    if: inputs.scan_kind != 'after_fix'
+    uses: ./.github/workflows/pygoat-fix.yml
+    with:
+      use_artifacts: true
+      source_branch: ${{ github.ref_name }}
+      source_sha: ${{ github.sha }}
+    secrets: inherit
+
+  pr-check:
+    name: PyGoat - Validate fix candidates
+    needs: fix
+    if: always() && needs.fix.outputs.prs != '' && needs.fix.outputs.prs != '[]'
+    uses: ./.github/workflows/pygoat-pr-check.yml
+    with:
+      prs: ${{ needs.fix.outputs.prs }}
+    secrets: inherit
+
+  after-fix:
+    name: PyGoat - Scan each independent candidate
+    needs: fix
+    if: always() && needs.fix.outputs.prs != '' && needs.fix.outputs.prs != '[]'
+    uses: ./.github/workflows/candidate-rescan.yml
+    with:
+      app-code: pygoat
+      app-path: target-apps/PyGoat
+      ecosystem: pip
+      manifest: requirements.txt
+      container-file: Dockerfile.asva
+      container-mode: application
+      python-image: python:3.11-slim-bookworm
+      pip-version: 22.0.4
+      system-packages: build-essential dnsutils libpq-dev
+      prs: ${{ needs.fix.outputs.prs }}
+    secrets: inherit
+
+  pr-summary:
+    name: PyGoat - Compare options on each PR
+    needs: [fix, pr-check, after-fix]
+    if: always() && needs.fix.outputs.prs != '' && needs.fix.outputs.prs != '[]'
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    uses: ./.github/workflows/pr-summary.yml
+    with:
+      app-code: pygoat
+    secrets: inherit
+
+  publish:
+    name: PyGoat - Publish dashboard evidence
+    needs: [baseline, scan, test-unit, fix, pr-check, after-fix]
+    if: always()
+    uses: ./.github/workflows/publish-dashboard-results.yml
+    with:
+      app-code: pygoat
+      scan-kind: ${{ inputs.scan_kind || 'initial' }}
+      after-fix-of: ${{ inputs.after_fix_of || '' }}
+      outcomes: >-
+        {"baseline":"${{ needs.baseline.result }}","scan":"${{ needs.scan.result }}","unit_tests":"${{ needs.test-unit.result }}","fix":"${{ needs.fix.result }}","validate":"${{ needs.pr-check.result }}","after_fix":"${{ needs.after-fix.result }}"}
+    secrets: inherit

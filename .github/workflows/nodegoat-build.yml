@@ -1,0 +1,24 @@
+name: NodeGoat - Build and publish image
+
+on:
+  # workflow_dispatch:
+  push:
+    branches:
+      - feat/nodegoat
+      - rel/26.07
+    paths:
+      - 'target-apps/NodeGoat/Dockerfile'
+    #  - '.github/workflows/nodegoat-build.yml'
+  workflow_call:
+
+jobs:
+  oci-registry:
+    name: Build image and publish to OCI registry
+    uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@rel/26.07
+    with:
+      working-directory: target-apps/NodeGoat
+      oci-repo: dvapps
+      tag-prefix: dvng
+    secrets:
+      oci-reg-id: ${{ secrets.OCI_REG_ID }}
+      oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

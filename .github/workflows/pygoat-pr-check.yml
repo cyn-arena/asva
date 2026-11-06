@@ -1,0 +1,150 @@
+name: PyGoat - Validate fix candidates
+
+on:
+  workflow_call:
+    inputs:
+      prs:
+        description: JSON array of generated candidates including their immutable SHA
+        type: string
+        required: true
+    secrets:
+      GHPAT_ASVA_GITOPS:
+        required: false
+      SNYK_TOKEN:
+        required: false
+      SNYK_ORG:
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  pr-check:
+    name: Validate candidate (${{ matrix.batch_id }})
+    if: inputs.prs != '' && inputs.prs != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.prs) }}
+    env:
+      ASVA_APP_PATH: ${{ github.workspace }}/candidate-source/target-apps/PyGoat
+      ASVA_CANDIDATE_SHA: ${{ matrix.sha }}
+      BATCH_ID: ${{ matrix.batch_id }}
+      CANDIDATE_PR: ${{ matrix.pr_url }}
+      COMPOSE_PROJECT_NAME: asva-pygoat-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout current validation tooling
+        uses: actions/checkout@v4
+
+      - name: Checkout exact candidate source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.sha }}
+          path: candidate-source
+          persist-credentials: false
+
+      - name: Record actual candidate commit
+        id: meta
+        run: |
+          python3 -m agent.candidate_source --app-path "$ASVA_APP_PATH" --sha "$ASVA_CANDIDATE_SHA"
+          echo "sha=$(git -C candidate-source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Download fix evidence from this run
+        uses: actions/download-artifact@v4
+        with:
+          name: pygoat-fix-output
+          path: asva-results/fix
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The PR comment step imports gitops (python-dotenv).
+      - name: Install validation dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build and start temporary candidate containers
+        id: start
+        working-directory: candidate-source/target-apps/PyGoat
+        run: docker compose -f compose.asva.yml up -d --build --wait --wait-timeout 120
+
+      - name: Wait for HTTP readiness
+        id: wait
+        run: |
+          timeout 90s bash -c 'until curl -sf -o /dev/null http://127.0.0.1:8001/login/; do sleep 2; done'
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+
+      - name: Test candidate functionality
+        id: smoke
+        if: always() && steps.wait.outputs.ready == 'true'
+        env:
+          SOURCE_SHA: ${{ steps.meta.outputs.sha }}
+        run: |
+          mkdir -p asva-results/candidate
+          python scripts/pygoat-smoke.py --output asva-results/candidate/smoke.json
+
+      - name: Record candidate validation JSON for the dashboard
+        if: always()
+        env:
+          CHECKED_SHA: ${{ steps.meta.outputs.sha || matrix.sha }}
+          APP_STARTED: ${{ steps.wait.outputs.ready == 'true' }}
+          BUILD_RESULT: ${{ steps.start.outcome }}
+          SMOKE_RESULT: ${{ steps.smoke.outcome }}
+        run: |
+          python scripts/dashboard_evidence.py validate --app pygoat \
+            --batch-id "$BATCH_ID" --pr-url "$CANDIDATE_PR" --sha "$CHECKED_SHA" \
+            --started "$APP_STARTED" --build-result "$BUILD_RESULT" --smoke-result "$SMOKE_RESULT" \
+            --smoke-json asva-results/candidate/smoke.json \
+            --output "asva-results/candidate/validation/$BATCH_ID.json"
+
+      # Same reviewer view as NodeGoat (comment, draft on failure), rendered from the validation
+      # JSON above so the PR and the dashboard show the same checks.
+      - name: Post pre-merge result on the PR
+        id: comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS || github.token }}
+          CHECKED_SHA: ${{ steps.meta.outputs.sha || matrix.sha }}
+        run: |
+          validation="asva-results/candidate/validation/$BATCH_ID.json"
+          if [ ! -f "$validation" ]; then
+            echo "::error::No validation JSON was recorded, so no result was posted on the PR."
+            exit 1
+          fi
+          python -m gitops.post_pr_check_comment --validation-json "$validation" \
+            --pr "$CANDIDATE_PR" --sha "$CHECKED_SHA" --execute
+
+      - name: Collect candidate logs and container status
+        if: always()
+        working-directory: candidate-source/target-apps/PyGoat
+        run: |
+          mkdir -p ../../../asva-results/candidate
+          docker compose -f compose.asva.yml logs --no-color > ../../../asva-results/candidate/containers.log 2>&1
+          docker compose -f compose.asva.yml ps -a > ../../../asva-results/candidate/containers.txt
+
+      - name: Save validation evidence even after failures
+        id: uploaded
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pygoat-validation-${{ matrix.batch_id }}
+          path: asva-results/candidate/
+          retention-days: 14
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Link candidate runtime evidence for verification
+        if: always() && steps.uploaded.outputs.artifact-url != ''
+        env:
+          EVIDENCE_URL: ${{ steps.uploaded.outputs.artifact-url }}
+        run: echo "[Download validation and container logs for $BATCH_ID]($EVIDENCE_URL)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove temporary candidate containers and database
+        if: always()
+        working-directory: candidate-source/target-apps/PyGoat
+        run: docker compose -f compose.asva.yml down -v

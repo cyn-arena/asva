@@ -1,0 +1,359 @@
+{
+ "vulns": [
+  {
+   "id": "GHSA-5v2h-r2cx-5xgj",
+   "summary": "Inefficient Regular Expression Complexity in marked",
+   "aliases": [
+    "CVE-2022-21681"
+   ],
+   "modified": "2026-09-10T03:49:10.576912241Z",
+   "published": "2022-01-14T21:04:46Z",
+   "affected": [
+    {
+     "package": {
+      "name": "marked",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/marked"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "4.0.10"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-5v2h-r2cx-5xgj/GHSA-5v2h-r2cx-5xgj.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "WEB",
+     "url": "https://github.com/markedjs/marked/security/advisories/GHSA-5v2h-r2cx-5xgj"
+    },
+    {
+     "type": "ADVISORY",
+     "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21681"
+    }
+   ],
+   "database_specific": {
+    "github_reviewed": true,
+    "github_reviewed_at": "2022-01-14T19:57:17Z",
+    "nvd_published_at": "2022-01-14T17:15:00Z",
+    "cwe_ids": [
+     "CWE-1333"
+    ],
+    "severity": "HIGH"
+   },
+   "severity": [
+    {
+     "type": "CVSS_V3",
+     "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+   ]
+  },
+  {
+   "id": "GHSA-7px7-7xjx-hxm8",
+   "summary": "Marked vulnerable to XSS from data URIs",
+   "aliases": [
+    "CVE-2017-1000427"
+   ],
+   "modified": "2023-11-08T03:58:46.365782Z",
+   "published": "2018-01-04T21:04:19Z",
+   "affected": [
+    {
+     "package": {
+      "name": "marked",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/marked"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "0.3.7"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2018/01/GHSA-7px7-7xjx-hxm8/GHSA-7px7-7xjx-hxm8.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "ADVISORY",
+     "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-1000427"
+    },
+    {
+     "type": "ADVISORY",
+     "url": "https://github.com/advisories/GHSA-7px7-7xjx-hxm8"
+    }
+   ],
+   "database_specific": {
+    "severity": "MODERATE",
+    "github_reviewed": true,
+    "github_reviewed_at": "2020-06-16T21:23:14Z",
+    "nvd_published_at": null,
+    "cwe_ids": [
+     "CWE-79"
+    ]
+   },
+   "severity": [
+    {
+     "type": "CVSS_V3",
+     "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+   ]
+  },
+  {
+   "id": "GHSA-p9wx-2529-fp83",
+   "summary": "Marked allows Regular Expression Denial of Service (ReDoS) attacks",
+   "aliases": [
+    "CVE-2018-25110"
+   ],
+   "modified": "2025-05-27T15:27:40.131270Z",
+   "published": "2025-05-23T15:31:16Z",
+   "affected": [
+    {
+     "package": {
+      "name": "marked",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/marked"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "0.3.17"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/05/GHSA-p9wx-2529-fp83/GHSA-p9wx-2529-fp83.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "ADVISORY",
+     "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-25110"
+    },
+    {
+     "type": "WEB",
+     "url": "https://github.com/markedjs/marked/issues/1070"
+    }
+   ],
+   "database_specific": {
+    "github_reviewed_at": "2025-05-27T15:03:47Z",
+    "nvd_published_at": "2025-05-23T15:15:20Z",
+    "cwe_ids": [
+     "CWE-1333"
+    ],
+    "severity": "MODERATE",
+    "github_reviewed": true
+   },
+   "severity": [
+    {
+     "type": "CVSS_V4",
+     "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N"
+    }
+   ]
+  },
+  {
+   "id": "GHSA-rrrm-qjm4-v8hf",
+   "summary": "Inefficient Regular Expression Complexity in marked",
+   "aliases": [
+    "CVE-2022-21680"
+   ],
+   "modified": "2026-09-10T03:49:11.241428213Z",
+   "published": "2022-01-14T21:04:41Z",
+   "affected": [
+    {
+     "package": {
+      "name": "marked",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/marked"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "4.0.10"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-rrrm-qjm4-v8hf/GHSA-rrrm-qjm4-v8hf.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "WEB",
+     "url": "https://github.com/markedjs/marked/security/advisories/GHSA-rrrm-qjm4-v8hf"
+    },
+    {
+     "type": "ADVISORY",
+     "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21680"
+    }
+   ],
+   "database_specific": {
+    "severity": "HIGH",
+    "github_reviewed": true,
+    "github_reviewed_at": "2022-01-14T19:56:20Z",
+    "nvd_published_at": "2022-01-14T17:15:00Z",
+    "cwe_ids": [
+     "CWE-1333",
+     "CWE-400"
+    ]
+   },
+   "severity": [
+    {
+     "type": "CVSS_V3",
+     "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+   ]
+  },
+  {
+   "id": "GHSA-vfvf-mqq8-rwqc",
+   "summary": "Sanitization bypass using HTML Entities in marked",
+   "aliases": [
+    "CVE-2016-10531"
+   ],
+   "modified": "2023-11-08T03:58:10.903030Z",
+   "published": "2019-02-18T23:58:20Z",
+   "affected": [
+    {
+     "package": {
+      "name": "marked",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/marked"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "0.3.6"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2019/02/GHSA-vfvf-mqq8-rwqc/GHSA-vfvf-mqq8-rwqc.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "ADVISORY",
+     "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10531"
+    },
+    {
+     "type": "WEB",
+     "url": "https://github.com/chjj/marked/pull/592"
+    }
+   ],
+   "database_specific": {
+    "severity": "MODERATE",
+    "github_reviewed": true,
+    "github_reviewed_at": "2020-06-16T21:57:38Z",
+    "nvd_published_at": null,
+    "cwe_ids": [
+     "CWE-79"
+    ]
+   },
+   "severity": [
+    {
+     "type": "CVSS_V3",
+     "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+   ]
+  },
+  {
+   "id": "GHSA-x5pg-88wf-qq4p",
+   "summary": "Regular Expression Denial of Service in marked",
+   "aliases": [
+    "CVE-2017-16114"
+   ],
+   "modified": "2023-11-08T03:59:05.647192Z",
+   "published": "2018-07-24T20:10:52Z",
+   "affected": [
+    {
+     "package": {
+      "name": "marked",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/marked"
+     },
+     "ranges": [
+      {
+       "type": "SEMVER",
+       "events": [
+        {
+         "introduced": "0"
+        },
+        {
+         "fixed": "0.3.9"
+        }
+       ]
+      }
+     ],
+     "database_specific": {
+      "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2018/07/GHSA-x5pg-88wf-qq4p/GHSA-x5pg-88wf-qq4p.json"
+     }
+    }
+   ],
+   "references": [
+    {
+     "type": "ADVISORY",
+     "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-16114"
+    },
+    {
+     "type": "WEB",
+     "url": "https://github.com/chjj/marked/issues/937"
+    }
+   ],
+   "database_specific": {
+    "severity": "HIGH",
+    "github_reviewed": true,
+    "github_reviewed_at": "2020-06-16T22:02:12Z",
+    "nvd_published_at": null,
+    "cwe_ids": [
+     "CWE-400"
+    ]
+   },
+   "severity": [
+    {
+     "type": "CVSS_V3",
+     "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+   ]
+  }
+ ]
+}

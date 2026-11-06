@@ -1,0 +1,83 @@
+{
+  "schema_version": "0.1",
+  "app": "nodegoat",
+  "generated_at": "2026-10-03T08:30:00Z",
+  "decisions": [
+    {
+      "finding_key": "javascript/Ssrf|app/routes/research.js|16",
+      "decision": "retry_fix",
+      "note": "Don't remove the feature. Only allow requests to the stock-quote host; check the URL against an allow-list before calling needle.get.",
+      "decided_by": "Peter",
+      "decided_at": "2026-10-03T08:10:00Z",
+      "expires_at": null,
+      "finding": {
+        "finding_type": "sast",
+        "title": "Server-Side Request Forgery (SSRF)",
+        "severity": "high",
+        "rule_id": "javascript/Ssrf",
+        "cwe": "CWE-918",
+        "cve": null,
+        "file": "app/routes/research.js",
+        "line": 16,
+        "package": null
+      }
+    },
+    {
+      "finding_key": "javascript/OR|app/routes/index.js|72",
+      "decision": "needs_manual_fix",
+      "note": "We need to decide which redirect targets are allowed. Assigned to the routes owner.",
+      "decided_by": "Peter",
+      "decided_at": "2026-10-03T08:15:00Z",
+      "expires_at": null,
+      "finding": {
+        "finding_type": "sast",
+        "title": "Open Redirect",
+        "severity": "medium",
+        "rule_id": "javascript/OR",
+        "cwe": "CWE-601",
+        "cve": null,
+        "file": "app/routes/index.js",
+        "line": 72,
+        "package": null
+      }
+    },
+    {
+      "finding_key": "CVE-2016-10531|marked@0.3.5",
+      "decision": "accepted_risk",
+      "note": "Upgrading marked breaks the memo page. Only admins can post memos. Revisit next sprint.",
+      "decided_by": "Peter",
+      "decided_at": "2026-10-03T08:20:00Z",
+      "expires_at": "2026-12-31T00:00:00Z",
+      "finding": {
+        "finding_type": "sca",
+        "title": "Cross-site Scripting (XSS) vulnerability in marked",
+        "severity": "high",
+        "rule_id": "npm:marked:20150520",
+        "cwe": null,
+        "cve": "CVE-2016-10531",
+        "file": "package.json",
+        "line": null,
+        "package": "marked@0.3.5"
+      }
+    },
+    {
+      "finding_key": "javascript/HardcodedNonCryptoSecret|config/env/development.js|6",
+      "decision": "false_positive",
+      "note": "This is the ZAP API key in the development-only config, used to debug the security regression tests. The running app never loads it.",
+      "decided_by": "Peter",
+      "decided_at": "2026-10-03T08:25:00Z",
+      "expires_at": null,
+      "finding": {
+        "finding_type": "sast",
+        "title": "Hardcoded Non-Cryptographic Secret",
+        "severity": "high",
+        "rule_id": "javascript/HardcodedNonCryptoSecret",
+        "cwe": "CWE-547",
+        "cve": null,
+        "file": "config/env/development.js",
+        "line": 6,
+        "package": null
+      }
+    }
+  ]
+}

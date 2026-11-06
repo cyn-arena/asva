@@ -1,0 +1,85 @@
+diff --git a/docs/unified-findings-format.md b/docs/unified-findings-format.md
+index 3791394..597b5d6 100644
+--- a/docs/unified-findings-format.md
++++ b/docs/unified-findings-format.md
+@@ -70,7 +70,7 @@ The two files share the same finding shape. `unified_findings.json` adds three e
+ | Field | Populated by | Description |
+ |---|---|---|
+ | `cve` | SCA, Container | CVE identifier, e.g. `"CVE-2022-23219"`. Parsed from the rule's `fullDescription.text`. `null` when no CVE is referenced. |
+-| `cwe` | SAST | CWE identifier, e.g. `"CWE-94"`. From `rule.properties.cwe[0]`. `null` for SCA and Container. |
++| `cwe` | SAST, SCA, Container | CWE identifier, e.g. `"CWE-94"`. From `rule.properties.cwe[0]` (SAST) or the first `CWE-*` entry of `rule.properties.tags` (SCA, Container). `null` when the rule names none. |
+ | `rule_id` | All | Scanner's internal rule ID. Always present. Used as fallback dedup key when no CVE/CWE exists. |
+ 
+ ---
+@@ -273,7 +273,7 @@ ascending (most urgent first). The `metadata` block summarises the whole run:
+   "has_real_score": true,
+   "identifiers": {
+     "cve": "CVE-2016-10531",
+-    "cwe": null,
++    "cwe": "CWE-79",
+     "rule_id": "npm:marked:20150520"
+   },
+   "title": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+@@ -311,7 +311,7 @@ ascending (most urgent first). The `metadata` block summarises the whole run:
+   "has_real_score": true,
+   "identifiers": {
+     "cve": "CVE-2025-15284",
+-    "cwe": null,
++    "cwe": "CWE-770",
+     "rule_id": "SNYK-JS-QS-14724253"
+   },
+   "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in qs",
+@@ -352,7 +352,7 @@ ascending (most urgent first). The `metadata` block summarises the whole run:
+   "has_real_score": true,
+   "identifiers": {
+     "cve": "CVE-2022-23219",
+-    "cwe": null,
++    "cwe": "CWE-120",
+     "rule_id": "SNYK-UBUNTU1604-GLIBC-2356812"
+   },
+   "title": "Low severity - Buffer Overflow vulnerability in glibc",
+diff --git a/normaliser/normaliser.py b/normaliser/normaliser.py
+index 2d0d45f..20a266b 100644
+--- a/normaliser/normaliser.py
++++ b/normaliser/normaliser.py
+@@ -86,13 +86,16 @@ def extract_cve(text: str | None) -> str | None:
+ 
+ def extract_cwe(rule_properties: dict) -> str | None:
+     """
+-    Return the first CWE identifier from a rule's properties.cwe list.
++    Return the first CWE identifier of a rule.
+ 
+     Snyk Code rules carry a "cwe" array, e.g. ["CWE-94"].
+-    SCA / Container rules do not have this field.
++    SCA / Container rules do not have this field; theirs is among the rule's
++    "tags", e.g. ["security", "CWE-79", "npm"].
+     """
+     cwe_list = rule_properties.get("cwe", [])
+-    return cwe_list[0] if cwe_list else None
++    if cwe_list:
++        return cwe_list[0]
++    return next((tag for tag in rule_properties.get("tags", []) if re.fullmatch(r"CWE-\d+", str(tag))), None)
+ 
+ 
+ def parse_cvss(rule_properties: dict) -> float | None:
+diff --git a/tests/unit/test_normaliser.py b/tests/unit/test_normaliser.py
+index 9dd4b62..16dfee9 100644
+--- a/tests/unit/test_normaliser.py
++++ b/tests/unit/test_normaliser.py
+@@ -62,6 +62,16 @@ def test_extract_cwe_empty_list_returns_none():
+     assert extract_cwe({"cwe": []}) is None
+ 
+ 
++def test_extract_cwe_falls_back_to_the_rule_tags():
++    # Snyk Open Source and Snyk Container put the CWE among the rule's tags
++    assert extract_cwe({"tags": ["security", "CWE-79", "npm"]}) == "CWE-79"
++    assert extract_cwe({"tags": ["security", "deb"]}) is None
++
++
++def test_extract_cwe_prefers_the_cwe_field_over_the_tags():
++    assert extract_cwe({"cwe": ["CWE-94"], "tags": ["CWE-79"]}) == "CWE-94"
++
++
+ # --------------------------------------------------------------------------------------
+ # parse_cvss
+ # --------------------------------------------------------------------------------------

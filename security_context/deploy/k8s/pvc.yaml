@@ -1,0 +1,11 @@
+# The SQLite database: CWE, OWASP passages, KEV, the NVD copy and cached lookups.
+# A full NVD copy needs roughly 1 GB; 2 Gi leaves room for growth.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: security-context-data
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi

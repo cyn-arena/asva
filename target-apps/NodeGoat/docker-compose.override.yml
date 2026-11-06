@@ -1,0 +1,6 @@
+services:
+  web:
+    environment:
+      PORT: 4000
+  mongo:
+    image: mongo:3.2

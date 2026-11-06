@@ -1,0 +1,83 @@
+name: ASVA Remediation (GitOps + secrets gate)
+
+# Runs the remediation stage: per scan cycle, create ONE fix branch, commit each fixed file
+# (one commit per file), push, and open ONE pull request into the base branch for HUMAN review.
+# ASVA never merges. GitOps uses native git + gh authenticated by the workflow's GITHUB_TOKEN.
+#
+# Triggered manually for now (workflow_dispatch) and exposed as workflow_call so the
+# scan -> normalise -> triage workflow can chain into it once those steps are wired.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: "Branch the fix PR targets (must already exist)"
+        default: feat/agent
+        required: true
+      runner:
+        description: "Runner. Use the self-hosted LLM runner (vars.ASVA_LLM_RUNNER) for the real agent run (the LLM needs local Ollama); ubuntu-latest is fine for the GitOps dry run."
+        default: ubuntu-latest
+        required: true
+  workflow_call:
+    inputs:
+      base_branch:
+        type: string
+        default: feat/agent
+        required: false
+      runner:
+        type: string
+        default: ubuntu-latest
+        required: false
+
+# Bot GITHUB_TOKEN needs write to push the branch and open the PR (no merge permission).
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  remediate:
+    # ubuntu-latest works for the GitOps dry run; switch to the self-hosted LLM runner
+    # for the real agent run, since the LLM step needs the local Ollama endpoint.
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+
+    env:
+      GH_TOKEN: ${{ github.token }}              # gh + git auth (same-repo bot token)
+      GITHUB_BASE_BRANCH: ${{ inputs.base_branch || 'feat/agent' }}
+      ASVA_FIX_PATH_PREFIX: target-apps/NodeGoat # maps app-relative finding paths into the repo
+
+    steps:
+      # Default checkout persists credentials (no persist-credentials: false), so `git push`
+      # works with the bot token.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install gitleaks (pinned + checksum-verified)
+        run: |
+          INSTALL_DIR="$HOME/.local/bin" bash scripts/install-gitleaks.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "asva-bot"
+          git config user.email "asva-bot@users.noreply.github.com"
+
+      # Runs the agent loop when present; until then, exercises the GitOps + secrets-gate
+      # path directly with a safe dry run so this workflow stays green.
+      - name: Run ASVA remediation
+        run: |
+          if [ -f agent_loop.py ]; then
+            python agent_loop.py
+          else
+            echo "::notice::agent_loop.py not present yet -- running GitOps dry run."
+            python -m gitops.run_batch --batch-dir samples/fix_batches
+          fi

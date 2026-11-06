@@ -1,0 +1,25 @@
+# ASVA build compatibility variant. Preserve the upstream Dockerfile as baseline.
+FROM python:3.11-slim-bookworm
+
+WORKDIR /app
+
+# Compile older Python dependencies against the base image's Python headers.
+# Use packages from this Debian release instead of upstream Buster version pins.
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y build-essential dnsutils libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=pygoat.asva_settings
+
+RUN python -m pip install --no-cache-dir pip==22.0.4
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /app/
+EXPOSE 8000
+
+RUN python3 /app/manage.py collectstatic --noinput
+ENTRYPOINT ["python", "/app/asva/start.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "6", "pygoat.wsgi"]

@@ -1,0 +1,154 @@
+RAG Security Context Service  http://localhost:8800  (ok)
+  CISA KEV: 2026.09.30 (2026-09-30), 1730 items
+  MITRE CWE: 4.20 (2026-04-30), 944 items
+  NVD: lazy (on demand), 0 items
+  OWASP Cheat Sheet Series: 127 cheat sheets @ 84fec22a9ed3, 3768 items
+  online lookups: on; NVD key: yes (lazy mode); Context7: yes
+Findings: NodeGoat scan run 20261013062102 @ 765e1949 (hardcoded in nodegoat_findings.json)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+ CASE 1/1   package.json   (Snyk Open Source (SCA), 26 finding(s))
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  1) Finding(s) from the scan   (SARIF → ASVA normaliser → triage batch asva_sca_765e1949)
+     [critical · CVSS 9.3] Critical severity - User Impersonation vulnerability in proxy-addr
+         proxy-addr@2.0.4  →  upgrade to express@4.16.4   (CVE-2026-90711)
+     [high · CVSS 8.8] High severity - Cross-site Scripting (XSS) vulnerability in marked
+         marked@0.3.5  →  upgrade to marked@0.3.6   (CVE-2016-10531)
+     [high · CVSS 8.7] High severity - Allocation of Resources Without Limits or Throttling
+       vulnerability in brace-expansion
+         brace-expansion@1.1.11  →  upgrade to forever@2.0.0   (CVE-2026-14257)
+     [high · CVSS 8.7] High severity - Allocation of Resources Without Limits or Throttling
+       vulnerability in brace-expansion
+         brace-expansion@1.1.11  →  upgrade to forever@2.0.0   (CVE-2026-69152)
+     … and 22 more
+
+  2) Identifiers from the scan
+     CWE: 12 distinct, from the scanner's rule tags in the SARIF file — CWE-290, CWE-79, CWE-770,
+       CWE-407, CWE-835 …
+     CVE: 24 distinct — CVE-2026-90711, CVE-2016-10531, CVE-2026-14257, CVE-2026-69152 …
+     packages: brace-expansion ×6, marked ×5, qs ×2, minimatch ×2, bson ×2, set-value ×2, proxy-
+       addr, body-parser, underscore, mongodb, ini, mixin-deep, y18n
+
+  3) What the service did   (POST /v1/context, fix_type version_upgrade)
+     OWASP search: skipped (no prose guidance for version_upgrade)
+     NVD: 24 of 24 CVEs found;  CISA KEV: 0 known exploited
+     CWE lookup: CWE-290, CWE-348, CWE-697, CWE-79, CWE-770, CWE-400, CWE-20, CWE-407 … (19 in all)
+     OSV.dev cross-check: body-parser@1.18.3, marked@0.3.5, mongodb@2.2.36, underscore@1.9.1
+     Context7: mongodb → /mongodb/node-mongodb-native (3 breaking-change notes, to the references,
+       for the migration)
+
+  4) Context for the LLM prompt   (1 item(s), 1,108 / 2,500 chars ≈ 277 tokens)   [preview; --full for the exact text]
+     [Upgrade notes]  Dependency upgrade notes (scanner targets, cross-checked with OSV.dev)
+         Dependency upgrade notes (scanner targets, cross-checked with OSV.dev):
+         - body-parser 1.18.3 → 1.20.4: fixes body-parser@1.18.3 (CVE-2024-45590); qs@6.5.2
+           (CVE-2022-24999, CVE-2025-15284). OSV.dev confirms 1 of these.
+         - express 4.16.4 → 4.16.4: already at the target, so editing package.json cannot fix proxy-
+           addr; it needs a lockfile refresh or npm overrides (reviewer decision).
+         - forever 2.0.0 → 2.0.0: already at the target, so editing package.json cannot fix brace-
+           expansion, ini, minimatch, mixin-deep, set-value, y18n; it needs a lockfile refresh or
+           npm overrides (reviewer decision).
+         - marked 0.3.5 → 0.3.18: fixes marked@0.3.5 (CVE-2016-10531, CVE-2017-1000427,
+           CVE-2017-16114 +2 more). OSV.dev confirms 4 of these.
+         - mongodb 2.2.36 → 3.1.13: MAJOR version change (2.x → 3.x), check for breaking API
+           changes. Fixes bson@1.0.9 (CVE-2019-2391, CVE-2020-7610); mongodb@2.2.36 (SNYK-JS-
+           MONGODB-473855). OSV.dev lists no fix within 2.x (first fixed in 3.1.13), so no
+           compatible version bump resolves this.
+         - underscore 1.9.1 → 1.13.8: fixes underscore@1.9.1 (CVE-2026-27601). OSV.dev confirms 1 of
+           these.
+
+  5) Upgrade data   (6 entries, as data for the agent and the PR)
+     body-parser 1.18.3  →  1.20.4   [ok]   compatible fix 1.20.4, smallest fix 1.20.3, latest 2.3.0
+     express 4.16.4  →  4.16.4   [already_at_target]   nothing to bump, latest 5.3.0
+         express is already at 4.16.4; the vulnerable packages (proxy-addr) come in through it and
+           need a lockfile refresh or npm overrides.
+     forever 2.0.0  →  2.0.0   [already_at_target]   nothing to bump, latest 4.0.3
+         forever is already at 2.0.0; the vulnerable packages (brace-expansion, ini, minimatch,
+           mixin-deep, set-value, y18n) come in through it and need a lockfile refresh or npm
+           overrides.
+     marked 0.3.5  →  0.3.18   [ok]   compatible fix 0.3.18, smallest fix 0.3.17, latest 18.1.1
+     mongodb 2.2.36  →  3.1.13   [major_change]   no compatible fix, latest 7.7.0
+         No compatible fix: OSV.dev lists no fix within 2.x (first fixed in 3.1.13). This needs a
+           migration to 3.x, not a version bump.
+     underscore 1.9.1  →  1.13.8   [ok]   compatible fix 1.13.8, smallest fix 1.13.8, latest 1.13.8
+
+  6) References for the PR / UI   (75, not sent to the LLM)
+     [NVD]    CVE-2020-7610  CVSS 9.8 CRITICAL  CWE-502
+     [NVD]    CVE-2020-7788  CVSS 9.8 CRITICAL  CWE-1321
+     [NVD]    CVE-2019-10746  CVSS 9.8 CRITICAL  CWE-88
+     [NVD]    CVE-2021-23440  CVSS 9.8 CRITICAL  CWE-843
+     [NVD]    CVE-2019-10747  CVSS 9.8 CRITICAL  CWE-400
+     … and 19 more CVEs
+     [CWE]    CWE-290: Authentication Bypass by Spoofing  OWASP Top 10: A07:2021 - Identification
+       and Authentication Failures; A07:2025 - Authentication Failures
+     [CWE]    CWE-348: Use of Less Trusted Source
+     [CWE]    CWE-697: Incorrect Comparison
+     [CWE]    CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site
+       Scripting')  OWASP Top 10: A03:2021 - Injection; A05:2025 - Injection
+     [CWE]    CWE-770: Allocation of Resources Without Limits or Throttling
+     … and 14 more CWEs
+         each with MITRE's definition and mitigations, e.g. CWE-290: This attack-focused weakness is
+           caused by incorrectly implemented authentication schemes that are subject to spoofing
+           attacks. …
+         mitigation: [Architecture and Design; Libraries or Frameworks] Use an authentication
+           framework or library such as the OWASP ESAPI Authentication feature. (from parent
+           CWE-287) …
+     [OSV]    29 advisories checked; 3 stay open after the target upgrade, e.g. body-parser:
+       CVE-2026-12590 (fixed in 1.20.6)
+     [Docs]   mongodb 2.x → 3.x: Collection.prototype.aggregate: 2.x vs 3.x Syntax  (Context7)
+             The aggregate method no longer accepts variadic arguments. Pipeline stages must now be
+               provided as an Array.
+     [Docs]   mongodb 2.x → 3.x: Collection.prototype.aggregate: Callback Return Value Change
+       (Context7)
+             In 3.x, the aggregate method returns a cursor when a callback is provided, unlike 2.x
+               which returned the resulting documents directly.
+     [Docs]   mongodb 2.x → 3.x: UpdateOne: Error on Empty Update Operation  (Context7)
+             The driver now errors if an update operation document for updateOne or updateMany is
+               empty, ensuring atomic operators are present.
+
+  7) Check: PASS
+     ✓ size 1,108 ≤ 2,500 chars
+     ✓ 24 CVE(s) enriched from NVD (CVSS, CWE)
+     ✓ 19 CWE(s) resolved for these findings
+     ✓ mongodb 2.x → 3.x flagged as a major upgrade
+     ✓ forever already at its target (bump can't fix)
+     ✓ transitive qs fixed via body-parser
+     ✓ targets confirmed independently (OSV.dev)
+     ✓ no compatible fix for mongodb, none within 2.x (OSV.dev)
+     ✓ upgrade data: compatible targets for body-parser, marked and underscore, none for mongodb
+     ✓ upgrade data: latest version of mongodb (npm registry)
+     ✓ upgrade data: smallest fixed version of marked (OSV.dev)
+
+  ────────────────────────────────────────────────────────────────────────────────────────────────
+  WITHOUT NPM   (same request, exclude_sources: [npm])
+     prompt context: 1,108 → 1,108 chars (+0);  references: 75 → 75;  upgrade entries: 6 → 6
+     context without it:
+         [Upgrade notes]  Dependency upgrade notes (scanner targets, cross-checked with OSV.dev)
+             Dependency upgrade notes (scanner targets, cross-checked with OSV.dev):
+             - body-parser 1.18.3 → 1.20.4: fixes body-parser@1.18.3 (CVE-2024-45590); qs@6.5.2
+               (CVE-2022-24999, CVE-2025-15284). OSV.dev confirms 1 of these.
+             - express 4.16.4 → 4.16.4: already at the target, so editing package.json cannot fix
+               proxy-addr; it needs a lockfile refresh or npm overrides (reviewer decision).
+             - forever 2.0.0 → 2.0.0: already at the target, so editing package.json cannot fix
+               brace-expansion, ini, minimatch, mixin-deep, set-value, y18n; it needs a lockfile
+               refresh or npm overrides (reviewer decision).
+             - marked 0.3.5 → 0.3.18: fixes marked@0.3.5 (CVE-2016-10531, CVE-2017-1000427,
+               CVE-2017-16114 +2 more). OSV.dev confirms 4 of these.
+             - mongodb 2.2.36 → 3.1.13: MAJOR version change (2.x → 3.x), check for breaking API
+               changes. Fixes bson@1.0.9 (CVE-2019-2391, CVE-2020-7610); mongodb@2.2.36 (SNYK-JS-
+               MONGODB-473855). OSV.dev lists no fix within 2.x (first fixed in 3.1.13), so no
+               compatible version bump resolves this.
+             - underscore 1.9.1 → 1.13.8: fixes underscore@1.9.1 (CVE-2026-27601). OSV.dev confirms
+               1 of these.
+     checks that no longer hold:
+         ✗ upgrade data: latest version of mongodb (npm registry)
+         upgrade entries with latest: 6 → 0
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+ SUMMARY
+════════════════════════════════════════════════════════════════════════════════════════════════════
+  File                             Type       Findings   Prompt context  References  Result
+  package.json                     sca              26      1,108 chars          75  PASS
+
+  Total prompt context: 1,108 chars (≈ 277 tokens)
+  ALL PASSED

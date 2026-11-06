@@ -1,0 +1,279 @@
+{
+  "batch_id": "asva_container_765e1949",
+  "batch_type": "container",
+  "repo_name": "asva",
+  "commit_sha": "765e1949",
+  "scan_run_id": "20261013062102",
+  "generated_at": "2026-10-13T06:21:02Z",
+  "total_files": 1,
+  "total_findings": 7,
+  "files_to_fix": [
+    {
+      "file": "docker-compose.yml",
+      "fix_type": "version_upgrade",
+      "finding_type": "container",
+      "findings": [
+        {
+          "finding_id": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2026-8376",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-PERL-16800832"
+          },
+          "title": "Medium severity - CVE-2026-8376 vulnerability in perl",
+          "summary": "Medium severity - CVE-2026-8376 vulnerability in perl",
+          "description": "(CVE-2026-8376) perl/perl-base@5.30.0-9ubuntu0.5",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "perl@5.30.0-9ubuntu0.5",
+            "display": "perl@5.30.0-9ubuntu0.5 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "perl/perl-base@5.30.0-9ubuntu0.5+esm2"
+          },
+          "ecosystem": "deb",
+          "priority": 2,
+          "covered_by": null,
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Root fix for docker-compose.yml — agent edits this file once to address all 7 finding(s)."
+        },
+        {
+          "finding_id": "c9c90b17-c860-48a3-a560-8702cc493836",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "critical",
+          "score": 9.8,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2026-42010",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-GNUTLS28-16355206"
+          },
+          "title": "Medium severity - Improper Null Termination vulnerability in gnutls28",
+          "summary": "Medium severity - Improper Null Termination vulnerability in gnutls28",
+          "description": "(CVE-2026-42010) gnutls28/libgnutls30@3.6.13-2ubuntu1.12",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "gnutls28@3.6.13-2ubuntu1.12",
+            "display": "gnutls28@3.6.13-2ubuntu1.12 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "gnutls28/libgnutls30@3.6.13-2ubuntu1.12+esm2"
+          },
+          "ecosystem": "deb",
+          "priority": 3,
+          "covered_by": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "9a4ce8d7-92c5-4ccc-8ad0-db9a0169d0c0",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "critical",
+          "score": 9.1,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2021-46848",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-LIBTASN16-3062917"
+          },
+          "title": "Low severity - Off-by-one Error vulnerability in libtasn1-6",
+          "summary": "Low severity - Off-by-one Error vulnerability in libtasn1-6",
+          "description": "(CVE-2021-46848) libtasn1-6@4.16.0-2ubuntu0.1",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "libtasn1-6@4.16.0-2ubuntu0.1",
+            "display": "libtasn1-6@4.16.0-2ubuntu0.1 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "libtasn1-6@4.16.0-2ubuntu0.1+esm1"
+          },
+          "ecosystem": "deb",
+          "priority": 5,
+          "covered_by": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "15e43151-df8a-4b24-b7ae-437bf7b3710c",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "critical",
+          "score": 9.1,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2026-13221",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-PERL-17970616"
+          },
+          "title": "Medium severity - CVE-2026-13221 vulnerability in perl",
+          "summary": "Medium severity - CVE-2026-13221 vulnerability in perl",
+          "description": "(CVE-2026-13221) perl/perl-base@5.30.0-9ubuntu0.5",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "perl@5.30.0-9ubuntu0.5",
+            "display": "perl@5.30.0-9ubuntu0.5 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "perl/perl-base@5.30.0-9ubuntu0.5+esm3"
+          },
+          "ecosystem": "deb",
+          "priority": 6,
+          "covered_by": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "58f18d16-4c58-4759-ad69-ebdff4667a1d",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "critical",
+          "score": 9.1,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2026-42496",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-PERL-16877470"
+          },
+          "title": "Medium severity - CVE-2026-42496 vulnerability in perl",
+          "summary": "Medium severity - CVE-2026-42496 vulnerability in perl",
+          "description": "(CVE-2026-42496) perl/perl-base@5.30.0-9ubuntu0.5",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "perl@5.30.0-9ubuntu0.5",
+            "display": "perl@5.30.0-9ubuntu0.5 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "perl/perl-base@5.30.0-9ubuntu0.5+esm2"
+          },
+          "ecosystem": "deb",
+          "priority": 7,
+          "covered_by": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "a60a31ef-951e-4b65-b430-bd12463206f4",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "critical",
+          "score": 9.1,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2026-33845",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-GNUTLS28-16355141"
+          },
+          "title": "Medium severity - Integer Underflow vulnerability in gnutls28",
+          "summary": "Medium severity - Integer Underflow vulnerability in gnutls28",
+          "description": "(CVE-2026-33845) gnutls28/libgnutls30@3.6.13-2ubuntu1.12",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "gnutls28@3.6.13-2ubuntu1.12",
+            "display": "gnutls28@3.6.13-2ubuntu1.12 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "gnutls28/libgnutls30@3.6.13-2ubuntu1.12+esm2"
+          },
+          "ecosystem": "deb",
+          "priority": 8,
+          "covered_by": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        },
+        {
+          "finding_id": "8e9d7df0-a157-41e8-9737-cec603729b07",
+          "finding_type": "container",
+          "scan_run_id": "20261013062102",
+          "severity": "high",
+          "score": 7.0,
+          "has_real_score": true,
+          "identifiers": {
+            "cve": "CVE-2025-68973",
+            "cwe": null,
+            "rule_id": "SNYK-UBUNTU2004-GNUPG2-14849558"
+          },
+          "title": "High severity - Out-of-bounds Write vulnerability in gnupg2",
+          "summary": "High severity - Out-of-bounds Write vulnerability in gnupg2",
+          "description": "(CVE-2025-68973) gnupg2/gpgv@2.2.19-3ubuntu2.5",
+          "location": {
+            "kind": "os_package",
+            "file": "docker-compose.yml",
+            "line": null,
+            "package": "gnupg2@2.2.19-3ubuntu2.5",
+            "display": "gnupg2@2.2.19-3ubuntu2.5 in mongo_4.4",
+            "image_name": "mongo",
+            "image_tag": "4.4"
+          },
+          "dependency": null,
+          "remediation": {
+            "type": "version_upgrade",
+            "fixable": true,
+            "upgrade_to": "gnupg2/gpgv@2.2.19-3ubuntu2.5+esm1"
+          },
+          "ecosystem": "deb",
+          "priority": 51,
+          "covered_by": "ddb82f5e-72fc-4832-a6f9-a359e907354f",
+          "is_test_file": false,
+          "fix_type": "version_upgrade",
+          "triage_reason": "Covered by root fix for docker-compose.yml — will be addressed in the same commit."
+        }
+      ],
+      "finding_count": 7
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Trimmed, simplified extract of the MITRE CWE catalogue (same structure as cwec_v4.20.xml). -->
+<Weakness_Catalog Name="CWE" Version="9.9" Date="2026-01-01" xmlns="http://cwe.mitre.org/cwe-7" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+   <Weaknesses>
+      <Weakness ID="74" Name="Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection')" Abstraction="Class" Status="Incomplete">
+         <Description>The product constructs all or part of a command using externally-influenced input.</Description>
+         <Potential_Mitigations>
+            <Mitigation>
+               <Phase>Requirements</Phase>
+               <Description>Choose languages and technologies that are not subject to these issues.</Description>
+            </Mitigation>
+            <Mitigation>
+               <Phase>Implementation</Phase>
+               <Description>Use an appropriate mix of allowlist and denylist parsing to filter code syntax from all input.</Description>
+            </Mitigation>
+         </Potential_Mitigations>
+      </Weakness>
+      <Weakness ID="94" Name="Improper Control of Generation of Code ('Code Injection')" Abstraction="Base" Status="Draft">
+         <Description>The product constructs all or part of a code segment using externally-influenced input.</Description>
+         <Related_Weaknesses>
+            <Related_Weakness Nature="ChildOf" CWE_ID="74" View_ID="1000" Ordinal="Primary"/>
+            <Related_Weakness Nature="ChildOf" CWE_ID="74" View_ID="1003" Ordinal="Primary"/>
+            <Related_Weakness Nature="ChildOf" CWE_ID="913" View_ID="1000"/>
+            <Related_Weakness Nature="CanPrecede" CWE_ID="1" View_ID="1000"/>
+         </Related_Weaknesses>
+         <Potential_Mitigations>
+            <Mitigation>
+               <Phase>Architecture and Design</Phase>
+               <Strategy>Refactoring</Strategy>
+               <Description>Refactor your program so that you do not have to dynamically generate code.</Description>
+            </Mitigation>
+            <Mitigation Mitigation_ID="MIT-5">
+               <Phase>Implementation</Phase>
+               <Strategy>Input Validation</Strategy>
+               <Description>
+                  <xhtml:p>Assume all input is malicious.</xhtml:p>
+                  <xhtml:p>Reject any input that does not strictly conform to specifications.</xhtml:p>
+               </Description>
+            </Mitigation>
+         </Potential_Mitigations>
+      </Weakness>
+      <Weakness ID="95" Name="Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')" Abstraction="Variant" Status="Incomplete">
+         <Description>The product receives input and uses it in a dynamic evaluation call such as eval.</Description>
+         <Related_Weaknesses>
+            <Related_Weakness Nature="ChildOf" CWE_ID="94" View_ID="1000" Ordinal="Primary"/>
+         </Related_Weaknesses>
+      </Weakness>
+      <Weakness ID="913" Name="Improper Control of Dynamically-Managed Code Resources" Abstraction="Class" Status="Incomplete">
+         <Description>The product does not properly restrict reading from or writing to dynamically-managed code resources.</Description>
+      </Weakness>
+      <Weakness ID="999" Name="Old Deprecated Entry" Abstraction="Base" Status="Deprecated">
+         <Description>Deprecated.</Description>
+      </Weakness>
+   </Weaknesses>
+   <Categories>
+      <Category ID="1347" Name="OWASP Top Ten 2021 Category A03:2021 - Injection" Status="Incomplete">
+         <Summary>Weaknesses in this category are related to the A03 category "Injection" in the OWASP Top Ten 2021.</Summary>
+         <Relationships>
+            <Has_Member CWE_ID="74" View_ID="1344"/>
+            <Has_Member CWE_ID="94" View_ID="1344"/>
+         </Relationships>
+      </Category>
+      <Category ID="1455" Name="OWASP Top Ten 2025 Category A05:2025 - Injection" Status="Incomplete">
+         <Relationships>
+            <Has_Member CWE_ID="94" View_ID="1450"/>
+         </Relationships>
+      </Category>
+      <Category ID="16" Name="Configuration" Status="Obsolete">
+         <Relationships>
+            <Has_Member CWE_ID="94" View_ID="699"/>
+         </Relationships>
+      </Category>
+   </Categories>
+</Weakness_Catalog>

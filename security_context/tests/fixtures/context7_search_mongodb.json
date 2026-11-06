@@ -1,0 +1,34 @@
+{
+ "results": [
+  {
+   "id": "/mongodb/node-mongodb-native",
+   "title": "MongoDB Node.js Driver",
+   "description": "The official MongoDB driver for Node.js, enabling seamless interaction with MongoDB databases from Node.js applications.",
+   "branch": "main",
+   "lastUpdateDate": "2026-09-08T12:00:12.275Z",
+   "state": "finalized",
+   "totalTokens": 147523,
+   "totalSnippets": 2161,
+   "stars": 10154,
+   "trustScore": 9.1,
+   "benchmarkScore": 73.33,
+   "versions": [
+    "v5.9.2"
+   ]
+  },
+  {
+   "id": "/websites/deepwiki_mongodb_node-mongodb-native",
+   "title": "MongoDB Node.js Driver (DeepWiki)",
+   "description": "The MongoDB Node.js Driver is the official client library that enables Node.js applications to connect to MongoDB databases, manage connections, and execute operations using a Promise-based API.",
+   "branch": "main",
+   "lastUpdateDate": "2026-09-25T09:55:40.324Z",
+   "state": "finalized",
+   "totalTokens": 42024,
+   "totalSnippets": 409,
+   "stars": -1,
+   "trustScore": 8.6,
+   "benchmarkScore": 68,
+   "versions": []
+  }
+ ]
+}

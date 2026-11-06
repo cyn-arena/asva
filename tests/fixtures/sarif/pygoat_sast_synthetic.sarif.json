@@ -1,0 +1,1116 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "SnykCode",
+          "semanticVersion": "1.0.0",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "python/Sqli",
+              "name": "Sqli",
+              "shortDescription": {
+                "text": "SQL Injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-89"
+                ],
+                "precision": "very-high"
+              }
+            },
+            {
+              "id": "python/Deserialization",
+              "name": "Deserialization",
+              "shortDescription": {
+                "text": "Deserialization of Untrusted Data"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-502"
+                ],
+                "precision": "very-high"
+              }
+            },
+            {
+              "id": "python/CommandInjection",
+              "name": "CommandInjection",
+              "shortDescription": {
+                "text": "Command Injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-78"
+                ],
+                "precision": "very-high"
+              }
+            },
+            {
+              "id": "python/CodeInjection",
+              "name": "CodeInjection",
+              "shortDescription": {
+                "text": "Code Injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-94"
+                ],
+                "precision": "very-high"
+              }
+            },
+            {
+              "id": "python/Ssrf",
+              "name": "Ssrf",
+              "shortDescription": {
+                "text": "Server-Side Request Forgery (SSRF)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-918"
+                ],
+                "precision": "very-high"
+              }
+            },
+            {
+              "id": "python/InsecureHash",
+              "name": "InsecureHash",
+              "shortDescription": {
+                "text": "Use of Password Hash With Insufficient Computational Effort"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-916"
+                ],
+                "precision": "very-high"
+              }
+            },
+            {
+              "id": "python/NoHardcodedCredentials",
+              "name": "NoHardcodedCredentials",
+              "shortDescription": {
+                "text": "Use of Hardcoded Credentials"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "markdown": "",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "python"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "cwe": [
+                  "CWE-798"
+                ],
+                "precision": "very-high"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "python/Sqli",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (SQL Injection)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 162,
+                  "endLine": 162,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/Sqli-introduction/views.py-162"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 158,
+                            "endLine": 158,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 162,
+                            "endLine": 162,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/Deserialization",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Deserialization of Untrusted Data)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 214,
+                  "endLine": 214,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/Deserialization-introduction/views.py-214"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 208,
+                            "endLine": 208,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 213,
+                            "endLine": 213,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 2,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 214,
+                            "endLine": 214,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/CommandInjection",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Command Injection)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 430,
+                  "endLine": 430,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/CommandInjection-introduction/views.py-430"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 418,
+                            "endLine": 418,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 424,
+                            "endLine": 424,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 2,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 430,
+                            "endLine": 430,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/CodeInjection",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Code Injection)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 460,
+                  "endLine": 460,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/CodeInjection-introduction/views.py-460"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 456,
+                            "endLine": 456,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 460,
+                            "endLine": 460,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/Deserialization",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Deserialization of Untrusted Data)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 560,
+                  "endLine": 560,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/Deserialization-introduction/views.py-560"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 558,
+                            "endLine": 558,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 560,
+                            "endLine": 560,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/Sqli",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (SQL Injection)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 878,
+                  "endLine": 878,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/Sqli-introduction/views.py-878"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 878,
+                            "endLine": 878,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/Ssrf",
+          "ruleIndex": 4,
+          "level": "warning",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Server-Side Request Forgery (SSRF))."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 963,
+                  "endLine": 963,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/Ssrf-introduction/views.py-963"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 961,
+                            "endLine": 961,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 963,
+                            "endLine": 963,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/InsecureHash",
+          "ruleIndex": 5,
+          "level": "warning",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Use of Password Hash With Insufficient Computational Effort)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1026,
+                  "endLine": 1026,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/InsecureHash-introduction/views.py-1026"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 1026,
+                            "endLine": 1026,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/Ssrf",
+          "ruleIndex": 4,
+          "level": "warning",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Server-Side Request Forgery (SSRF))."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/playground/A6/utility.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9,
+                  "endLine": 9,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/Ssrf-introduction/playground/A6/utility.py-9"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/apis.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 114,
+                            "endLine": 114,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/apis.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 117,
+                            "endLine": 117,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 2,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/playground/A6/utility.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 8,
+                            "endLine": 8,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 3,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/playground/A6/utility.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 9,
+                            "endLine": 9,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/CommandInjection",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Command Injection)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "challenge/views.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 50,
+                  "endLine": 50,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/CommandInjection-challenge/views.py-50"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "challenge/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 49,
+                            "endLine": 49,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "id": 1,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "challenge/views.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 50,
+                            "endLine": 50,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/CommandInjection",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Command Injection)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "introduction/lab_code/test.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 6,
+                  "endLine": 6,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/CommandInjection-introduction/lab_code/test.py-6"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "introduction/lab_code/test.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 6,
+                            "endLine": 6,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        },
+        {
+          "ruleId": "python/NoHardcodedCredentials",
+          "ruleIndex": 6,
+          "level": "note",
+          "message": {
+            "text": "Unsanitized input flows into a dangerous sink (Use of Hardcoded Credentials)."
+          },
+          "locations": [
+            {
+              "id": 0,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pygoat/settings.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 25,
+                  "startColumn": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "identity": "synthetic-python/NoHardcodedCredentials-pygoat/settings.py-25"
+          },
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "id": 0,
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "pygoat/settings.py",
+                            "uriBaseId": "%SRCROOT%"
+                          },
+                          "region": {
+                            "startLine": 25,
+                            "endLine": 25,
+                            "startColumn": 1,
+                            "endColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "isAutofixable": false,
+            "priorityScore": 700
+          }
+        }
+      ],
+      "properties": {
+        "note": "SYNTHETIC test fixture in Snyk Code SARIF format for ASVA unit/offline tests. Not a real scan: use the 'PyGoat - Scan' workflow artifact for evaluation."
+      }
+    }
+  ]
+}

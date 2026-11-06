@@ -1,0 +1,1727 @@
+{
+ "meta": {
+  "generated_at": "2026-10-22 17:00 UTC",
+  "scan_run_id": "20261013062102",
+  "commit_sha": "765e1949",
+  "batches": [
+   "asva_container_765e1949",
+   "asva_sast_765e1949_1",
+   "asva_sca_765e1949"
+  ],
+  "sarif": [
+   "nodegoat-image.sarif.json",
+   "nodegoat-sast.sarif.json",
+   "nodegoat-sca.sarif.json"
+  ],
+  "snapshot": {
+   "CISA KEV": {
+    "version": "2026.09.30 (2026-09-30)",
+    "synced_at": "2026-10-01T06:09:58Z",
+    "items": 1730
+   },
+   "MITRE CWE": {
+    "version": "4.20 (2026-04-30)",
+    "synced_at": "2026-10-01T06:09:55Z",
+    "items": 944
+   },
+   "NVD": {
+    "version": "lazy (on demand)",
+    "synced_at": "2026-10-01T06:09:58Z",
+    "items": 0
+   },
+   "OWASP Cheat Sheet Series": {
+    "version": "127 cheat sheets @ 84fec22a9ed3",
+    "synced_at": "2026-10-01T03:20:25Z",
+    "items": 3768
+   }
+  },
+  "budget": 2500,
+  "disabled_sources": []
+ },
+ "sources": [
+  {
+   "id": "owasp",
+   "name": "OWASP Cheat Sheet Series",
+   "purpose": "how-to-fix guidance for code findings (similarity search)",
+   "prompt_chars": 7175,
+   "lost_prompt": [
+    [
+     "app/routes/profile.js",
+     "key advice: cause: nested repetition"
+    ],
+    [
+     "app/routes/research.js",
+     "key advice: allowlist of targets"
+    ],
+    [
+     "app/routes/research.js",
+     "key advice: validate the URL/input"
+    ],
+    [
+     "app/routes/index.js",
+     "key advice: allowlist of targets"
+    ],
+    [
+     "app/routes/index.js",
+     "key advice: avoid user-controlled redirects"
+    ]
+   ],
+   "lost_data": [
+    [
+     "app/routes/contributions.js",
+     "links to the guidance used (references)"
+    ],
+    [
+     "config/env/development.js",
+     "links to the guidance used (references)"
+    ],
+    [
+     "app/routes/profile.js",
+     "links to the guidance used (references)"
+    ],
+    [
+     "app/routes/research.js",
+     "links to the guidance used (references)"
+    ],
+    [
+     "app/routes/index.js",
+     "links to the guidance used (references)"
+    ]
+   ],
+   "reading": "Keep: the prompt loses facts without it."
+  },
+  {
+   "id": "cwe",
+   "name": "MITRE CWE",
+   "purpose": "weakness name in the search query; definition, mitigations and OWASP Top 10 label in references",
+   "prompt_chars": -750,
+   "lost_prompt": [],
+   "lost_data": [
+    [
+     "app/routes/contributions.js",
+     "weakness named and defined (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/contributions.js",
+     "mitigations listed (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/contributions.js",
+     "OWASP Top 10 category (references)"
+    ],
+    [
+     "config/env/development.js",
+     "weakness named and defined (MITRE CWE) (references)"
+    ],
+    [
+     "config/env/development.js",
+     "mitigations listed (MITRE CWE) (references)"
+    ],
+    [
+     "config/env/development.js",
+     "OWASP Top 10 category (references)"
+    ],
+    [
+     "app/routes/profile.js",
+     "weakness named and defined (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/profile.js",
+     "mitigations listed (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/research.js",
+     "weakness named and defined (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/research.js",
+     "mitigations listed (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/research.js",
+     "OWASP Top 10 category (references)"
+    ],
+    [
+     "app/routes/index.js",
+     "weakness named and defined (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/index.js",
+     "mitigations listed (MITRE CWE) (references)"
+    ],
+    [
+     "app/routes/index.js",
+     "OWASP Top 10 category (references)"
+    ],
+    [
+     "package.json",
+     "weakness per CVE, with OWASP Top 10 category (references)"
+    ],
+    [
+     "docker-compose.yml",
+     "weakness per CVE (references)"
+    ]
+   ],
+   "reading": "Keep for the PR / UI data; it adds nothing to the prompt."
+  },
+  {
+   "id": "keyword",
+   "name": "Keyword fallback",
+   "purpose": "keyword matches when the similarity search is unsure (a method, not a source)",
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": [],
+   "reading": "No effect on these files: no finding's best similarity is below the threshold. Its effect on the wider issue set is in part 3."
+  },
+  {
+   "id": "nvd",
+   "name": "NVD",
+   "purpose": "CVSS score, severity and CWE per CVE",
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": [
+    [
+     "package.json",
+     "CVSS score and severity per CVE (references)"
+    ],
+    [
+     "docker-compose.yml",
+     "CVSS score and severity per CVE (references)"
+    ],
+    [
+     "(illustration) pom.xml with Log4Shell",
+     "CVSS score and severity (references)"
+    ]
+   ],
+   "reading": "Keep for the PR / UI data; it adds nothing to the prompt."
+  },
+  {
+   "id": "kev",
+   "name": "CISA KEV",
+   "purpose": "flags CVEs known to be exploited",
+   "prompt_chars": 0,
+   "lost_prompt": [
+    [
+     "(illustration) pom.xml with Log4Shell",
+     "says the CVE is known to be exploited, fix first"
+    ]
+   ],
+   "lost_data": [
+    [
+     "(illustration) pom.xml with Log4Shell",
+     "known-exploited flag and date (references)"
+    ]
+   ],
+   "reading": "No effect on NodeGoat's findings; matters only when a CVE is in the catalogue (see the illustration)."
+  },
+  {
+   "id": "osv",
+   "name": "OSV.dev",
+   "purpose": "cross-checks upgrade targets; smallest fixed version; where an OS package fix is published",
+   "prompt_chars": 351,
+   "lost_prompt": [
+    [
+     "package.json",
+     "independent confirmation of the scanner's targets"
+    ],
+    [
+     "package.json",
+     "says no compatible fix exists for mongodb (none within 2.x)"
+    ],
+    [
+     "docker-compose.yml",
+     "says the fixes are subscription-only, in the source's words"
+    ]
+   ],
+   "lost_data": [
+    [
+     "package.json",
+     "smallest fixed version per package (upgrades)"
+    ],
+    [
+     "package.json",
+     "advisories that stay open after the upgrade (references)"
+    ],
+    [
+     "docker-compose.yml",
+     "fix version and availability per CVE (references)"
+    ]
+   ],
+   "reading": "Keep: the prompt loses facts without it."
+  },
+  {
+   "id": "context7",
+   "name": "Context7",
+   "purpose": "breaking-change notes for major library upgrades (in the references, for the migration)",
+   "prompt_chars": 0,
+   "lost_prompt": [],
+   "lost_data": [
+    [
+     "package.json",
+     "mongodb 3.x breaking-change notes for the migration (references)"
+    ]
+   ],
+   "reading": "Keep for the PR / UI data; it adds nothing to the prompt."
+  },
+  {
+   "id": "dockerhub",
+   "name": "Docker Hub",
+   "purpose": "newer release lines of a container image and their base OS; decides whether a compatible line exists",
+   "prompt_chars": 341,
+   "lost_prompt": [
+    [
+     "docker-compose.yml",
+     "says the image's release line is past end of life"
+    ],
+    [
+     "docker-compose.yml",
+     "says no compatible (same major version) fix exists"
+    ],
+    [
+     "docker-compose.yml",
+     "warns that a new major version is not a drop-in change"
+    ]
+   ],
+   "lost_data": [
+    [
+     "docker-compose.yml",
+     "newer release lines with their base OS (upgrades)"
+    ],
+    [
+     "docker-compose.yml",
+     "support dates per release line (upgrades)"
+    ],
+    [
+     "docker-compose.yml",
+     "migration target (upgrades)"
+    ]
+   ],
+   "reading": "Keep: the prompt loses facts without it."
+  },
+  {
+   "id": "endoflife",
+   "name": "endoflife.date",
+   "purpose": "whether the image's line is past end of life; support dates, needed to name a migration target",
+   "prompt_chars": 65,
+   "lost_prompt": [
+    [
+     "docker-compose.yml",
+     "says the image's release line is past end of life"
+    ]
+   ],
+   "lost_data": [
+    [
+     "docker-compose.yml",
+     "support dates per release line (upgrades)"
+    ],
+    [
+     "docker-compose.yml",
+     "migration target (upgrades)"
+    ]
+   ],
+   "reading": "Keep: the prompt loses facts without it."
+  }
+ ],
+ "cases": [
+  {
+   "file": "app/routes/contributions.js",
+   "type": "sast",
+   "findings": 3,
+   "illustration": false,
+   "chars": 2127,
+   "chars_by_source": {
+    "OWASP Cheat Sheet Series": 2127
+   },
+   "references": 4,
+   "facts_total": 7,
+   "facts_present": [
+    "key advice: avoid eval / dynamic code",
+    "key advice: validate input (allowlist)",
+    "key advice: names eval",
+    "weakness named and defined (MITRE CWE)",
+    "mitigations listed (MITRE CWE)",
+    "OWASP Top 10 category",
+    "links to the guidance used"
+   ],
+   "facts_absent": [],
+   "without": {
+    "owasp": {
+     "chars": 841,
+     "chars_saved": 1286,
+     "references_lost": 3,
+     "lost_prompt": [],
+     "lost_data": [
+      "links to the guidance used (references)"
+     ]
+    },
+    "cwe": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 1,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness named and defined (MITRE CWE) (references)",
+      "mitigations listed (MITRE CWE) (references)",
+      "OWASP Top 10 category (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "kev": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "context7": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 2127,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  },
+  {
+   "file": "config/env/development.js",
+   "type": "sast",
+   "findings": 1,
+   "illustration": false,
+   "chars": 1666,
+   "chars_by_source": {
+    "OWASP Cheat Sheet Series": 1666
+   },
+   "references": 4,
+   "facts_total": 5,
+   "facts_present": [
+    "weakness named and defined (MITRE CWE)",
+    "mitigations listed (MITRE CWE)",
+    "OWASP Top 10 category",
+    "links to the guidance used"
+   ],
+   "facts_absent": [
+    "key advice: keep secrets out of code"
+   ],
+   "without": {
+    "owasp": {
+     "chars": 371,
+     "chars_saved": 1295,
+     "references_lost": 3,
+     "lost_prompt": [],
+     "lost_data": [
+      "links to the guidance used (references)"
+     ]
+    },
+    "cwe": {
+     "chars": 1942,
+     "chars_saved": -276,
+     "references_lost": 1,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness named and defined (MITRE CWE) (references)",
+      "mitigations listed (MITRE CWE) (references)",
+      "OWASP Top 10 category (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "kev": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "context7": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 1666,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  },
+  {
+   "file": "app/routes/profile.js",
+   "type": "sast",
+   "findings": 1,
+   "illustration": false,
+   "chars": 2335,
+   "chars_by_source": {
+    "OWASP Cheat Sheet Series": 2335
+   },
+   "references": 4,
+   "facts_total": 6,
+   "facts_present": [
+    "key advice: cause: nested repetition",
+    "weakness named and defined (MITRE CWE)",
+    "mitigations listed (MITRE CWE)",
+    "links to the guidance used"
+   ],
+   "facts_absent": [
+    "key advice: tooling to check regexes",
+    "OWASP Top 10 category"
+   ],
+   "without": {
+    "owasp": {
+     "chars": 517,
+     "chars_saved": 1818,
+     "references_lost": 3,
+     "lost_prompt": [
+      "key advice: cause: nested repetition"
+     ],
+     "lost_data": [
+      "links to the guidance used (references)"
+     ]
+    },
+    "cwe": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 1,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness named and defined (MITRE CWE) (references)",
+      "mitigations listed (MITRE CWE) (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "kev": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "context7": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 2335,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  },
+  {
+   "file": "app/routes/research.js",
+   "type": "sast",
+   "findings": 1,
+   "illustration": false,
+   "chars": 2379,
+   "chars_by_source": {
+    "OWASP Cheat Sheet Series": 2379
+   },
+   "references": 4,
+   "facts_total": 6,
+   "facts_present": [
+    "key advice: allowlist of targets",
+    "key advice: validate the URL/input",
+    "weakness named and defined (MITRE CWE)",
+    "mitigations listed (MITRE CWE)",
+    "OWASP Top 10 category",
+    "links to the guidance used"
+   ],
+   "facts_absent": [],
+   "without": {
+    "owasp": {
+     "chars": 734,
+     "chars_saved": 1645,
+     "references_lost": 3,
+     "lost_prompt": [
+      "key advice: allowlist of targets",
+      "key advice: validate the URL/input"
+     ],
+     "lost_data": [
+      "links to the guidance used (references)"
+     ]
+    },
+    "cwe": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 1,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness named and defined (MITRE CWE) (references)",
+      "mitigations listed (MITRE CWE) (references)",
+      "OWASP Top 10 category (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "kev": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "context7": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 2379,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  },
+  {
+   "file": "app/routes/index.js",
+   "type": "sast",
+   "findings": 1,
+   "illustration": false,
+   "chars": 1851,
+   "chars_by_source": {
+    "OWASP Cheat Sheet Series": 1851
+   },
+   "references": 4,
+   "facts_total": 7,
+   "facts_present": [
+    "key advice: allowlist of targets",
+    "key advice: validate the URL",
+    "key advice: avoid user-controlled redirects",
+    "weakness named and defined (MITRE CWE)",
+    "mitigations listed (MITRE CWE)",
+    "OWASP Top 10 category",
+    "links to the guidance used"
+   ],
+   "facts_absent": [],
+   "without": {
+    "owasp": {
+     "chars": 720,
+     "chars_saved": 1131,
+     "references_lost": 3,
+     "lost_prompt": [
+      "key advice: allowlist of targets",
+      "key advice: avoid user-controlled redirects"
+     ],
+     "lost_data": [
+      "links to the guidance used (references)"
+     ]
+    },
+    "cwe": {
+     "chars": 2325,
+     "chars_saved": -474,
+     "references_lost": 1,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness named and defined (MITRE CWE) (references)",
+      "mitigations listed (MITRE CWE) (references)",
+      "OWASP Top 10 category (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "kev": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "context7": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 1851,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  },
+  {
+   "file": "package.json",
+   "type": "sca",
+   "findings": 26,
+   "illustration": false,
+   "chars": 920,
+   "chars_by_source": {
+    "OSV.dev": 920
+   },
+   "references": 75,
+   "facts_total": 12,
+   "facts_present": [
+    "flags mongodb 2.x → 3.x as a major upgrade",
+    "says a package is already at its target, so a bump cannot fix it",
+    "routes the transitive qs fix through body-parser",
+    "independent confirmation of the scanner's targets",
+    "says no compatible fix exists for mongodb (none within 2.x)",
+    "smallest fixed version per package",
+    "major change marked as data",
+    "compatible target per package as data",
+    "CVSS score and severity per CVE",
+    "weakness per CVE, with OWASP Top 10 category",
+    "advisories that stay open after the upgrade",
+    "mongodb 3.x breaking-change notes for the migration"
+   ],
+   "facts_absent": [],
+   "without": {
+    "owasp": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "cwe": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 19,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness per CVE, with OWASP Top 10 category (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 1,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ]
+    },
+    "kev": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 703,
+     "chars_saved": 217,
+     "references_lost": 30,
+     "lost_prompt": [
+      "independent confirmation of the scanner's targets",
+      "says no compatible fix exists for mongodb (none within 2.x)"
+     ],
+     "lost_data": [
+      "smallest fixed version per package (upgrades)",
+      "advisories that stay open after the upgrade (references)"
+     ]
+    },
+    "context7": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 3,
+     "lost_prompt": [],
+     "lost_data": [
+      "mongodb 3.x breaking-change notes for the migration (references)"
+     ]
+    },
+    "dockerhub": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 920,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  },
+  {
+   "file": "docker-compose.yml",
+   "type": "container",
+   "findings": 7,
+   "illustration": false,
+   "chars": 671,
+   "chars_by_source": {
+    "OSV.dev": 671
+   },
+   "references": 26,
+   "facts_total": 11,
+   "facts_present": [
+    "names the image and its base OS",
+    "says the fixes are subscription-only, in the source's words",
+    "says the image's release line is past end of life",
+    "says no compatible (same major version) fix exists",
+    "warns that a new major version is not a drop-in change",
+    "newer release lines with their base OS",
+    "support dates per release line",
+    "migration target",
+    "fix version and availability per CVE",
+    "CVSS score and severity per CVE",
+    "weakness per CVE"
+   ],
+   "facts_absent": [],
+   "without": {
+    "owasp": {
+     "chars": 671,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "cwe": {
+     "chars": 671,
+     "chars_saved": 0,
+     "references_lost": 10,
+     "lost_prompt": [],
+     "lost_data": [
+      "weakness per CVE (references)"
+     ]
+    },
+    "keyword": {
+     "chars": 671,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 671,
+     "chars_saved": 0,
+     "references_lost": 6,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity per CVE (references)"
+     ]
+    },
+    "kev": {
+     "chars": 671,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "osv": {
+     "chars": 537,
+     "chars_saved": 134,
+     "references_lost": 7,
+     "lost_prompt": [
+      "says the fixes are subscription-only, in the source's words"
+     ],
+     "lost_data": [
+      "fix version and availability per CVE (references)"
+     ]
+    },
+    "context7": {
+     "chars": 671,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 330,
+     "chars_saved": 341,
+     "references_lost": 2,
+     "lost_prompt": [
+      "says the image's release line is past end of life",
+      "says no compatible (same major version) fix exists",
+      "warns that a new major version is not a drop-in change"
+     ],
+     "lost_data": [
+      "newer release lines with their base OS (upgrades)",
+      "support dates per release line (upgrades)",
+      "migration target (upgrades)"
+     ]
+    },
+    "endoflife": {
+     "chars": 606,
+     "chars_saved": 65,
+     "references_lost": 1,
+     "lost_prompt": [
+      "says the image's release line is past end of life"
+     ],
+     "lost_data": [
+      "support dates per release line (upgrades)",
+      "migration target (upgrades)"
+     ]
+    }
+   }
+  },
+  {
+   "file": "(illustration) pom.xml with Log4Shell",
+   "type": "sca",
+   "findings": 1,
+   "illustration": true,
+   "chars": 381,
+   "chars_by_source": {
+    "CISA KEV": 167,
+    "OSV.dev": 214
+   },
+   "references": 12,
+   "facts_total": 3,
+   "facts_present": [
+    "says the CVE is known to be exploited, fix first",
+    "known-exploited flag and date",
+    "CVSS score and severity"
+   ],
+   "facts_absent": [],
+   "without": {
+    "owasp": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "cwe": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 4,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "keyword": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "nvd": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": [
+      "CVSS score and severity (references)"
+     ]
+    },
+    "kev": {
+     "chars": 214,
+     "chars_saved": 167,
+     "references_lost": 0,
+     "lost_prompt": [
+      "says the CVE is known to be exploited, fix first"
+     ],
+     "lost_data": [
+      "known-exploited flag and date (references)"
+     ]
+    },
+    "osv": {
+     "chars": 324,
+     "chars_saved": 57,
+     "references_lost": 7,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "context7": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "dockerhub": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    },
+    "endoflife": {
+     "chars": 381,
+     "chars_saved": 0,
+     "references_lost": 0,
+     "lost_prompt": [],
+     "lost_data": []
+    }
+   }
+  }
+ ],
+ "search": {
+  "methods": {
+   "similarity only": {
+    "tuned_on": 0.8636,
+    "all": 0.7917,
+    "issues_tuned_on": 11,
+    "issues_all": 12,
+    "average_chars": 1912
+   },
+   "keyword only": {
+    "tuned_on": 0.6212,
+    "all": 0.5694,
+    "issues_tuned_on": 11,
+    "issues_all": 12,
+    "average_chars": 2015
+   },
+   "similarity + keyword fallback (below 0.62, 2 results)": {
+    "tuned_on": 0.9545,
+    "all": 0.875,
+    "issues_tuned_on": 11,
+    "issues_all": 12,
+    "average_chars": 1925
+   },
+   "same, without the CWE name in the search query": {
+    "tuned_on": 0.8636,
+    "all": 0.7917,
+    "issues_tuned_on": 11,
+    "issues_all": 12,
+    "average_chars": 2089
+   }
+  },
+  "issues": [
+   {
+    "title": "Use of Hardcoded Passwords",
+    "cwe": "CWE-798",
+    "held_out": false,
+    "best_similarity": 0.589,
+    "similarity only": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "Credential Stuffing Prevention Cheat Sheet › Degradation",
+      "NodeJS Security Cheat Sheet › Perform input validation"
+     ]
+    },
+    "keyword only": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "[keyword] Mobile Application Security Cheat Sheet › 2. Credential Handling",
+      "[keyword] NoSQL Security Cheat Sheet › Secrets Management",
+      "[keyword] Authentication Cheat Sheet › Implement Proper Password Strength Controls"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "[keyword] Mobile Application Security Cheat Sheet › 2. Credential Handling",
+      "[keyword] NoSQL Security Cheat Sheet › Secrets Management"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "[keyword] Authentication Cheat Sheet › Implement Proper Password Strength Controls",
+      "[keyword] Secure Product Design Cheat Sheet › 4. Code"
+     ]
+    }
+   },
+   {
+    "title": "Cleartext Transmission - HTTP Instead of HTTPS",
+    "cwe": "CWE-319",
+    "held_out": false,
+    "best_similarity": 0.61,
+    "similarity only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use appropriate security headers",
+      "DOM based XSS Prevention Cheat Sheet › GUIDELINE \\#4 - Avoid sending untrusted data into HTML rendering methods",
+      "Browser Extension Security Vulnerabilities Cheat Sheet › Mitigation: Insecure Communication"
+     ]
+    },
+    "keyword only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "[keyword] Drone Security Cheat Sheet › 1. Communication Security",
+      "[keyword] Logging Cheat Sheet › Protection",
+      "[keyword] Session Management Cheat Sheet › Transport Layer Security"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use appropriate security headers",
+      "[keyword] Drone Security Cheat Sheet › 1. Communication Security",
+      "[keyword] Logging Cheat Sheet › Protection"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use appropriate security headers",
+      "[keyword] Drone Security Cheat Sheet › 1. Communication Security",
+      "[keyword] Logging Cheat Sheet › Protection"
+     ]
+    }
+   },
+   {
+    "title": "Hardcoded Non-Cryptographic Secret",
+    "cwe": "CWE-547",
+    "held_out": true,
+    "best_similarity": 0.624,
+    "similarity only": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "Web Frontend Security Cheat Sheet › Never transmit secrets to the client",
+      "NodeJS Security Cheat Sheet › Use strict mode",
+      "NodeJS Security Cheat Sheet › Perform input validation"
+     ]
+    },
+    "keyword only": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "[keyword] Mass Assignment Cheat Sheet › General Solutions",
+      "[keyword] Forgot Password Cheat Sheet › URL Tokens",
+      "[keyword] Cross-Site Request Forgery Prevention Cheat Sheet › Pseudo-Code For Implementing HMAC CSRF Tokens"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "Web Frontend Security Cheat Sheet › Never transmit secrets to the client",
+      "NodeJS Security Cheat Sheet › Use strict mode",
+      "NodeJS Security Cheat Sheet › Perform input validation"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "[keyword] Mass Assignment Cheat Sheet › General Solutions",
+      "[keyword] Cross-Site Request Forgery Prevention Cheat Sheet › Pseudo-Code For Implementing HMAC CSRF Tokens"
+     ]
+    }
+   },
+   {
+    "title": "Open Redirect",
+    "cwe": "CWE-601",
+    "held_out": false,
+    "best_similarity": 0.663,
+    "similarity only": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "Unvalidated Redirects and Forwards Cheat Sheet › Preventing Unvalidated Redirects and Forwards",
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "Unvalidated Redirects and Forwards Cheat Sheet › Validating URLs"
+     ]
+    },
+    "keyword only": {
+     "covered": 1,
+     "of": 3,
+     "sections": [
+      "[keyword] Symfony Cheat Sheet › Open Redirection",
+      "[keyword] Laravel Cheat Sheet › Open Redirection",
+      "[keyword] Unvalidated Redirects and Forwards Cheat Sheet › Dangerous URL Redirect Example 1"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "Unvalidated Redirects and Forwards Cheat Sheet › Preventing Unvalidated Redirects and Forwards",
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "Unvalidated Redirects and Forwards Cheat Sheet › Validating URLs"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "Unvalidated Redirects and Forwards Cheat Sheet › Preventing Unvalidated Redirects and Forwards",
+      "NodeJS Security Cheat Sheet › Prevent HTTP Parameter Pollution"
+     ]
+    }
+   },
+   {
+    "title": "Server-Side Request Forgery (SSRF)",
+    "cwe": "CWE-918",
+    "held_out": false,
+    "best_similarity": 0.706,
+    "similarity only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "Server-Side Request Forgery Prevention Cheat Sheet › Application layer",
+      "Server-Side Request Forgery Prevention Cheat Sheet › String",
+      "Server-Side Request Forgery Prevention Cheat Sheet › IP address"
+     ]
+    },
+    "keyword only": {
+     "covered": 1,
+     "of": 2,
+     "sections": [
+      "[keyword] Unvalidated Redirects and Forwards Cheat Sheet › Dangerous Forward Example",
+      "[keyword] Server-Side Request Forgery Prevention Cheat Sheet › Application layer",
+      "[keyword] Server-Side Request Forgery Prevention Cheat Sheet › Tools and code used for schemas"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "Server-Side Request Forgery Prevention Cheat Sheet › Application layer",
+      "Server-Side Request Forgery Prevention Cheat Sheet › String",
+      "Server-Side Request Forgery Prevention Cheat Sheet › IP address"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "Server-Side Request Forgery Prevention Cheat Sheet › Application layer",
+      "Server-Side Request Forgery Prevention Cheat Sheet › String",
+      "Server-Side Request Forgery Prevention Cheat Sheet › IP address"
+     ]
+    }
+   },
+   {
+    "title": "Code Injection",
+    "cwe": "CWE-94",
+    "held_out": false,
+    "best_similarity": 0.713,
+    "similarity only": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Do not use dangerous functions",
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "NodeJS Security Cheat Sheet › Perform output escaping"
+     ]
+    },
+    "keyword only": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "[keyword] WebSocket Security Cheat Sheet › Input Validation",
+      "[keyword] Laravel Cheat Sheet › Other Injections",
+      "[keyword] JavaScript and TypeScript Security Cheat Sheet › eval, Function, and with"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Do not use dangerous functions",
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "NodeJS Security Cheat Sheet › Perform output escaping"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 3,
+     "of": 3,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Perform input validation",
+      "NodeJS Security Cheat Sheet › Do not use dangerous functions",
+      "NodeJS Security Cheat Sheet › Perform output escaping"
+     ]
+    }
+   },
+   {
+    "title": "Cross-site Scripting (XSS) - Potentially Insecure Settings",
+    "cwe": "CWE-79",
+    "held_out": false,
+    "best_similarity": 0.715,
+    "similarity only": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "Browser Extension Security Vulnerabilities Cheat Sheet › Mitigation: Cross-Site Scripting (XSS)",
+      "Cross Site Scripting Prevention Cheat Sheet › Problem 3 - Interceptors not effective against DOM-based XSS",
+      "Cross Site Scripting Prevention Cheat Sheet › Dangerous Contexts"
+     ]
+    },
+    "keyword only": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "[keyword] Browser Extension Security Vulnerabilities Cheat Sheet › Vulnerability: Cross-Site Scripting (XSS)",
+      "[keyword] NodeJS Security Cheat Sheet › Set cookie flags appropriately",
+      "[keyword] NodeJS Security Cheat Sheet › Use appropriate security headers"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "Browser Extension Security Vulnerabilities Cheat Sheet › Mitigation: Cross-Site Scripting (XSS)",
+      "Cross Site Scripting Prevention Cheat Sheet › Problem 3 - Interceptors not effective against DOM-based XSS",
+      "Cross Site Scripting Prevention Cheat Sheet › Dangerous Contexts"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "Cross Site Scripting Prevention Cheat Sheet › Dangerous Contexts",
+      "Cross Site Scripting Prevention Cheat Sheet › Problem 3 - Interceptors not effective against DOM-based XSS",
+      "Cross Site Scripting Prevention Cheat Sheet › Common Anti-patterns: Ineffective Approaches to Avoid"
+     ]
+    }
+   },
+   {
+    "title": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute",
+    "cwe": "CWE-614",
+    "held_out": false,
+    "best_similarity": 0.729,
+    "similarity only": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Set cookie flags appropriately",
+      "Transport Layer Security Cheat Sheet › Use the \"Secure\" Cookie Flag",
+      "Session Management Cheat Sheet › Secure Attribute"
+     ]
+    },
+    "keyword only": {
+     "covered": 0,
+     "of": 1,
+     "sections": [
+      "[keyword] Laravel Cheat Sheet › Cookie Security and Session Management",
+      "[keyword] Symfony Cheat Sheet › Session & Cookies Management",
+      "[keyword] Session Management Cheat Sheet › Domain and Path Attributes"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Set cookie flags appropriately",
+      "Transport Layer Security Cheat Sheet › Use the \"Secure\" Cookie Flag",
+      "Session Management Cheat Sheet › Secure Attribute"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "Transport Layer Security Cheat Sheet › Use the \"Secure\" Cookie Flag",
+      "NodeJS Security Cheat Sheet › Set cookie flags appropriately",
+      "NodeJS Security Cheat Sheet › Use appropriate security headers"
+     ]
+    }
+   },
+   {
+    "title": "Allocation of Resources Without Limits or Throttling",
+    "cwe": "CWE-770",
+    "held_out": false,
+    "best_similarity": 0.739,
+    "similarity only": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Set request size limits",
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "NodeJS Security Cheat Sheet › Monitor the event loop"
+     ]
+    },
+    "keyword only": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "[keyword] NodeJS Security Cheat Sheet › Do not block the event loop",
+      "[keyword] REST Assessment Cheat Sheet › Rate Limiting and Throttling Assessment",
+      "[keyword] WebSocket Security Cheat Sheet › Denial-of-Service Protection"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Set request size limits",
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "NodeJS Security Cheat Sheet › Monitor the event loop"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 1,
+     "of": 1,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Set request size limits",
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "NodeJS Security Cheat Sheet › Monitor the event loop"
+     ]
+    }
+   },
+   {
+    "title": "Information Exposure - X-Powered-By Header",
+    "cwe": "CWE-200",
+    "held_out": false,
+    "best_similarity": 0.763,
+    "similarity only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use appropriate security headers",
+      "HTTP Security Response Headers Cheat Sheet › Recommendation",
+      "HTTP Security Response Headers Cheat Sheet › Express"
+     ]
+    },
+    "keyword only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "[keyword] HTTP Security Response Headers Cheat Sheet › X-Powered-By",
+      "[keyword] GraphQL Cheat Sheet › Introspection + GraphiQL",
+      "[keyword] NodeJS Security Cheat Sheet › Set request size limits"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use appropriate security headers",
+      "HTTP Security Response Headers Cheat Sheet › Recommendation",
+      "HTTP Security Response Headers Cheat Sheet › Express"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use appropriate security headers",
+      "HTTP Security Response Headers Cheat Sheet › Recommendation",
+      "HTTP Security Response Headers Cheat Sheet › Express"
+     ]
+    }
+   },
+   {
+    "title": "Cross-Site Request Forgery (CSRF)",
+    "cwe": "CWE-352",
+    "held_out": false,
+    "best_similarity": 0.866,
+    "similarity only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use Anti-CSRF tokens",
+      "Cross-Site Request Forgery Prevention Cheat Sheet › CSRF Prevention in modern Frameworks",
+      "Cross-Site Request Forgery Prevention Cheat Sheet › React with TypeScript"
+     ]
+    },
+    "keyword only": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "[keyword] Cross-Site Request Forgery Prevention Cheat Sheet › TypeScript Utilities for CSRF Protection",
+      "[keyword] Web Frontend Security Cheat Sheet › Use CSRF Protection",
+      "[keyword] Cross-Site Request Forgery Prevention Cheat Sheet › Dealing with Client-Side CSRF Attacks (IMPORTANT)"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use Anti-CSRF tokens",
+      "Cross-Site Request Forgery Prevention Cheat Sheet › CSRF Prevention in modern Frameworks",
+      "Cross-Site Request Forgery Prevention Cheat Sheet › React with TypeScript"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 2,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Use Anti-CSRF tokens",
+      "Cross-Site Request Forgery Prevention Cheat Sheet › CSRF Prevention in modern Frameworks",
+      "Cross-Site Request Forgery Prevention Cheat Sheet › React with TypeScript"
+     ]
+    }
+   },
+   {
+    "title": "Regular Expression Denial of Service (ReDoS)",
+    "cwe": "CWE-400",
+    "held_out": false,
+    "best_similarity": 0.874,
+    "similarity only": {
+     "covered": 1,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Stay away from evil regexes",
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "JavaScript and TypeScript Security Cheat Sheet › Evil Regex (ReDoS)"
+     ]
+    },
+    "keyword only": {
+     "covered": 0,
+     "of": 2,
+     "sections": [
+      "[keyword] Input Validation Cheat Sheet › Regular Expressions (Regex)",
+      "[keyword] XML Security Cheat Sheet › Malformed XML documents require extra time",
+      "[keyword] Denial of Service Cheat Sheet › Input validation"
+     ]
+    },
+    "similarity + keyword fallback (below 0.62, 2 results)": {
+     "covered": 1,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Stay away from evil regexes",
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "JavaScript and TypeScript Security Cheat Sheet › Evil Regex (ReDoS)"
+     ]
+    },
+    "same, without the CWE name in the search query": {
+     "covered": 1,
+     "of": 2,
+     "sections": [
+      "NodeJS Security Cheat Sheet › Stay away from evil regexes",
+      "NodeJS Security Cheat Sheet › Take precautions against brute-forcing",
+      "JavaScript and TypeScript Security Cheat Sheet › Evil Regex (ReDoS)"
+     ]
+    }
+   }
+  ]
+ },
+ "amount": [
+  {
+   "sections": 1,
+   "section_chars": 400,
+   "coverage": 0.4444,
+   "average_chars": 358,
+   "default": false
+  },
+  {
+   "sections": 1,
+   "section_chars": 800,
+   "coverage": 0.5556,
+   "average_chars": 671,
+   "default": false
+  },
+  {
+   "sections": 1,
+   "section_chars": 1200,
+   "coverage": 0.5972,
+   "average_chars": 974,
+   "default": false
+  },
+  {
+   "sections": 2,
+   "section_chars": 400,
+   "coverage": 0.5556,
+   "average_chars": 705,
+   "default": false
+  },
+  {
+   "sections": 2,
+   "section_chars": 800,
+   "coverage": 0.6667,
+   "average_chars": 1283,
+   "default": false
+  },
+  {
+   "sections": 2,
+   "section_chars": 1200,
+   "coverage": 0.7083,
+   "average_chars": 1784,
+   "default": false
+  },
+  {
+   "sections": 3,
+   "section_chars": 400,
+   "coverage": 0.7639,
+   "average_chars": 1073,
+   "default": false
+  },
+  {
+   "sections": 3,
+   "section_chars": 800,
+   "coverage": 0.875,
+   "average_chars": 1925,
+   "default": true
+  },
+  {
+   "sections": 3,
+   "section_chars": 1200,
+   "coverage": 0.875,
+   "average_chars": 2612,
+   "default": false
+  },
+  {
+   "sections": 4,
+   "section_chars": 400,
+   "coverage": 0.7639,
+   "average_chars": 1429,
+   "default": false
+  },
+  {
+   "sections": 4,
+   "section_chars": 800,
+   "coverage": 0.875,
+   "average_chars": 2580,
+   "default": false
+  },
+  {
+   "sections": 4,
+   "section_chars": 1200,
+   "coverage": 0.875,
+   "average_chars": 3478,
+   "default": false
+  }
+ ]
+}

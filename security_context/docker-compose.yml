@@ -1,0 +1,23 @@
+# Local stand-in for the Kubernetes deployment (deploy/k8s).
+#   docker compose up --build -d
+#   docker compose exec security-context python -m app.sync     # refresh sources
+#   docker compose down                                         # stop (the data volume is kept)
+#
+# API keys come from .env. To try the admin sync endpoint:  set ADMIN_TOKEN in .env.
+
+services:
+  security-context:
+    build: .
+    image: asva-security-context:dev
+    ports:
+      - "8800:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NVD_SYNC_MODE: lazy   # Kubernetes uses "full"
+    volumes:
+      - security-context-data:/data
+
+volumes:
+  security-context-data:

@@ -1,0 +1,25 @@
+name: asva-pygoat
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.asva
+    environment:
+      DJANGO_SETTINGS_MODULE: pygoat.asva_settings
+      PYGOAT_DB_PATH: /data/db.sqlite3
+    ports:
+      - "127.0.0.1:${PYGOAT_PORT:-8001}:8000"
+    volumes:
+      - database:/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/login/', timeout=5)"
+      interval: 5s
+      timeout: 6s
+      start_period: 15s
+      retries: 15
+volumes:
+  database:

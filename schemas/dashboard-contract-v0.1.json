@@ -1,0 +1,491 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "type": "string"
+        },
+        "app": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "commit_sha": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "workflow": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "workflow_url": {
+          "type": "string"
+        },
+        "stages": {
+          "type": "object",
+          "properties": {
+            "scan": {
+              "type": "string"
+            },
+            "normalise": {
+              "type": "string"
+            },
+            "triage": {
+              "type": "string"
+            },
+            "fix": {
+              "type": "string"
+            },
+            "validate": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "scan",
+            "normalise",
+            "triage",
+            "fix",
+            "validate"
+          ]
+        },
+        "artifacts": {
+          "type": "object",
+          "properties": {
+            "findings": {
+              "type": "string"
+            },
+            "triage": {
+              "type": "string"
+            },
+            "fix_batches": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "remediation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "findings"
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "app",
+        "run_id",
+        "commit_sha",
+        "branch",
+        "workflow",
+        "created_at",
+        "workflow_url",
+        "stages",
+        "artifacts"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": {
+            "type": "string"
+          },
+          "finding_type": {
+            "type": "string",
+            "enum": [
+              "sast",
+              "sca",
+              "container"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "has_real_score": {
+            "type": "boolean"
+          },
+          "identifiers": {
+            "type": "object",
+            "properties": {
+              "cve": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cwe": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rule_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "cve",
+              "cwe",
+              "rule_id"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "package": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "display": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "file",
+              "line",
+              "package",
+              "display"
+            ]
+          },
+          "remediation": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "fixable": {
+                "type": "boolean"
+              },
+              "upgrade_to": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "fixable",
+              "upgrade_to"
+            ]
+          },
+          "priority": {
+            "type": "number"
+          },
+          "component": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "threat_category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "finding_type",
+          "severity",
+          "score",
+          "identifiers",
+          "title",
+          "summary",
+          "description",
+          "location",
+          "remediation",
+          "priority"
+        ]
+      }
+    },
+    "triage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": {
+            "type": "string"
+          },
+          "finding_type": {
+            "type": "string",
+            "enum": [
+              "sast",
+              "sca",
+              "container"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "has_real_score": {
+            "type": "boolean"
+          },
+          "identifiers": {
+            "type": "object",
+            "properties": {
+              "cve": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cwe": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rule_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "cve",
+              "cwe",
+              "rule_id"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "package": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "display": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "file",
+              "line",
+              "package",
+              "display"
+            ]
+          },
+          "remediation": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "fixable": {
+                "type": "boolean"
+              },
+              "upgrade_to": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "fixable",
+              "upgrade_to"
+            ]
+          },
+          "priority": {
+            "type": "number"
+          },
+          "component": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "threat_category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "finding_type",
+          "severity",
+          "score",
+          "identifiers",
+          "title",
+          "summary",
+          "description",
+          "location",
+          "remediation",
+          "priority"
+        ]
+      }
+    },
+    "batches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string"
+          },
+          "batch_type": {
+            "type": "string",
+            "enum": [
+              "sast",
+              "sca",
+              "container"
+            ]
+          },
+          "commit_sha": {
+            "type": "string"
+          },
+          "total_files": {
+            "type": "number"
+          },
+          "total_findings": {
+            "type": "number"
+          },
+          "files_to_fix": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "fix_type": {
+                  "type": "string"
+                },
+                "findings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "finding_id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "severity": {
+                        "type": "string",
+                        "enum": [
+                          "critical",
+                          "high",
+                          "medium",
+                          "low"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "finding_id",
+                      "title",
+                      "severity"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "file",
+                "fix_type",
+                "findings"
+              ]
+            }
+          }
+        },
+        "required": [
+          "batch_id",
+          "batch_type",
+          "commit_sha",
+          "total_files",
+          "total_findings",
+          "files_to_fix"
+        ]
+      }
+    }
+  },
+  "required": [
+    "manifest",
+    "findings",
+    "triage",
+    "batches"
+  ],
+  "description": "Snapshot exported from asva-web-prototype/src/lib/contract.ts for scan-through-triage bundles. Additional pipeline fields are accepted, matching Zod input behavior."
+}

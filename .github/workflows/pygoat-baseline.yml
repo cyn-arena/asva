@@ -1,0 +1,70 @@
+name: PyGoat - Validate original application
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches:
+      - 'feat/**'
+    paths:
+      - 'target-apps/PyGoat/**'
+      - 'scripts/pygoat-smoke.py'
+      - '.github/workflows/pygoat-baseline.yml'
+  pull_request:
+    paths:
+      - 'target-apps/PyGoat/**'
+      - 'scripts/pygoat-smoke.py'
+      - '.github/workflows/pygoat-baseline.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    name: PyGoat - Build, start and test original application
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE_SHA: ${{ github.sha }}
+      COMPOSE_PROJECT_NAME: asva-pygoat-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout application source
+        uses: actions/checkout@v4
+
+      - name: Set up Python for smoke checks
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build PyGoat application image
+        working-directory: target-apps/PyGoat
+        run: docker compose -f compose.asva.yml build
+
+      - name: Initialize database, start container and wait for HTTP readiness
+        working-directory: target-apps/PyGoat
+        run: docker compose -f compose.asva.yml up -d --wait --wait-timeout 120
+
+      - name: Test original application functionality
+        if: always()
+        run: python scripts/pygoat-smoke.py --output asva-results/pygoat-baseline.json
+
+      - name: Collect container logs and status
+        if: always()
+        run: |
+          mkdir -p asva-results
+          docker compose -f target-apps/PyGoat/compose.asva.yml logs --no-color > asva-results/pygoat.log 2>&1
+          docker compose -f target-apps/PyGoat/compose.asva.yml ps -a > asva-results/pygoat-containers.txt
+
+      - name: Save baseline evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pygoat-baseline-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asva-results/
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Remove temporary containers and disposable database
+        if: always()
+        working-directory: target-apps/PyGoat
+        run: docker compose -f compose.asva.yml down -v

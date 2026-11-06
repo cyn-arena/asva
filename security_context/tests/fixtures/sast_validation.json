@@ -1,0 +1,215 @@
+{
+ "description": "NodeGoat's own-code SAST issue types (one per Snyk Code rule), each with the key fix advice a good answer should contain ('facts': any listed phrase counts). Used by tests/eval_sources.py to measure how much key advice the returned OWASP sections cover. 'held_out' entries were added after the ranking was tuned.",
+ "issues": [
+  {
+   "cwe": "CWE-94",
+   "rule_id": "javascript/CodeInjection",
+   "title": "Code Injection",
+   "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+   "facts": {
+    "avoid eval / dynamic code": [
+     "do not have to dynamically generate code",
+     "should only be used where necessary",
+     "avoid",
+     "never"
+    ],
+    "validate input (allowlist)": [
+     "input validation",
+     "accept known good",
+     "allowlist",
+     "allow list",
+     "allow-list"
+    ],
+    "names eval": [
+     "eval"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-319",
+   "rule_id": "javascript/HttpToHttps",
+   "title": "Cleartext Transmission - HTTP Instead of HTTPS",
+   "summary": "http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.",
+   "facts": {
+    "use HTTPS": [
+     "https"
+    ],
+    "TLS / HSTS": [
+     "tls",
+     "certificate",
+     "strict-transport",
+     "hsts"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-798",
+   "rule_id": "javascript/NoHardcodedPasswords",
+   "title": "Use of Hardcoded Passwords",
+   "summary": "Do not hardcode passwords in code. Found hardcoded password used in password.",
+   "facts": {
+    "keep secrets out of code": [
+     "environment variable",
+     "vault",
+     "secrets manag",
+     "secret manag",
+     "key management",
+     "secret store"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-770",
+   "rule_id": "javascript/NoRateLimitingForExpensiveWebOperation",
+   "title": "Allocation of Resources Without Limits or Throttling",
+   "summary": "Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.",
+   "facts": {
+    "rate / size limits": [
+     "rate limit",
+     "rate-limit",
+     "throttl",
+     "request size",
+     "limit the size",
+     "size limit"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-601",
+   "rule_id": "javascript/OR",
+   "title": "Open Redirect",
+   "summary": "Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.",
+   "facts": {
+    "allowlist of targets": [
+     "allowlist",
+     "allow list",
+     "allow-list",
+     "whitelist",
+     "list of trusted urls"
+    ],
+    "validate the URL": [
+     "validat"
+    ],
+    "avoid user-controlled redirects": [
+     "do not allow the url as user input",
+     "avoid using redirects",
+     "mapped server-side"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-79",
+   "rule_id": "javascript/SemanticXss",
+   "title": "Cross-site Scripting (XSS) - Potentially Insecure Settings",
+   "summary": "The autoescape setting is set to false. Disabling it might allow for Cross-site Scripting (XSS) attacks if user input is involved.",
+   "facts": {
+    "escape / encode output": [
+     "escap",
+     "encod"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-200",
+   "rule_id": "javascript/DisablePoweredBy",
+   "title": "Information Exposure - X-Powered-By Header",
+   "summary": "Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.",
+   "facts": {
+    "names the header": [
+     "x-powered-by"
+    ],
+    "remove it": [
+     "helmet",
+     "hidepoweredby",
+     "disable",
+     "remove"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-918",
+   "rule_id": "javascript/Ssrf",
+   "title": "Server-Side Request Forgery (SSRF)",
+   "summary": "Unsanitized input from an HTTP parameter flows into needle.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+   "facts": {
+    "allowlist of targets": [
+     "allowlist",
+     "allow list",
+     "allow-list",
+     "whitelist"
+    ],
+    "validate the URL/input": [
+     "validat"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-352",
+   "rule_id": "javascript/UseCsurfForExpress",
+   "title": "Cross-Site Request Forgery (CSRF)",
+   "summary": "CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.",
+   "facts": {
+    "CSRF token": [
+     "token"
+    ],
+    "SameSite / origin checks": [
+     "samesite",
+     "synchronizer",
+     "double submit",
+     "origin"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-614",
+   "rule_id": "javascript/WebCookieSecureDisabledByDefault",
+   "title": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute",
+   "summary": "Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.",
+   "facts": {
+    "set the Secure flag": [
+     "secure flag",
+     "secure attribute",
+     "secure: true",
+     "secure cookie",
+     "secure=true",
+     "`secure`"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-400",
+   "rule_id": "javascript/reDOSPolynomial",
+   "title": "Regular Expression Denial of Service (ReDoS)",
+   "summary": "The method test is using a vulnerable regular expression /([0-9]+)+\\#/ on the HTTP request body. This may result in a Regular expression Denial of Service attack (reDOS).",
+   "facts": {
+    "cause: nested repetition": [
+     "grouping with repetition",
+     "nested quantif",
+     "overlapping"
+    ],
+    "tooling to check regexes": [
+     "vuln-regex-detector",
+     "safe-regex",
+     "tools to check"
+    ]
+   }
+  },
+  {
+   "cwe": "CWE-547",
+   "rule_id": "javascript/HardcodedNonCryptoSecret",
+   "title": "Hardcoded Non-Cryptographic Secret",
+   "summary": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+   "facts": {
+    "keep secrets out of code": [
+     "environment variable",
+     "vault",
+     "secrets manag",
+     "secret manag",
+     "key management",
+     "secret store"
+    ]
+   },
+   "held_out": true
+  }
+ ]
+}

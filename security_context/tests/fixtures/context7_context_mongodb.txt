@@ -1,0 +1,188 @@
+### Collection.prototype.aggregate: 2.x vs 3.x Syntax
+
+Source: https://github.com/mongodb/node-mongodb-native/blob/main/etc/notes/CHANGES_3.0.0.md
+
+The aggregate method no longer accepts variadic arguments. Pipeline stages must now be provided as an Array.
+
+```javascript
+collection.prototype.aggregate(
+  {$match: {a: 1}},
+  {$project: {b: 1, _id: 0}},
+  function (err, result) {
+    ...
+  }
+);
+```
+
+```javascript
+collection.prototype.aggregate(
+  [
+    {$match: {a: 1}},
+    {$project: {b: 1, _id: 0}}
+  ],
+  function (err, cursor) {
+    ...
+  }
+);
+```
+
+--------------------------------
+
+### Collection.prototype.aggregate: Callback Return Value Change
+
+Source: https://github.com/mongodb/node-mongodb-native/blob/main/etc/notes/CHANGES_3.0.0.md
+
+In 3.x, the aggregate method returns a cursor when a callback is provided, unlike 2.x which returned the resulting documents directly.
+
+```javascript
+collection.prototype.aggregate(
+  [
+    {$match: {a: 1}},
+    {$project: {b: 1, _id: 0}}
+  ],
+  function (err, result) {
+    console.log(result);
+  }
+);
+```
+
+```javascript
+collection.prototype.aggregate(
+  [
+    {$match: {a: 1}},
+    {$project: {b: 1, _id: 0}}
+  ],
+  function (err, cursor) {
+    cursor.toArray(function(err, result) {
+      console.log(result);
+    });
+  }
+);
+```
+
+--------------------------------
+
+### Collection.prototype.aggregate Changes
+
+Source: https://github.com/mongodb/node-mongodb-native/blob/main/etc/notes/CHANGES_3.0.0.md
+
+The `aggregate` method no longer accepts variadic arguments. Pipeline stages must now be provided as an array. The method now returns a cursor when a callback is provided, similar to calling `cursor.toArray()`.
+
+```APIDOC
+## Collection.prototype.aggregate
+
+### Description
+Changes in the `aggregate` method for version 3.0.0.
+
+### 2.x Syntax (Variadic Arguments - Removed)
+```javascript
+collection.prototype.aggregate(
+  {$match: {a: 1}},
+  {$project: {b: 1, _id: 0}},
+  function (err, result) {
+    ...
+  }
+);
+```
+
+### 3.x Syntax (Array of Stages)
+```javascript
+collection.prototype.aggregate(
+  [
+    {$match: {a: 1}},
+    {$project: {b: 1, _id: 0}}
+  ],
+  function (err, cursor) {
+    ...
+  }
+);
+```
+
+### Return Value Change
+Previously returned resulting documents directly. Now returns a cursor when a callback is provided.
+
+### 2.x Syntax (Callback with Result)
+```javascript
+collection.prototype.aggregate(
+  [
+    {$match: {a: 1}},
+    {$project: {b: 1, _id: 0}}
+  ],
+  function (err, result) {
+    console.log(result);
+  }
+);
+```
+
+### 3.x Syntax (Callback with Cursor)
+```javascript
+collection.prototype.aggregate(
+  [
+    {$match: {a: 1}},
+    {$project: {b: 1, _id: 0}}
+  ],
+  function (err, cursor) {
+    cursor.toArray(function(err, result) {
+      console.log(result);
+    });
+  }
+);
+```
+
+### New Options
+Support added for `comment` in the aggregation command and a `hint` field in aggregation options.
+```
+
+--------------------------------
+
+### Collection.insert, Collection.update, and Collection.remove Removed
+
+Source: https://github.com/mongodb/node-mongodb-native/blob/main/etc/notes/CHANGES_5.0.0.md
+
+The legacy collection methods `insert`, `update`, and `remove` have been removed. Users should migrate to `insertOne`, `insertMany`, `updateMany`, and `deleteMany` respectively.
+
+```APIDOC
+## Collection.insert, Collection.update, and Collection.remove Removed
+
+### Description
+Three legacy operation helpers on the collection class have been removed. Users should migrate to the more specific methods.
+
+### API Migration
+
+| Removed API                | API to migrate to              |
+| -------------------------- | ------------------------------ |
+| `insert(document)`         | `insertOne(document)`          |
+| `insert(arrayOfDocuments)` | `insertMany(arrayOfDocuments)` |
+| `update(filter)`           | `updateMany(filter)`           |
+| `remove(filter)`           | `deleteMany(filter)`           |
+
+### Request Example (Migration)
+
+```typescript
+// Single document insert (legacy):
+await collection.insert({ name: 'spot' });
+// Migration:
+await collection.insertOne({ name: 'spot' });
+
+// Multi-document insert (legacy):
+await collection.insert([{ name: 'fido' }, { name: 'luna' }]);
+// Migration:
+await collection.insertMany([{ name: 'fido' }, { name: 'luna' }]);
+```
+```
+
+--------------------------------
+
+### Use project for field selection in find (3.x syntax)
+
+Source: https://github.com/mongodb/node-mongodb-native/blob/main/etc/notes/CHANGES_3.0.0.md
+
+The `fields` parameter is no longer supported in `find` and `findOne`. Use `Cursor.prototype.project` or the `projection` option for field selection.
+
+```javascript
+const cursor = coll.find({ a: 42 }).project({ someField: 1 });
+```
+
+```javascript
+const cursor = coll.find({ a: 42 }, { projection: { someField: 1 } });
+```

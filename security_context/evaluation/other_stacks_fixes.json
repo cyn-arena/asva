@@ -1,0 +1,278 @@
+{
+ "requirements.txt": {
+  "A": [
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow 10.0.1 (MAJOR)",
+     "pyyaml 5.4",
+     "urllib3 2.6.0 (MAJOR)"
+    ],
+    "majors": [
+     "pillow",
+     "urllib3"
+    ],
+    "resolved": 6,
+    "findings": 6,
+    "pip": false
+   },
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow 10.0.1 (MAJOR)",
+     "pyyaml 5.4",
+     "urllib3 2.6.0 (MAJOR)"
+    ],
+    "majors": [
+     "pillow",
+     "urllib3"
+    ],
+    "resolved": 6,
+    "findings": 6,
+    "pip": false
+   },
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow 10.0.1 (MAJOR)",
+     "pyyaml 5.4",
+     "urllib3 2.6.0 (MAJOR)"
+    ],
+    "majors": [
+     "pillow",
+     "urllib3"
+    ],
+    "resolved": 6,
+    "findings": 6,
+    "pip": false
+   }
+  ],
+  "B": [
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow unchanged",
+     "pyyaml 5.4",
+     "urllib3 1.26.19"
+    ],
+    "majors": [],
+    "resolved": 4,
+    "findings": 6,
+    "pip": true
+   },
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow unchanged",
+     "pyyaml 5.4",
+     "urllib3 1.26.19"
+    ],
+    "majors": [],
+    "resolved": 4,
+    "findings": 6,
+    "pip": true
+   },
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow unchanged",
+     "pyyaml 5.4",
+     "urllib3 1.26.19"
+    ],
+    "majors": [],
+    "resolved": 4,
+    "findings": 6,
+    "pip": true
+   }
+  ],
+  "C": [
+   {
+    "moves": [
+     "certifi 2023.7.22",
+     "django 4.2.15",
+     "pillow unchanged",
+     "pyyaml 5.4",
+     "urllib3 1.26.19"
+    ],
+    "majors": [],
+    "resolved": 4,
+    "findings": 6,
+    "pip": true
+   }
+  ]
+ },
+ "package.json (another Node app)": {
+  "A": [
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken 9.0.0 (MAJOR)",
+     "lodash 4.17.21"
+    ],
+    "majors": [
+     "jsonwebtoken"
+    ],
+    "resolved": 3,
+    "findings": 3,
+    "pip": null
+   },
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken 9.0.0 (MAJOR)",
+     "lodash 4.17.21"
+    ],
+    "majors": [
+     "jsonwebtoken"
+    ],
+    "resolved": 3,
+    "findings": 3,
+    "pip": null
+   },
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken 9.0.0 (MAJOR)",
+     "lodash 4.17.21"
+    ],
+    "majors": [
+     "jsonwebtoken"
+    ],
+    "resolved": 3,
+    "findings": 3,
+    "pip": null
+   }
+  ],
+  "B": [
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken unchanged",
+     "lodash 4.17.21"
+    ],
+    "majors": [],
+    "resolved": 2,
+    "findings": 3,
+    "pip": null
+   },
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken unchanged",
+     "lodash 4.17.21"
+    ],
+    "majors": [],
+    "resolved": 2,
+    "findings": 3,
+    "pip": null
+   },
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken unchanged",
+     "lodash 4.17.21"
+    ],
+    "majors": [],
+    "resolved": 2,
+    "findings": 3,
+    "pip": null
+   }
+  ],
+  "C": [
+   {
+    "moves": [
+     "express 4.19.2",
+     "jsonwebtoken unchanged",
+     "lodash 4.17.21"
+    ],
+    "majors": [],
+    "resolved": 2,
+    "findings": 3,
+    "pip": null
+   }
+  ]
+ },
+ "app.csproj": {
+  "A": [
+   {
+    "moves": [
+     "Newtonsoft.Json 13.0.1 (MAJOR)"
+    ],
+    "majors": [
+     "Newtonsoft.Json"
+    ],
+    "resolved": 1,
+    "findings": 1,
+    "pip": null
+   },
+   {
+    "moves": [
+     "Newtonsoft.Json 13.0.1 (MAJOR)"
+    ],
+    "majors": [
+     "Newtonsoft.Json"
+    ],
+    "resolved": 1,
+    "findings": 1,
+    "pip": null
+   },
+   {
+    "moves": [
+     "Newtonsoft.Json 13.0.1 (MAJOR)"
+    ],
+    "majors": [
+     "Newtonsoft.Json"
+    ],
+    "resolved": 1,
+    "findings": 1,
+    "pip": null
+   }
+  ],
+  "B": [
+   {
+    "moves": [
+     "Newtonsoft.Json unchanged"
+    ],
+    "majors": [],
+    "resolved": 0,
+    "findings": 1,
+    "pip": null
+   },
+   {
+    "moves": [
+     "Newtonsoft.Json unchanged"
+    ],
+    "majors": [],
+    "resolved": 0,
+    "findings": 1,
+    "pip": null
+   },
+   {
+    "moves": [
+     "Newtonsoft.Json unchanged"
+    ],
+    "majors": [],
+    "resolved": 0,
+    "findings": 1,
+    "pip": null
+   }
+  ],
+  "C": [
+   {
+    "moves": [
+     "Newtonsoft.Json unchanged"
+    ],
+    "majors": [],
+    "resolved": 0,
+    "findings": 1,
+    "pip": null
+   }
+  ]
+ }
+}

@@ -1,0 +1,33 @@
+# ASVA Security Context Service on Kubernetes.
+#
+#   1. Create the secret once (values never go into git):
+#        kubectl -n <namespace> create secret generic security-context-secrets \
+#          --from-literal=NVD_API_KEY=... --from-literal=CONTEXT7_API_KEY=... \
+#          --from-literal=ADMIN_TOKEN=$(python -c "import secrets; print(secrets.token_urlsafe(32))")
+#   2. Set the namespace and image below (to confirm with Cyntillate).
+#   3. kubectl apply -k deploy/k8s
+#
+# Preview the rendered manifests:  kubectl kustomize deploy/k8s
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: dvapps   # TODO: confirm the namespace with Cyntillate
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: security-context
+      app.kubernetes.io/part-of: asva
+    includeSelectors: true
+
+resources:
+  - configmap.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  - cronjob-sync.yaml
+
+images:
+  - name: asva-security-context
+    newName: ghcr.io/cyn-arena/asva-security-context   # TODO: or Cyntillate's registry
+    newTag: latest

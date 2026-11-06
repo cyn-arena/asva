@@ -1,0 +1,38 @@
+name: Generic - Build & Push to Dockerhub
+
+on:
+  # workflow_dispatch:
+  push:
+    branches:
+    #  - feat/nodegoat
+    #  - rel/26.07
+      - feat/app-types
+    paths:
+    #  - 'target-apps/NodeGoat/Dockerfile'
+      - '.github/workflows/any-app-build-oci.yml'
+      - 'target-apps/vulnbank/Dockerfile'
+  workflow_call:
+
+jobs:
+
+## DVNG build and push to OCI registry
+#   build-to-oci-dvng:
+#     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@rel/26.07
+#     with:
+#       working-directory: target-apps/NodeGoat
+#       oci-repo: dvapps
+#       tag-prefix: dvng
+#     secrets:
+#       oci-reg-id: ${{ secrets.OCI_REG_ID }}
+#       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}
+
+## VulnBank build and push to OCI registry
+  build-to-oci-vulnbank:
+    uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@rel/26.07
+    with:
+      working-directory: target-apps/vulnbank
+      oci-repo: dvapps
+      tag-prefix: vulnbank
+    secrets:
+      oci-reg-id: ${{ secrets.OCI_REG_ID }}
+      oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

@@ -1,0 +1,169 @@
+{
+ "id": "UBUNTU-CVE-2026-8376",
+ "upstream": [
+  "CVE-2026-8376"
+ ],
+ "affected": [
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:Pro:14.04:LTS",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=esm-infra-legacy%2Ftrusty"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.18.2-2ubuntu1.7+esm7"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro with Legacy support add-on: https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:Pro:18.04:LTS",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=esm-infra%2Fbionic"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.26.1-6ubuntu0.7+esm2"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:Pro:20.04:LTS",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=esm-infra%2Ffocal"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.30.0-9ubuntu0.5+esm2"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:22.04:LTS",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=jammy"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.34.0-3ubuntu1.7"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  },
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:24.04:LTS",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=noble"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.38.2-3.2ubuntu0.3"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  },
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:25.10",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=questing"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.40.1-6ubuntu0.1"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  },
+  {
+   "package": {
+    "name": "perl",
+    "ecosystem": "Ubuntu:26.04:LTS",
+    "purl": "pkg:deb/ubuntu/perl?arch=source&distro=resolute"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.40.1-7ubuntu0.1"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  }
+ ]
+}

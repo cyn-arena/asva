@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets
+.env
+
+# Local database, downloaded sources and the embedding model
+data/
+
+# Word lock files
+~$*.docx
+~WRL*.tmp

@@ -1,0 +1,600 @@
+{
+ "description": "Cases outside NodeGoat, to see whether each source has anything to give on other languages, package ecosystems and base images. HAND-BUILT, not scanner output: each finding is a well-known public vulnerability (real CVE id, real package and version), written in the shape ASVA sends. The upgrade target is the fixed version the public advisory names for that CVE, which is what a scanner reports. No application was scanned for these, and no application exists to run the fixes against: they test what the sources return, not whether a fix works. Scanner rule ids are left out for dependency findings; container findings keep the rule id's base-OS prefix (e.g. SNYK-DEBIAN12-), which is how the scanner names the image's OS, with a placeholder number.",
+ "built": "2026-10-14",
+ "files": [
+  {
+   "file": "pom.xml",
+   "stack": "Java / Maven",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Remote Code Execution (Log4Shell) in log4j-core",
+     "summary": "Remote Code Execution in log4j-core",
+     "description": "(CVE-2021-44228) log4j-core",
+     "identifiers": {
+      "cve": "CVE-2021-44228",
+      "cwe": null,
+      "rule_id": "SNYK-JAVA-ORGAPACHELOGGINGLOG4J-2314720"
+     },
+     "location": {
+      "package": "org.apache.logging.log4j:log4j-core@2.14.1"
+     },
+     "remediation": {
+      "upgrade_to": "org.apache.logging.log4j:log4j-core@2.15.0",
+      "fixable": true
+     },
+     "ecosystem": "maven",
+     "sarif_cwes": [
+      "CWE-502"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Remote Code Execution in log4j-core",
+     "summary": "Remote Code Execution in log4j-core",
+     "description": "(CVE-2021-45046) log4j-core",
+     "identifiers": {
+      "cve": "CVE-2021-45046",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "org.apache.logging.log4j:log4j-core@2.14.1"
+     },
+     "remediation": {
+      "upgrade_to": "org.apache.logging.log4j:log4j-core@2.16.0",
+      "fixable": true
+     },
+     "ecosystem": "maven",
+     "sarif_cwes": [
+      "CWE-917"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Remote Code Execution (Spring4Shell) in spring-beans",
+     "summary": "Remote Code Execution in spring-beans",
+     "description": "(CVE-2022-22965) spring-beans",
+     "identifiers": {
+      "cve": "CVE-2022-22965",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "org.springframework:spring-beans@5.3.17"
+     },
+     "remediation": {
+      "upgrade_to": "org.springframework:spring-beans@5.3.18",
+      "fixable": true
+     },
+     "ecosystem": "maven",
+     "sarif_cwes": [
+      "CWE-94"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Arbitrary Code Execution (Text4Shell) in commons-text",
+     "summary": "Arbitrary Code Execution in commons-text",
+     "description": "(CVE-2022-42889) commons-text",
+     "identifiers": {
+      "cve": "CVE-2022-42889",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "org.apache.commons:commons-text@1.9"
+     },
+     "remediation": {
+      "upgrade_to": "org.apache.commons:commons-text@1.10.0",
+      "fixable": true
+     },
+     "ecosystem": "maven",
+     "sarif_cwes": [
+      "CWE-94"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "requirements.txt",
+   "stack": "Python / pip",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "SQL Injection in django",
+     "summary": "SQL Injection in django",
+     "description": "(CVE-2024-42005) django",
+     "identifiers": {
+      "cve": "CVE-2024-42005",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "django@4.2"
+     },
+     "remediation": {
+      "upgrade_to": "django@4.2.15",
+      "fixable": true
+     },
+     "ecosystem": "pip",
+     "sarif_cwes": [
+      "CWE-89"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Arbitrary Code Execution in pyyaml",
+     "summary": "Arbitrary Code Execution in pyyaml",
+     "description": "(CVE-2020-14343) pyyaml",
+     "identifiers": {
+      "cve": "CVE-2020-14343",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "pyyaml@5.1"
+     },
+     "remediation": {
+      "upgrade_to": "pyyaml@5.4",
+      "fixable": true
+     },
+     "ecosystem": "pip",
+     "sarif_cwes": [
+      "CWE-20"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Heap-based Buffer Overflow in pillow",
+     "summary": "Heap-based Buffer Overflow in pillow",
+     "description": "(CVE-2023-4863) pillow",
+     "identifiers": {
+      "cve": "CVE-2023-4863",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "pillow@9.4.0"
+     },
+     "remediation": {
+      "upgrade_to": "pillow@10.0.1",
+      "fixable": true
+     },
+     "ecosystem": "pip",
+     "sarif_cwes": [
+      "CWE-787"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "Information Exposure Through Sent Data in urllib3",
+     "summary": "Information Exposure in urllib3",
+     "description": "(CVE-2023-43804) urllib3",
+     "identifiers": {
+      "cve": "CVE-2023-43804",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "urllib3@1.26.9"
+     },
+     "remediation": {
+      "upgrade_to": "urllib3@1.26.17",
+      "fixable": true
+     },
+     "ecosystem": "pip",
+     "sarif_cwes": [
+      "CWE-200"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "Allocation of Resources Without Limits or Throttling in urllib3",
+     "summary": "Allocation of Resources Without Limits in urllib3",
+     "description": "(CVE-2025-66418) urllib3",
+     "identifiers": {
+      "cve": "CVE-2025-66418",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "urllib3@1.26.9"
+     },
+     "remediation": {
+      "upgrade_to": "urllib3@2.6.0",
+      "fixable": true
+     },
+     "ecosystem": "pip",
+     "sarif_cwes": [
+      "CWE-770"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "title": "Improper Following of a Certificate's Chain of Trust in certifi",
+     "summary": "Improper Certificate Validation in certifi",
+     "description": "(CVE-2023-37920) certifi",
+     "identifiers": {
+      "cve": "CVE-2023-37920",
+      "cwe": null,
+      "rule_id": "SNYK-PYTHON-CERTIFI-5805047"
+     },
+     "location": {
+      "package": "certifi@2022.12.7"
+     },
+     "remediation": {
+      "upgrade_to": "certifi@2023.7.22",
+      "fixable": true
+     },
+     "ecosystem": "pip",
+     "sarif_cwes": [
+      "CWE-345"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "package.json (another Node app)",
+   "stack": "JavaScript / npm",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "Improper Restriction of Security Token Assignment in jsonwebtoken",
+     "summary": "Insecure key type handling in jsonwebtoken",
+     "description": "(CVE-2022-23540) jsonwebtoken",
+     "identifiers": {
+      "cve": "CVE-2022-23540",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "jsonwebtoken@8.5.1"
+     },
+     "remediation": {
+      "upgrade_to": "jsonwebtoken@9.0.0",
+      "fixable": true
+     },
+     "ecosystem": "npm",
+     "sarif_cwes": [
+      "CWE-347"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "Command Injection in lodash",
+     "summary": "Command Injection in lodash",
+     "description": "(CVE-2021-23337) lodash",
+     "identifiers": {
+      "cve": "CVE-2021-23337",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "lodash@4.17.15"
+     },
+     "remediation": {
+      "upgrade_to": "lodash@4.17.21",
+      "fixable": true
+     },
+     "ecosystem": "npm",
+     "sarif_cwes": [
+      "CWE-78"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "sca",
+     "severity": "medium",
+     "title": "Open Redirect in express",
+     "summary": "Open Redirect in express",
+     "description": "(CVE-2024-29041) express",
+     "identifiers": {
+      "cve": "CVE-2024-29041",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "express@4.17.1"
+     },
+     "remediation": {
+      "upgrade_to": "express@4.19.2",
+      "fixable": true
+     },
+     "ecosystem": "npm",
+     "sarif_cwes": [
+      "CWE-601"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "app.csproj",
+   "stack": ".NET / NuGet",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "Denial of Service in Newtonsoft.Json",
+     "summary": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+     "description": "(CVE-2024-21907) Newtonsoft.Json",
+     "identifiers": {
+      "cve": "CVE-2024-21907",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "Newtonsoft.Json@12.0.3"
+     },
+     "remediation": {
+      "upgrade_to": "Newtonsoft.Json@13.0.1",
+      "fixable": true
+     },
+     "ecosystem": "nuget",
+     "sarif_cwes": [
+      "CWE-755"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "go.mod",
+   "stack": "Go modules",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "HTTP Response Splitting in gin",
+     "summary": "Inconsistent Interpretation of HTTP Requests in gin",
+     "description": "(CVE-2020-28483) gin",
+     "identifiers": {
+      "cve": "CVE-2020-28483",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "github.com/gin-gonic/gin@1.6.3"
+     },
+     "remediation": {
+      "upgrade_to": "github.com/gin-gonic/gin@1.7.7",
+      "fixable": true
+     },
+     "ecosystem": "golang",
+     "sarif_cwes": [
+      "CWE-113"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "Gemfile",
+   "stack": "Ruby / RubyGems",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "title": "Denial of Service in rack",
+     "summary": "Denial of Service in rack multipart parsing",
+     "description": "(CVE-2022-30122) rack",
+     "identifiers": {
+      "cve": "CVE-2022-30122",
+      "cwe": null,
+      "rule_id": null
+     },
+     "location": {
+      "package": "rack@2.2.3"
+     },
+     "remediation": {
+      "upgrade_to": "rack@2.2.3.1",
+      "fixable": true
+     },
+     "ecosystem": "rubygems",
+     "sarif_cwes": [
+      "CWE-400"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "docker-compose.yml (node:18, Debian 12)",
+   "stack": "Node runtime image on Debian",
+   "finding_type": "container",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "title": "Integer Overflow or Wraparound in zlib",
+     "summary": "Integer Overflow in zlib (MiniZip)",
+     "description": "(CVE-2023-45853) zlib",
+     "identifiers": {
+      "cve": "CVE-2023-45853",
+      "cwe": null,
+      "rule_id": "SNYK-DEBIAN12-ZLIB-6008963"
+     },
+     "location": {
+      "package": "zlib@1:1.2.13.dfsg-1",
+      "image_name": "node",
+      "image_tag": "18"
+     },
+     "remediation": {
+      "upgrade_to": null,
+      "fixable": false
+     },
+     "ecosystem": null,
+     "sarif_cwes": [
+      "CWE-190"
+     ],
+     "dependency": null
+    },
+    {
+     "finding_type": "container",
+     "severity": "high",
+     "title": "Out-of-bounds Write in glibc (Looney Tunables)",
+     "summary": "Buffer overflow in the glibc dynamic loader",
+     "description": "(CVE-2023-4911) glibc",
+     "identifiers": {
+      "cve": "CVE-2023-4911",
+      "cwe": null,
+      "rule_id": "SNYK-DEBIAN12-GLIBC-0"
+     },
+     "location": {
+      "package": "glibc@2.36-9+deb12u1",
+      "image_name": "node",
+      "image_tag": "18"
+     },
+     "remediation": {
+      "upgrade_to": "glibc/libc6@2.36-9+deb12u3",
+      "fixable": true
+     },
+     "ecosystem": null,
+     "sarif_cwes": [
+      "CWE-787"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "docker-compose.yml (redis:6.2-alpine, Alpine 3.18)",
+   "stack": "Redis image on Alpine",
+   "finding_type": "container",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "container",
+     "severity": "high",
+     "title": "Incorrect cipher key and IV length processing in openssl",
+     "summary": "Truncation or overrun of key and IV in openssl",
+     "description": "(CVE-2023-5363) openssl",
+     "identifiers": {
+      "cve": "CVE-2023-5363",
+      "cwe": null,
+      "rule_id": "SNYK-ALPINE318-OPENSSL-0"
+     },
+     "location": {
+      "package": "openssl@3.1.3-r0",
+      "image_name": "redis",
+      "image_tag": "6.2-alpine"
+     },
+     "remediation": {
+      "upgrade_to": "openssl/libssl3@3.1.4-r0",
+      "fixable": true
+     },
+     "ecosystem": null,
+     "sarif_cwes": [
+      "CWE-684"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "docker-compose.yml (postgres:13, Debian 12)",
+   "stack": "PostgreSQL image on Debian",
+   "finding_type": "container",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "title": "Integer Overflow or Wraparound in zlib",
+     "summary": "Integer Overflow in zlib (MiniZip)",
+     "description": "(CVE-2023-45853) zlib",
+     "identifiers": {
+      "cve": "CVE-2023-45853",
+      "cwe": null,
+      "rule_id": "SNYK-DEBIAN12-ZLIB-6008963"
+     },
+     "location": {
+      "package": "zlib@1:1.2.13.dfsg-1",
+      "image_name": "postgres",
+      "image_tag": "13"
+     },
+     "remediation": {
+      "upgrade_to": null,
+      "fixable": false
+     },
+     "ecosystem": null,
+     "sarif_cwes": [
+      "CWE-190"
+     ],
+     "dependency": null
+    }
+   ]
+  },
+  {
+   "file": "docker-compose.yml (ghcr.io/acme/api:1.4.2, Debian 12)",
+   "stack": "Image from another registry",
+   "finding_type": "container",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "container",
+     "severity": "high",
+     "title": "Out-of-bounds Write in glibc (Looney Tunables)",
+     "summary": "Buffer overflow in the glibc dynamic loader",
+     "description": "(CVE-2023-4911) glibc",
+     "identifiers": {
+      "cve": "CVE-2023-4911",
+      "cwe": null,
+      "rule_id": "SNYK-DEBIAN12-GLIBC-0"
+     },
+     "location": {
+      "package": "glibc@2.36-9+deb12u1",
+      "image_name": "ghcr.io/acme/api",
+      "image_tag": "1.4.2"
+     },
+     "remediation": {
+      "upgrade_to": "glibc/libc6@2.36-9+deb12u3",
+      "fixable": true
+     },
+     "ecosystem": null,
+     "sarif_cwes": [
+      "CWE-787"
+     ],
+     "dependency": null
+    }
+   ]
+  }
+ ]
+}

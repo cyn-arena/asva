@@ -1,0 +1,32 @@
+name: PyGoat - ASVA component tests
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        description: "Test tier; currently supports 'unit' for ASVA components"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: ASVA unit tests
+    if: inputs.stage == 'unit'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Test ASVA components
+        run: pytest -m unit -q

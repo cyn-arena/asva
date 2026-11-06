@@ -1,0 +1,20 @@
+{
+  "app": "pygoat",
+  "run_id": "39018400376",
+  "run_attempt": "1",
+  "commit_sha": "23be8e20cf5fd51f20d0d36372a8fc01bc2f2b1b",
+  "scans": {
+    "sast": {
+      "exit_code": "1",
+      "status": "completed"
+    },
+    "sca": {
+      "exit_code": "1",
+      "status": "completed"
+    },
+    "container": {
+      "exit_code": "1",
+      "status": "completed"
+    }
+  }
+}

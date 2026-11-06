@@ -1,0 +1,67 @@
+name: NodeGoat - ASVA unit and deployed application tests
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        description: "Which tier to run: 'unit' (offline, pre-fix gate) or 'e2e' (smoke + optional misuse, post-deploy)"
+        type: string
+        required: true
+      base_url:
+        description: "NodeGoat target URL for the e2e stage (defaults to the NODEGOAT_BASE_URL repository variable)"
+        type: string
+        required: false
+      run_misuse:
+        description: "Also run the misuse-case suite (TARGET=green) during the e2e stage. Leave off until fix PRs are merged onto this branch, or the two FIXED cases will correctly fail."
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  unit:
+    name: ASVA unit tests
+    if: inputs.stage == 'unit'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Test ASVA components
+        run: pytest -m unit -q
+
+  e2e:
+    name: Deployed application E2E tests
+    if: inputs.stage == 'e2e'
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: ${{ inputs.base_url || vars.NODEGOAT_BASE_URL }}
+      TARGET: green
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Install Playwright browser
+        run: python -m playwright install --with-deps chromium
+
+      - name: Test deployed application functionality
+        run: pytest -m smoke -q
+
+      - name: Test deployed application security (optional)
+        if: inputs.run_misuse
+        run: pytest -m api -q

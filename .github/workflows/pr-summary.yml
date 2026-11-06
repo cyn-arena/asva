@@ -1,0 +1,44 @@
+name: ASVA - Add a compare-your-options table to each fix PR
+
+# After the rescans, as the table is made from them. Never fails the pipeline.
+on:
+  workflow_call:
+    inputs:
+      app-code:
+        type: string
+        required: true
+    secrets:
+      GHPAT_ASVA_GITOPS:
+        required: false
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+jobs:
+  summary:
+    name: Add a table to each ${{ inputs.app-code }} PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    env:
+      GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS || github.token }}
+      APP_CODE: ${{ inputs.app-code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download this run's fix output, rescans and validation
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ inputs.app-code }}-*
+          path: asva-artifacts
+
+      - name: Add the table
+        run: python gitops/post_pr_summary.py --app "$APP_CODE" --artifacts asva-artifacts --execute

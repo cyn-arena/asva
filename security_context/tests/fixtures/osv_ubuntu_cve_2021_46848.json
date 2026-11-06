@@ -1,0 +1,123 @@
+{
+ "id": "UBUNTU-CVE-2021-46848",
+ "upstream": [
+  "CVE-2021-46848"
+ ],
+ "affected": [
+  {
+   "package": {
+    "name": "libtasn1-6",
+    "ecosystem": "Ubuntu:Pro:14.04:LTS",
+    "purl": "pkg:deb/ubuntu/libtasn1-6@3.4-3ubuntu0.6+esm1?arch=source&distro=esm-infra-legacy/trusty"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4-3ubuntu0.6+esm1"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro with Legacy support add-on: https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "libtasn1-6",
+    "ecosystem": "Ubuntu:Pro:16.04:LTS",
+    "purl": "pkg:deb/ubuntu/libtasn1-6@4.7-3ubuntu0.16.04.3+esm3?arch=source&distro=esm-infra/xenial"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.7-3ubuntu0.16.04.3+esm3"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "libtasn1-6",
+    "ecosystem": "Ubuntu:Pro:18.04:LTS",
+    "purl": "pkg:deb/ubuntu/libtasn1-6@4.13-2ubuntu0.1~esm1?arch=source&distro=esm-infra/bionic"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.13-2ubuntu0.1~esm1"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "libtasn1-6",
+    "ecosystem": "Ubuntu:Pro:20.04:LTS",
+    "purl": "pkg:deb/ubuntu/libtasn1-6@4.16.0-2ubuntu0.1+esm1?arch=source&distro=esm-infra/focal"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.16.0-2ubuntu0.1+esm1"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "Available with Ubuntu Pro (Infra-only): https://ubuntu.com/pro"
+   }
+  },
+  {
+   "package": {
+    "name": "libtasn1-6",
+    "ecosystem": "Ubuntu:22.04:LTS",
+    "purl": "pkg:deb/ubuntu/libtasn1-6@4.18.0-4ubuntu0.2?arch=source&distro=jammy"
+   },
+   "ranges": [
+    {
+     "type": "ECOSYSTEM",
+     "events": [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.18.0-4ubuntu0.2"
+      }
+     ]
+    }
+   ],
+   "ecosystem_specific": {
+    "availability": "No subscription required"
+   }
+  }
+ ]
+}

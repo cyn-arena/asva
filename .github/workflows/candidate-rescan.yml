@@ -1,0 +1,138 @@
+name: ASVA - Rescan exact fix candidates
+
+on:
+  workflow_call:
+    inputs:
+      app-code:
+        type: string
+        required: true
+      app-path:
+        type: string
+        required: true
+      ecosystem:
+        type: string
+        required: true
+      manifest:
+        type: string
+        required: true
+      container-file:
+        type: string
+        required: true
+      container-mode:
+        type: string
+        required: true
+      prs:
+        type: string
+        required: true
+      # What this app's dependency scan and third-party container scan need.
+      node-version:
+        type: string
+        default: ''
+      npm-version:
+        type: string
+        default: ''
+      python-image:
+        type: string
+        default: ''
+      pip-version:
+        type: string
+        default: ''
+      system-packages:
+        type: string
+        default: ''
+      compose-files:
+        type: string
+        default: ''
+    secrets:
+      SNYK_TOKEN:
+        required: false
+      SNYK_ORG:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Rescan ${{ inputs.app-code }} (${{ matrix.batch_id }})
+    if: inputs.prs != '' && inputs.prs != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.prs) }}
+    env:
+      APP_CODE: ${{ inputs.app-code }}
+      APP_PATH: ${{ github.workspace }}/candidate-source/${{ inputs.app-path }}
+      EXPECTED_SHA: ${{ matrix.sha }}
+      BATCH_ID: ${{ matrix.batch_id }}
+      CANDIDATE_PR: ${{ matrix.pr_url }}
+      ECOSYSTEM: ${{ inputs.ecosystem }}
+      MANIFEST: ${{ inputs.manifest }}
+      CONTAINER_FILE: ${{ inputs.container-file }}
+      CONTAINER_MODE: ${{ inputs.container-mode }}
+      NPM_VERSION: ${{ inputs.npm-version }}
+      PYTHON_IMAGE: ${{ inputs.python-image }}
+      PIP_VERSION: ${{ inputs.pip-version }}
+      SYSTEM_PACKAGES: ${{ inputs.system-packages }}
+      COMPOSE_FILES: ${{ inputs.compose-files }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_CFG_ORG: ${{ secrets.SNYK_ORG }}
+    steps:
+      - name: Checkout current scanning tooling
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout exact candidate commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.sha }}
+          path: candidate-source
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js for dependency scanning
+        if: inputs.ecosystem == 'npm'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Align candidate lockfile reader with remediation generator
+        if: inputs.ecosystem == 'npm' && inputs.npm-version != ''
+        run: npm install --global "npm@$NPM_VERSION" --ignore-scripts --no-audit --no-fund
+
+      - name: Install pinned Snyk CLI
+        run: |
+          INSTALL_DIR="$HOME/.local/bin" bash scripts/install-snyk.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Scan available candidate source, dependencies and image
+        if: always()
+        run: |
+          args=()
+          for file in $COMPOSE_FILES; do
+            args+=(--compose-file "$file")
+          done
+          python -m scripts.candidate_rescan --app "$APP_CODE" --app-path "$APP_PATH" \
+            --sha "$EXPECTED_SHA" --batch-id "$BATCH_ID" --pr-url "$CANDIDATE_PR" \
+            --run-id "$GITHUB_RUN_ID" --output asva-results/after-fix \
+            --ecosystem "$ECOSYSTEM" --manifest "$MANIFEST" \
+            --container-file "$CONTAINER_FILE" --container-mode "$CONTAINER_MODE" \
+            --npm-version "$NPM_VERSION" --python-image "$PYTHON_IMAGE" --pip-version "$PIP_VERSION" \
+            --system-packages "$SYSTEM_PACKAGES" "${args[@]}"
+
+      - name: Save complete and failed scan evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app-code }}-after-fix-${{ matrix.batch_id }}
+          path: asva-results/after-fix/
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: true

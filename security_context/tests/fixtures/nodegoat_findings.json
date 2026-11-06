@@ -1,0 +1,1601 @@
+{
+ "description": "Real NodeGoat findings from the ASVA pipeline, hardcoded for the RAG demo and evaluation. Built by tools/build_fixture.py from asva/fix_batches (normalised + triaged Snyk findings) plus each rule's CWE ids from the Snyk SARIF files ('sarif_cwes'). Nothing reads the asva folder at runtime.",
+ "extracted_at": "2026-10-13",
+ "source": {
+  "scan_run_id": "20261013062102",
+  "commit_sha": "765e1949",
+  "batches": [
+   "asva_container_765e1949",
+   "asva_sast_765e1949_1",
+   "asva_sca_765e1949"
+  ],
+  "sarif": [
+   "nodegoat-image.sarif.json",
+   "nodegoat-sast.sarif.json",
+   "nodegoat-sca.sarif.json"
+  ]
+ },
+ "files": [
+  {
+   "file": "app/routes/contributions.js",
+   "batch_id": "asva_sast_765e1949_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Code Injection",
+     "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+     "description": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-94",
+      "rule_id": "javascript/CodeInjection"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "app/routes/contributions.js",
+      "line": 32,
+      "package": null,
+      "display": "app/routes/contributions.js:32",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Code Injection",
+     "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+     "description": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-94",
+      "rule_id": "javascript/CodeInjection"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "app/routes/contributions.js",
+      "line": 33,
+      "package": null,
+      "display": "app/routes/contributions.js:33",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    },
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Code Injection",
+     "summary": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+     "description": "Unsanitized input from the HTTP request body flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-94",
+      "rule_id": "javascript/CodeInjection"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "app/routes/contributions.js",
+      "line": 34,
+      "package": null,
+      "display": "app/routes/contributions.js:34",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-94"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "config/env/development.js",
+   "batch_id": "asva_sast_765e1949_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Hardcoded Non-Cryptographic Secret",
+     "summary": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+     "description": "Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-547",
+      "rule_id": "javascript/HardcodedNonCryptoSecret"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "config/env/development.js",
+      "line": 6,
+      "package": null,
+      "display": "config/env/development.js:6",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-547"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "app/routes/profile.js",
+   "batch_id": "asva_sast_765e1949_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Regular Expression Denial of Service (ReDoS)",
+     "summary": "The method test is using a vulnerable regular expression /([0-9]+)+\\#/ on the HTTP request body. This may result in a Regular expression Denial of Service attack (reDOS).",
+     "description": "The method test is using a vulnerable regular expression /([0-9]+)+\\#/ on the HTTP request body. This may result in a Regular expression Denial of Service attack (reDOS).",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-400",
+      "rule_id": "javascript/reDOSPolynomial"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "app/routes/profile.js",
+      "line": 61,
+      "package": null,
+      "display": "app/routes/profile.js:61",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "app/routes/research.js",
+   "batch_id": "asva_sast_765e1949_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "high",
+     "score": 8.5,
+     "has_real_score": false,
+     "title": "Server-Side Request Forgery (SSRF)",
+     "summary": "Unsanitized input from an HTTP parameter flows into needle.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into needle.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-918",
+      "rule_id": "javascript/Ssrf"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "app/routes/research.js",
+      "line": 16,
+      "package": null,
+      "display": "app/routes/research.js:16",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-918"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "app/routes/index.js",
+   "batch_id": "asva_sast_765e1949_1",
+   "finding_type": "sast",
+   "fix_type": "code_change",
+   "findings": [
+    {
+     "finding_type": "sast",
+     "severity": "medium",
+     "score": 5.0,
+     "has_real_score": false,
+     "title": "Open Redirect",
+     "summary": "Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.",
+     "description": "Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.",
+     "identifiers": {
+      "cve": null,
+      "cwe": "CWE-601",
+      "rule_id": "javascript/OR"
+     },
+     "location": {
+      "kind": "source_file",
+      "file": "app/routes/index.js",
+      "line": 72,
+      "package": null,
+      "display": "app/routes/index.js:72",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "code_change",
+      "fixable": true,
+      "upgrade_to": null
+     },
+     "ecosystem": "unknown",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-601"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "package.json",
+   "batch_id": "asva_sca_765e1949",
+   "finding_type": "sca",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "sca",
+     "severity": "critical",
+     "score": 9.3,
+     "has_real_score": true,
+     "title": "Critical severity - User Impersonation vulnerability in proxy-addr",
+     "summary": "Critical severity - User Impersonation vulnerability in proxy-addr",
+     "description": "(CVE-2026-90711) proxy-addr@2.0.4",
+     "identifiers": {
+      "cve": "CVE-2026-90711",
+      "cwe": null,
+      "rule_id": "SNYK-JS-PROXYADDR-19812342"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "proxy-addr@2.0.4",
+      "display": "proxy-addr@2.0.4 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "express@4.16.4"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "express@4.16.4",
+       "proxy-addr@2.0.4"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-290"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.8,
+     "has_real_score": true,
+     "title": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+     "summary": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+     "description": "(CVE-2016-10531) marked@0.3.5",
+     "identifiers": {
+      "cve": "CVE-2016-10531",
+      "cwe": null,
+      "rule_id": "npm:marked:20150520"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "marked@0.3.5",
+      "display": "marked@0.3.5 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "marked@0.3.6"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "marked@0.3.5"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-79"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in brace-expansion",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in brace-expansion",
+     "description": "(CVE-2026-14257) brace-expansion@1.1.11",
+     "identifiers": {
+      "cve": "CVE-2026-14257",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BRACEEXPANSION-18313044"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "brace-expansion@1.1.11",
+      "display": "brace-expansion@1.1.11 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4",
+       "brace-expansion@1.1.11"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in brace-expansion",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in brace-expansion",
+     "description": "(CVE-2026-69152) brace-expansion@1.1.11",
+     "identifiers": {
+      "cve": "CVE-2026-69152",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BRACEEXPANSION-18512280"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "brace-expansion@1.1.11",
+      "display": "brace-expansion@1.1.11 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4",
+       "brace-expansion@1.1.11"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in qs",
+     "summary": "High severity - Allocation of Resources Without Limits or Throttling vulnerability in qs",
+     "description": "(CVE-2025-15284) qs@6.5.2",
+     "identifiers": {
+      "cve": "CVE-2025-15284",
+      "cwe": null,
+      "rule_id": "SNYK-JS-QS-14724253"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "qs@6.5.2",
+      "display": "qs@6.5.2 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "body-parser@1.20.4"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "body-parser@1.18.3",
+       "qs@6.5.2"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-770"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Inefficient Algorithmic Complexity vulnerability in brace-expansion",
+     "summary": "High severity - Inefficient Algorithmic Complexity vulnerability in brace-expansion",
+     "description": "(CVE-2026-13149) brace-expansion@1.1.11",
+     "identifiers": {
+      "cve": "CVE-2026-13149",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BRACEEXPANSION-17706650"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "brace-expansion@1.1.11",
+      "display": "brace-expansion@1.1.11 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4",
+       "brace-expansion@1.1.11"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-407"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Inefficient Algorithmic Complexity vulnerability in minimatch",
+     "summary": "High severity - Inefficient Algorithmic Complexity vulnerability in minimatch",
+     "description": "(CVE-2026-27903) minimatch@3.0.4",
+     "identifiers": {
+      "cve": "CVE-2026-27903",
+      "cwe": null,
+      "rule_id": "SNYK-JS-MINIMATCH-15353389"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "minimatch@3.0.4",
+      "display": "minimatch@3.0.4 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-407"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Infinite loop vulnerability in brace-expansion",
+     "summary": "High severity - Infinite loop vulnerability in brace-expansion",
+     "description": "(CVE-2026-33750) brace-expansion@1.1.11",
+     "identifiers": {
+      "cve": "CVE-2026-33750",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BRACEEXPANSION-15789759"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "brace-expansion@1.1.11",
+      "display": "brace-expansion@1.1.11 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4",
+       "brace-expansion@1.1.11"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-835"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in minimatch",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in minimatch",
+     "description": "(CVE-2026-26996) minimatch@3.0.4",
+     "identifiers": {
+      "cve": "CVE-2026-26996",
+      "cwe": null,
+      "rule_id": "SNYK-JS-MINIMATCH-15309438"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "minimatch@3.0.4",
+      "display": "minimatch@3.0.4 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1333"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Uncontrolled Recursion vulnerability in brace-expansion",
+     "summary": "High severity - Uncontrolled Recursion vulnerability in brace-expansion",
+     "description": "(CVE-2026-102278) brace-expansion@1.1.11",
+     "identifiers": {
+      "cve": "CVE-2026-102278",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BRACEEXPANSION-20244948"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "brace-expansion@1.1.11",
+      "display": "brace-expansion@1.1.11 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4",
+       "brace-expansion@1.1.11"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-674"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.7,
+     "has_real_score": true,
+     "title": "High severity - Uncontrolled Recursion vulnerability in brace-expansion",
+     "summary": "High severity - Uncontrolled Recursion vulnerability in brace-expansion",
+     "description": "(CVE-2026-102276) brace-expansion@1.1.11",
+     "identifiers": {
+      "cve": "CVE-2026-102276",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BRACEEXPANSION-20244952"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "brace-expansion@1.1.11",
+      "display": "brace-expansion@1.1.11 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "minimatch@3.0.4",
+       "brace-expansion@1.1.11"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-674"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.2,
+     "has_real_score": true,
+     "title": "High severity - Asymmetric Resource Consumption (Amplification) vulnerability in body-parser",
+     "summary": "High severity - Asymmetric Resource Consumption (Amplification) vulnerability in body-parser",
+     "description": "(CVE-2024-45590) body-parser@1.18.3",
+     "identifiers": {
+      "cve": "CVE-2024-45590",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BODYPARSER-7926860"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "body-parser@1.18.3",
+      "display": "body-parser@1.18.3 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "body-parser@1.20.3"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "body-parser@1.18.3"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-405"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.2,
+     "has_real_score": true,
+     "title": "High severity - Uncontrolled Recursion vulnerability in underscore",
+     "summary": "High severity - Uncontrolled Recursion vulnerability in underscore",
+     "description": "(CVE-2026-27601) underscore@1.9.1",
+     "identifiers": {
+      "cve": "CVE-2026-27601",
+      "cwe": null,
+      "rule_id": "SNYK-JS-UNDERSCORE-15369786"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "underscore@1.9.1",
+      "display": "underscore@1.9.1 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "underscore@1.13.8"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "underscore@1.9.1"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-674"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.1,
+     "has_real_score": true,
+     "title": "High severity - Internal Property Tampering vulnerability in bson",
+     "summary": "High severity - Internal Property Tampering vulnerability in bson",
+     "description": "(CVE-2020-7610) bson@1.0.9",
+     "identifiers": {
+      "cve": "CVE-2020-7610",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BSON-561052"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "bson@1.0.9",
+      "display": "bson@1.0.9 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "mongodb@3.1.3"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "mongodb@2.2.36",
+       "mongodb-core@2.1.20",
+       "bson@1.0.9"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-642"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 8.1,
+     "has_real_score": true,
+     "title": "High severity - Internal Property Tampering vulnerability in bson",
+     "summary": "High severity - Internal Property Tampering vulnerability in bson",
+     "description": "(CVE-2019-2391) bson@1.0.9",
+     "identifiers": {
+      "cve": "CVE-2019-2391",
+      "cwe": null,
+      "rule_id": "SNYK-JS-BSON-6056525"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "bson@1.0.9",
+      "display": "bson@1.0.9 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "mongodb@3.1.3"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "mongodb@2.2.36",
+       "mongodb-core@2.1.20",
+       "bson@1.0.9"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-642"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+     "summary": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+     "description": "(CVE-2017-1000427) marked@0.3.5",
+     "identifiers": {
+      "cve": "CVE-2017-1000427",
+      "cwe": null,
+      "rule_id": "npm:marked:20170112"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "marked@0.3.5",
+      "display": "marked@0.3.5 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "marked@0.3.7"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "marked@0.3.5"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-79"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+     "summary": "High severity - Cross-site Scripting (XSS) vulnerability in marked",
+     "description": "marked@0.3.5",
+     "identifiers": {
+      "cve": null,
+      "cwe": null,
+      "rule_id": "npm:marked:20170815"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "marked@0.3.5",
+      "display": "marked@0.3.5 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "marked@0.3.9"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "marked@0.3.5"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-79"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Denial of Service (DoS) vulnerability in mongodb",
+     "summary": "High severity - Denial of Service (DoS) vulnerability in mongodb",
+     "description": "mongodb@2.2.36",
+     "identifiers": {
+      "cve": null,
+      "cwe": null,
+      "rule_id": "SNYK-JS-MONGODB-473855"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "mongodb@2.2.36",
+      "display": "mongodb@2.2.36 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "mongodb@3.1.13"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "mongodb@2.2.36"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Prototype Poisoning vulnerability in qs",
+     "summary": "High severity - Prototype Poisoning vulnerability in qs",
+     "description": "(CVE-2022-24999) qs@6.5.2",
+     "identifiers": {
+      "cve": "CVE-2022-24999",
+      "cwe": null,
+      "rule_id": "SNYK-JS-QS-3153490"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "qs@6.5.2",
+      "display": "qs@6.5.2 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "body-parser@1.19.2"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "body-parser@1.18.3",
+       "qs@6.5.2"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1321"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in marked",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in marked",
+     "description": "(CVE-2017-16114) marked@0.3.5",
+     "identifiers": {
+      "cve": "CVE-2017-16114",
+      "cwe": null,
+      "rule_id": "npm:marked:20170907"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "marked@0.3.5",
+      "display": "marked@0.3.5 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "marked@0.3.9"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "marked@0.3.5"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.5,
+     "has_real_score": true,
+     "title": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in marked",
+     "summary": "High severity - Regular Expression Denial of Service (ReDoS) vulnerability in marked",
+     "description": "(CVE-2018-25110) marked@0.3.5",
+     "identifiers": {
+      "cve": "CVE-2018-25110",
+      "cwe": null,
+      "rule_id": "npm:marked:20180225"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "marked@0.3.5",
+      "display": "marked@0.3.5 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "marked@0.3.18"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "marked@0.3.5"
+      ],
+      "is_direct": true
+     },
+     "sarif_cwes": [
+      "CWE-185",
+      "CWE-400"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.3,
+     "has_real_score": true,
+     "title": "High severity - Prototype Pollution vulnerability in ini",
+     "summary": "High severity - Prototype Pollution vulnerability in ini",
+     "description": "(CVE-2020-7788) ini@1.3.5",
+     "identifiers": {
+      "cve": "CVE-2020-7788",
+      "cwe": null,
+      "rule_id": "SNYK-JS-INI-1048974"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "ini@1.3.5",
+      "display": "ini@1.3.5 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "nconf@0.10.0",
+       "ini@1.3.5"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1321"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.3,
+     "has_real_score": true,
+     "title": "High severity - Prototype Pollution vulnerability in mixin-deep",
+     "summary": "High severity - Prototype Pollution vulnerability in mixin-deep",
+     "description": "(CVE-2019-10746) mixin-deep@1.3.1",
+     "identifiers": {
+      "cve": "CVE-2019-10746",
+      "cwe": null,
+      "rule_id": "SNYK-JS-MIXINDEEP-450212"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "mixin-deep@1.3.1",
+      "display": "mixin-deep@1.3.1 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "chokidar@2.1.8",
+       "braces@2.3.2",
+       "snapdragon@0.8.2",
+       "base@0.11.2",
+       "mixin-deep@1.3.1"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1321"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.3,
+     "has_real_score": true,
+     "title": "High severity - Prototype Pollution vulnerability in set-value",
+     "summary": "High severity - Prototype Pollution vulnerability in set-value",
+     "description": "(CVE-2021-23440) set-value@2.0.0",
+     "identifiers": {
+      "cve": "CVE-2021-23440",
+      "cwe": null,
+      "rule_id": "SNYK-JS-SETVALUE-1540541"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "set-value@2.0.0",
+      "display": "set-value@2.0.0 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "chokidar@2.1.8",
+       "braces@2.3.2",
+       "snapdragon@0.8.2",
+       "base@0.11.2",
+       "cache-base@1.0.1",
+       "set-value@2.0.0"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1321"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.3,
+     "has_real_score": true,
+     "title": "High severity - Prototype Pollution vulnerability in set-value",
+     "summary": "High severity - Prototype Pollution vulnerability in set-value",
+     "description": "(CVE-2019-10747) set-value@2.0.0",
+     "identifiers": {
+      "cve": "CVE-2019-10747",
+      "cwe": null,
+      "rule_id": "SNYK-JS-SETVALUE-450213"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "set-value@2.0.0",
+      "display": "set-value@2.0.0 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "forever-monitor@2.0.0",
+       "chokidar@2.1.8",
+       "braces@2.3.2",
+       "snapdragon@0.8.2",
+       "base@0.11.2",
+       "cache-base@1.0.1",
+       "set-value@2.0.0"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1321"
+     ]
+    },
+    {
+     "finding_type": "sca",
+     "severity": "high",
+     "score": 7.3,
+     "has_real_score": true,
+     "title": "High severity - Prototype Pollution vulnerability in y18n",
+     "summary": "High severity - Prototype Pollution vulnerability in y18n",
+     "description": "(CVE-2020-7774) y18n@3.2.1",
+     "identifiers": {
+      "cve": "CVE-2020-7774",
+      "cwe": null,
+      "rule_id": "SNYK-JS-Y18N-1021887"
+     },
+     "location": {
+      "kind": "dependency",
+      "file": "package.json",
+      "line": null,
+      "package": "y18n@3.2.1",
+      "display": "y18n@3.2.1 in package.json",
+      "image_name": null,
+      "image_tag": null
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "forever@2.0.0"
+     },
+     "ecosystem": "npm",
+     "dependency": {
+      "path": [
+       "owasp-nodejs-goat@1.3.0",
+       "forever@2.0.0",
+       "nconf@0.10.0",
+       "yargs@3.32.0",
+       "y18n@3.2.1"
+      ],
+      "is_direct": false
+     },
+     "sarif_cwes": [
+      "CWE-1321"
+     ]
+    }
+   ]
+  },
+  {
+   "file": "docker-compose.yml",
+   "batch_id": "asva_container_765e1949",
+   "finding_type": "container",
+   "fix_type": "version_upgrade",
+   "findings": [
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "score": 9.8,
+     "has_real_score": true,
+     "title": "Medium severity - CVE-2026-8376 vulnerability in perl",
+     "summary": "Medium severity - CVE-2026-8376 vulnerability in perl",
+     "description": "(CVE-2026-8376) perl/perl-base@5.30.0-9ubuntu0.5",
+     "identifiers": {
+      "cve": "CVE-2026-8376",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-PERL-16800832"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "perl@5.30.0-9ubuntu0.5",
+      "display": "perl@5.30.0-9ubuntu0.5 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "perl/perl-base@5.30.0-9ubuntu0.5+esm2"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": []
+    },
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "score": 9.8,
+     "has_real_score": true,
+     "title": "Medium severity - Improper Null Termination vulnerability in gnutls28",
+     "summary": "Medium severity - Improper Null Termination vulnerability in gnutls28",
+     "description": "(CVE-2026-42010) gnutls28/libgnutls30@3.6.13-2ubuntu1.12",
+     "identifiers": {
+      "cve": "CVE-2026-42010",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-GNUTLS28-16355206"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "gnutls28@3.6.13-2ubuntu1.12",
+      "display": "gnutls28@3.6.13-2ubuntu1.12 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "gnutls28/libgnutls30@3.6.13-2ubuntu1.12+esm2"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-170"
+     ]
+    },
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "score": 9.1,
+     "has_real_score": true,
+     "title": "Low severity - Off-by-one Error vulnerability in libtasn1-6",
+     "summary": "Low severity - Off-by-one Error vulnerability in libtasn1-6",
+     "description": "(CVE-2021-46848) libtasn1-6@4.16.0-2ubuntu0.1",
+     "identifiers": {
+      "cve": "CVE-2021-46848",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-LIBTASN16-3062917"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "libtasn1-6@4.16.0-2ubuntu0.1",
+      "display": "libtasn1-6@4.16.0-2ubuntu0.1 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "libtasn1-6@4.16.0-2ubuntu0.1+esm1"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-193"
+     ]
+    },
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "score": 9.1,
+     "has_real_score": true,
+     "title": "Medium severity - CVE-2026-13221 vulnerability in perl",
+     "summary": "Medium severity - CVE-2026-13221 vulnerability in perl",
+     "description": "(CVE-2026-13221) perl/perl-base@5.30.0-9ubuntu0.5",
+     "identifiers": {
+      "cve": "CVE-2026-13221",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-PERL-17970616"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "perl@5.30.0-9ubuntu0.5",
+      "display": "perl@5.30.0-9ubuntu0.5 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "perl/perl-base@5.30.0-9ubuntu0.5+esm3"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": []
+    },
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "score": 9.1,
+     "has_real_score": true,
+     "title": "Medium severity - CVE-2026-42496 vulnerability in perl",
+     "summary": "Medium severity - CVE-2026-42496 vulnerability in perl",
+     "description": "(CVE-2026-42496) perl/perl-base@5.30.0-9ubuntu0.5",
+     "identifiers": {
+      "cve": "CVE-2026-42496",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-PERL-16877470"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "perl@5.30.0-9ubuntu0.5",
+      "display": "perl@5.30.0-9ubuntu0.5 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "perl/perl-base@5.30.0-9ubuntu0.5+esm2"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": []
+    },
+    {
+     "finding_type": "container",
+     "severity": "critical",
+     "score": 9.1,
+     "has_real_score": true,
+     "title": "Medium severity - Integer Underflow vulnerability in gnutls28",
+     "summary": "Medium severity - Integer Underflow vulnerability in gnutls28",
+     "description": "(CVE-2026-33845) gnutls28/libgnutls30@3.6.13-2ubuntu1.12",
+     "identifiers": {
+      "cve": "CVE-2026-33845",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-GNUTLS28-16355141"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "gnutls28@3.6.13-2ubuntu1.12",
+      "display": "gnutls28@3.6.13-2ubuntu1.12 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "gnutls28/libgnutls30@3.6.13-2ubuntu1.12+esm2"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-191"
+     ]
+    },
+    {
+     "finding_type": "container",
+     "severity": "high",
+     "score": 7.0,
+     "has_real_score": true,
+     "title": "High severity - Out-of-bounds Write vulnerability in gnupg2",
+     "summary": "High severity - Out-of-bounds Write vulnerability in gnupg2",
+     "description": "(CVE-2025-68973) gnupg2/gpgv@2.2.19-3ubuntu2.5",
+     "identifiers": {
+      "cve": "CVE-2025-68973",
+      "cwe": null,
+      "rule_id": "SNYK-UBUNTU2004-GNUPG2-14849558"
+     },
+     "location": {
+      "kind": "os_package",
+      "file": "docker-compose.yml",
+      "line": null,
+      "package": "gnupg2@2.2.19-3ubuntu2.5",
+      "display": "gnupg2@2.2.19-3ubuntu2.5 in mongo_4.4",
+      "image_name": "mongo",
+      "image_tag": "4.4"
+     },
+     "remediation": {
+      "type": "version_upgrade",
+      "fixable": true,
+      "upgrade_to": "gnupg2/gpgv@2.2.19-3ubuntu2.5+esm1"
+     },
+     "ecosystem": "deb",
+     "dependency": null,
+     "sarif_cwes": [
+      "CWE-787"
+     ]
+    }
+   ]
+  }
+ ]
+}

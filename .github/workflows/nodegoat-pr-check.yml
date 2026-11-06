@@ -1,0 +1,186 @@
+name: NodeGoat - Validate fix candidates
+
+on:
+  workflow_call:
+    inputs:
+      prs:
+        description: JSON array of generated candidates including their immutable SHA
+        type: string
+        required: true
+    secrets:
+      GHPAT_ASVA_GITOPS:
+        required: false
+      SNYK_TOKEN:
+        required: false
+      SNYK_ORG:
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  pr-check:
+    name: Validate candidate (${{ matrix.batch_id }})
+    if: inputs.prs != '' && inputs.prs != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.prs) }}
+    env:
+      ASVA_APP_PATH: ${{ github.workspace }}/candidate-source/target-apps/NodeGoat
+      ASVA_CANDIDATE_SHA: ${{ matrix.sha }}
+      BATCH_ID: ${{ matrix.batch_id }}
+      CANDIDATE_PR: ${{ matrix.pr_url }}
+      COMPOSE_PROJECT_NAME: asva-nodegoat-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout current validation tooling
+        uses: actions/checkout@v4
+
+      - name: Checkout exact candidate source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.sha }}
+          path: candidate-source
+          persist-credentials: false
+
+      - name: Record actual candidate commit
+        id: meta
+        run: |
+          python3 -m agent.candidate_source --app-path "$ASVA_APP_PATH" --sha "$ASVA_CANDIDATE_SHA"
+          echo "sha=$(git -C candidate-source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Download fix evidence from this run
+        uses: actions/download-artifact@v4
+        with:
+          name: nodegoat-fix-output
+          path: asva-results/fix
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '14.x'
+
+      - name: Install pinned Snyk CLI
+        run: |
+          INSTALL_DIR="$HOME/.local/bin" bash scripts/install-snyk.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install Chromium for browser checks
+        run: python -m playwright install --with-deps chromium
+
+      - name: Build and start temporary candidate containers
+        id: start
+        working-directory: candidate-source/target-apps/NodeGoat
+        run: docker compose -f docker-compose.yml -f docker-compose.pr-check.yml up -d --build
+
+      - name: Wait for HTTP readiness
+        id: wait
+        run: |
+          timeout 90s bash -c 'until curl -sf -o /dev/null http://127.0.0.1:4000/login/; do sleep 2; done'
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+
+      - name: Test candidate functionality
+        id: smoke
+        # Preserve the report used by the existing PR comment, even on startup failure.
+        if: always()
+        run: |
+          mkdir -p asva-results/candidate
+          BASE_URL=http://127.0.0.1:4000 pytest -m smoke --junit-xml=asva-results/candidate/smoke.xml
+
+      - name: Find matching security checks
+        id: select
+        if: always()
+        run: |
+          python -m agent.pr_test_selector --batch-file "asva-results/fix/fix_batches/$BATCH_ID.json" \
+            --output asva-results/candidate/matched.json
+
+      - name: Test candidate security (matched misuse cases)
+        id: misuse
+        if: always() && steps.wait.outputs.ready == 'true' && steps.select.outcome == 'success'
+        # The validation record decides the job result; it ignores cases the batch did not target.
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_ORG: ${{ secrets.SNYK_ORG }}
+        run: |
+          if [ "$(jq '.matched_tests | length' asva-results/candidate/matched.json)" -gt 0 ]; then
+            names=$(jq -r '[.matched_tests[].test_name] | join(" or ")' asva-results/candidate/matched.json)
+            BASE_URL=http://127.0.0.1:4000 TARGET=candidate pytest -m api -k "$names" \
+              --junit-xml=asva-results/candidate/misuse.xml
+          fi
+
+      - name: Post pre-merge result on the PR
+        id: comment
+        if: always() && steps.select.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS || github.token }}
+          CHECKED_SHA: ${{ steps.meta.outputs.sha }}
+          APP_STARTED: ${{ steps.wait.outputs.ready == 'true' }}
+        run: |
+          args=(--smoke-xml asva-results/candidate/smoke.xml
+                --matched-json asva-results/candidate/matched.json
+                --batch-file "asva-results/fix/fix_batches/$BATCH_ID.json"
+                --pr "$CANDIDATE_PR" --sha "$CHECKED_SHA" --app-started "$APP_STARTED" --execute)
+          if [ -f asva-results/candidate/misuse.xml ]; then args+=(--misuse-xml asva-results/candidate/misuse.xml); fi
+          python -m gitops.post_pr_check_comment "${args[@]}"
+
+      - name: Record candidate validation JSON for the dashboard
+        if: always()
+        env:
+          CHECKED_SHA: ${{ steps.meta.outputs.sha || matrix.sha }}
+          APP_STARTED: ${{ steps.wait.outputs.ready == 'true' }}
+          BUILD_RESULT: ${{ steps.start.outcome }}
+          SMOKE_RESULT: ${{ steps.smoke.outcome }}
+          MISUSE_RESULT: ${{ steps.misuse.outcome }}
+          COMMENT_RESULT: ${{ steps.comment.outputs.comment_result || steps.comment.outcome }}
+        run: |
+          python scripts/dashboard_evidence.py validate --app nodegoat \
+            --batch-id "$BATCH_ID" --pr-url "$CANDIDATE_PR" --sha "$CHECKED_SHA" \
+            --started "$APP_STARTED" --build-result "$BUILD_RESULT" --smoke-result "$SMOKE_RESULT" \
+            --smoke-xml asva-results/candidate/smoke.xml \
+            --matched-json asva-results/candidate/matched.json --selection-required \
+            --misuse-xml asva-results/candidate/misuse.xml --misuse-result "$MISUSE_RESULT" \
+            --comment-result "$COMMENT_RESULT" \
+            --output "asva-results/candidate/validation/$BATCH_ID.json"
+
+      - name: Collect candidate logs and container status
+        if: always()
+        working-directory: candidate-source/target-apps/NodeGoat
+        run: |
+          mkdir -p ../../../asva-results/candidate
+          docker compose -f docker-compose.yml -f docker-compose.pr-check.yml logs --no-color > ../../../asva-results/candidate/containers.log 2>&1
+          docker compose -f docker-compose.yml -f docker-compose.pr-check.yml ps -a > ../../../asva-results/candidate/containers.txt
+
+      - name: Save validation evidence even after failures
+        id: uploaded
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nodegoat-validation-${{ matrix.batch_id }}
+          path: asva-results/candidate/
+          retention-days: 14
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Link candidate runtime evidence for verification
+        if: always() && steps.uploaded.outputs.artifact-url != ''
+        env:
+          EVIDENCE_URL: ${{ steps.uploaded.outputs.artifact-url }}
+        run: echo "[Download validation and container logs for $BATCH_ID]($EVIDENCE_URL)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove temporary candidate containers and database
+        if: always()
+        working-directory: candidate-source/target-apps/NodeGoat
+        run: docker compose -f docker-compose.yml -f docker-compose.pr-check.yml down -v

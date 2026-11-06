@@ -1,0 +1,949 @@
+{
+ "117e228452ddd862": {
+  "name": "unchanged",
+  "changed_files": [],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": null
+ },
+ "04c617aca4eef26d": {
+  "name": "A-package-04c617",
+  "changed_files": [
+   "package.json"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@3.1.13",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": "(node:11) UnhandledPromiseRejectionWarning: TypeError: db.dropCollection is not a function"
+ },
+ "e81951ddf01b010e": {
+  "name": "B-package-e81951",
+  "changed_files": [
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "0db5580ee4dd86d2": {
+  "name": "B-package-0db558",
+  "changed_files": [
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "3a86f23e04118939": {
+  "name": "line-mongo-5.0",
+  "changed_files": [
+   "docker-compose.yml"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": null
+ },
+ "79c5124c4728ec43": {
+  "name": "line-mongo-6.0",
+  "changed_files": [
+   "docker-compose.yml"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+ },
+ "5e2367c4942accb5": {
+  "name": "line-mongo-7.0",
+  "changed_files": [
+   "docker-compose.yml"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+ },
+ "68df02995c107d08": {
+  "name": "line-mongo-8.0",
+  "changed_files": [
+   "docker-compose.yml"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+ },
+ "943f7e2911852385": {
+  "name": "A-docker-compose-943f7e",
+  "changed_files": [
+   "docker-compose.yml"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+ },
+ "48825f95500e81d4": {
+  "name": "pygoat-baseline",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2022.12.7",
+   "cryptography==39.0.1",
+   "Django==4.2",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.4.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.9",
+   "Werkzeug==2.1.2"
+  ],
+  "error": null,
+  "build_seconds": 105,
+  "ready_after": 9.0
+ },
+ "c0fe6e47d630ee36": {
+  "name": "pygoat-a1",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+  "build_seconds": 35
+ },
+ "8d7d481ab03e3460": {
+  "name": "pygoat-b1",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+  "build_seconds": 35
+ },
+ "cd26127510eb132d": {
+  "name": "asva_today_with_pyyaml_5.1",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at zipp==3.8.0: ERROR: Cannot install -r requirements.txt (line 2), -r requirements.txt (line 7) and cffi==1.15.1 because these package versions have conflicting dependencies. | argon2-cffi-bindings 21.2.0 depends on cffi>=1.0.1 | cryptography 49.0.0 depends on cffi>=2.0.0; platform_python_implementation != \"PyPy\" | 21.78     cryptography 49.0.0 depends on cffi>=2.0.0; platform_python_implementation != \"PyPy\"",
+  "build_seconds": 31
+ },
+ "5bf6a906181ecf93": {
+  "name": "rag_with_pyyaml_5.1",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.19",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 114,
+  "ready_after": 15.2
+ },
+ "d3fcf0eb7f2883c2": {
+  "name": "rag_with_pyyaml_6.0.2",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==6.0.2",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.19",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 69,
+  "ready_after": 8.6
+ },
+ "1f739ad029005575": {
+  "name": "pygoat-d1",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+  "build_seconds": 36
+ },
+ "7a061d5bd53508da": {
+  "name": "pygoat-major-cryptography",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at zipp==3.8.0: ERROR: Cannot install -r requirements.txt (line 2), -r requirements.txt (line 7) and cffi==1.15.1 because these package versions have conflicting dependencies. | cryptography 49.0.0 depends on cffi>=2.0.0; platform_python_implementation != \"PyPy\" | 17.22     argon2-cffi-bindings 21.2.0 depends on cffi>=1.0.1 | 17.22     cryptography 49.0.0 depends on cffi>=2.0.0; platform_python_implementation != \"PyPy\"",
+  "build_seconds": 22
+ },
+ "326ee347fa4e9255": {
+  "name": "pygoat-major-oauthlib",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==4.0.0",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.19",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 58,
+  "ready_after": 7.9
+ },
+ "68d558d192b73f2f": {
+  "name": "pygoat-major-pillow",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "pillow==12.3.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.19",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 74,
+  "ready_after": 8.5
+ },
+ "7c26ba4b9f30e937": {
+  "name": "pygoat-major-sqlparse",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.6.0",
+   "urllib3==1.26.19",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 65,
+  "ready_after": 7.5
+ },
+ "4b7f2ac21a650904": {
+  "name": "pygoat-major-urllib3",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at pyjwt[crypto]>=1.7: ERROR: Cannot install -r requirements.txt (line 28) and urllib3==2.8.0 because these package versions have conflicting dependencies. | INFO: pip is looking at multiple versions of <Python from Requires-Python> to determine which version is compatible with other requirements. This could take a while. | requests 2.28.2 depends on urllib3<1.27 and >=1.21.1 | 15.13     requests 2.28.2 depends on urllib3<1.27 and >=1.21.1",
+  "build_seconds": 20
+ },
+ "86db2be85e597d97": {
+  "name": "pygoat-major-werkzeug",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.19",
+   "Werkzeug==3.0.3"
+  ],
+  "error": null,
+  "build_seconds": 64,
+  "ready_after": 8.4
+ },
+ "bfadbd4ed632eb54": {
+  "name": "D-docker-compose-bfadbd",
+  "changed_files": [
+   "docker-compose.yml"
+  ],
+  "ready": true,
+  "ready_after": 4.2,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": null
+ },
+ "9880a099199b25bc": {
+  "name": "pygoat-major-django-allauth",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at zipp==3.8.0: ERROR: Cannot install -r requirements.txt (line 11), -r requirements.txt (line 12) and asgiref==3.6.0 because these package versions have conflicting dependencies. | django-allauth 65.13.0 depends on asgiref>=3.8.1 | 12.42     django 4.2.28 depends on asgiref<4 and >=3.6.0 | 12.42     django-allauth 65.13.0 depends on asgiref>=3.8.1",
+  "build_seconds": 16
+ },
+ "3a8e5b78e8a18045": {
+  "name": "pygoat-rag_with_pyyaml_5.1_plus_4_passing_majors",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==4.0.0",
+   "pillow==12.3.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.6.0",
+   "urllib3==1.26.19",
+   "Werkzeug==3.0.3"
+  ],
+  "error": null,
+  "build_seconds": 41,
+  "ready_after": 4.2
+ },
+ "f225d01a98e90b81": {
+  "name": "deps-unchanged",
+  "changed_files": [],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.18.3",
+   "express@4.16.4",
+   "marked@0.3.5",
+   "underscore@1.9.1"
+  ],
+  "error": null
+ },
+ "81c80c0c1036ffa3": {
+  "name": "deps-pipeline",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@3.1.13",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": "(node:9) UnhandledPromiseRejectionWarning: TypeError: db.dropCollection is not a function"
+ },
+ "000d1c3d95c64a0e": {
+  "name": "deps-rag",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "ae2aca469ec23025": {
+  "name": "deps-rag_plus_refreshed_indirect_packages",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "65ae9c2251db3a8b": {
+  "name": "trial-3_cryptography",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==49.0.0",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.19",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 39,
+  "ready_after": 4.2
+ },
+ "b5361d4adb6fcb54": {
+  "name": "trial-4_urllib3",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==39.0.1",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.30.0",
+   "sqlparse==0.3.1",
+   "urllib3==2.8.0",
+   "Werkzeug==2.3.8"
+  ],
+  "error": null,
+  "build_seconds": 35,
+  "ready_after": 4.2
+ },
+ "c69c0ab65d4d0c85": {
+  "name": "trial-6_django-allauth",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": false,
+  "ready": false,
+  "smoke": null,
+  "failed_checks": [],
+  "installed": [],
+  "error": "the image did not build: pip failed at MarkupSafe>=2.1.1: ------",
+  "build_seconds": 23
+ },
+ "fac0e0983af8e989": {
+  "name": "trial-all_passing_trials",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2023.7.22",
+   "cryptography==49.0.0",
+   "Django==4.2.28",
+   "django-allauth==0.52.0",
+   "oauthlib==4.0.0",
+   "pillow==12.3.0",
+   "PyJWT==2.15.0",
+   "PyYAML==5.1",
+   "requests==2.30.0",
+   "sqlparse==0.6.0",
+   "urllib3==2.8.0",
+   "Werkzeug==3.0.3"
+  ],
+  "error": null,
+  "build_seconds": 35,
+  "ready_after": 4.6
+ },
+ "f69bfccf08532454": {
+  "name": "trial-1_lockfile_refresh_lockfile",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "5c3f041aed369b02": {
+  "name": "trial-2_parent_upgrade_body-parser",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.9",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "eda567907e2a5b16": {
+  "name": "trial-3_major_upgrade_mongodb",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@3.1.13",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": "(node:9) UnhandledPromiseRejectionWarning: TypeError: db.dropCollection is not a function"
+ },
+ "5b455614b2ffed2b": {
+  "name": "trial-4_major_upgrade_grunt-contrib-nodeunit",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "97962533e076dd2b": {
+  "name": "trial-5_major_upgrade_coveralls",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "dd325568a5bdef59": {
+  "name": "trial-6_major_upgrade_cross-spawn",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "392923beec277309": {
+  "name": "trial-1_lockfile_refresh_lockfile",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "29c23d13fa797770": {
+  "name": "trial-2_parent_upgrade_express",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.1,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.22.3",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "1df543817744705d": {
+  "name": "trial-3_major_upgrade_express",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": false,
+  "ready_after": null,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@5.3.0",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": "npm ERR!     /home/node/.npm/_logs/2026-10-22T19_15_46_897Z-debug.log"
+ },
+ "b5f71ece01929cc7": {
+  "name": "trial-5_major_upgrade_forever",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "b46905f2dc42379d": {
+  "name": "trial-6_lockfile_refresh_lockfile",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "a0286dc14b8388d7": {
+  "name": "trial-7_parent_upgrade_async",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "19105ed140e30dee": {
+  "name": "trial-8_parent_upgrade_grunt",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "f895b83afeabc129": {
+  "name": "trial-9_major_upgrade_async",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "b509e4e79b8c92a4": {
+  "name": "trial-10_major_upgrade_cypress",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "90b8f423c6df0a07": {
+  "name": "trial-11_major_upgrade_grunt-retire",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "3351f16d7b85f69e": {
+  "name": "trial-12_major_upgrade_nodemon",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "91f78bc5cfab9982": {
+  "name": "trial-13_major_upgrade_zaproxy",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.16.4",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ },
+ "af818172c6b57322": {
+  "name": "trial-all_passing_trials",
+  "changed_files": [
+   "package-lock.json",
+   "package.json"
+  ],
+  "ready": true,
+  "ready_after": 4.0,
+  "installed": [
+   "mongodb@2.2.36",
+   "body-parser@1.20.4",
+   "express@4.22.3",
+   "marked@0.3.18",
+   "underscore@1.13.8"
+  ],
+  "error": null
+ }
+}

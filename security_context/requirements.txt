@@ -1,0 +1,10 @@
+# Security Context Service — runtime dependencies (pinned for reproducible builds).
+
+fastapi==0.142.2          # HTTP API (app/main.py)
+uvicorn[standard]==0.54.0 # ASGI server
+pydantic==2.13.5          # request/response models (app/models.py)
+httpx==0.28.1             # downloading sources (app/sources/*)
+fastembed==0.8.1          # MiniLM embeddings via ONNX, no PyTorch (app/embed.py)
+numpy==2.5.3              # similarity search (app/retrieve.py)
+python-dotenv==1.2.3      # .env loading (app/config.py)
+packaging==26.3           # version specifiers for the trial plan (app/trials.py, app/sources/packages.py)

@@ -1,0 +1,126 @@
+name: RAG - Build, check and publish the security context image
+
+# The RAG (ITP2 3.3) in security_context/. Its unit tests run first; then the image is built,
+# started and asked one code and one dependency question (security_context/tools/image_check.py)
+# before it is published to GitHub's container registry, where the fix jobs pull it from.
+#   push / pull request  when security_context/ or this file changes (pull requests: no publish)
+#   weekly               a fresh copy of CWE, OWASP and KEV inside the image
+#   by hand              Actions tab -> Run workflow
+# GitHub runs schedules, and shows the Run workflow button, only for workflows on the default
+# branch (main). Until this file is there, only the push and pull request triggers work.
+# Tags: the branch name (feat-rag-service, rel-26.11, ...); also `latest` for main, rel/** and
+# the weekly run. A rebuild moves the tag; old untagged versions are removed.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1'   # Mondays 02:00 UTC
+  push:
+    branches:
+      - 'feat/**'
+      - 'rel/**'
+      - 'main'
+    paths:
+      - 'security_context/**'
+      - '.github/workflows/security-context.yml'
+  pull_request:
+    paths:
+      - 'security_context/**'
+      - '.github/workflows/security-context.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-context-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/asva-security-context
+
+jobs:
+  test:
+    name: RAG - Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: security_context
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: security_context/requirements*.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run unit tests (offline)
+        run: python -m pytest -q
+
+  image:
+    name: RAG - Build, check and publish image
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Build image
+        env:
+          # Only for the OWASP listing during the build; mounted as a build secret, not stored.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --secret id=github_token,env=GITHUB_TOKEN \
+            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            -t asva-security-context:candidate security_context
+
+      - name: Start the image
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: docker run -d --name rag -p 8000:8000 -e NVD_API_KEY -e CONTEXT7_API_KEY asva-security-context:candidate
+
+      - name: Check that it starts and answers
+        run: python3 security_context/tools/image_check.py --url http://localhost:8000 --wait 120
+
+      - name: Show the container log
+        if: always()
+        run: docker logs rag 2>&1 | tail -n 100
+
+      - name: Log in to GitHub's container registry
+        if: github.event_name != 'pull_request'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Publish image
+        if: github.event_name != 'pull_request'
+        run: |
+          tags=("${GITHUB_REF_NAME//\//-}")
+          if [[ "$GITHUB_EVENT_NAME" == schedule || "$GITHUB_REF" == refs/heads/main || "$GITHUB_REF" == refs/heads/rel/* ]]; then
+            tags+=(latest)
+          fi
+          for tag in "${tags[@]}"; do
+            docker tag asva-security-context:candidate "$IMAGE:$tag"
+            docker push "$IMAGE:$tag"
+          done
+          echo "Published \`$IMAGE\` as: ${tags[*]}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove old untagged image versions
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: asva-security-context
+          package-type: container
+          delete-only-untagged-versions: 'true'
+          min-versions-to-keep: 3

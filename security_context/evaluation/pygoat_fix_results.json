@@ -1,0 +1,334 @@
+{
+ "model": "deepseek-v4.1-flash",
+ "rows": {
+  "A": [
+   {
+    "summary": "certifi 2023.7.22, cryptography 49.0.0 (MAJOR), django 4.2.28, django-allauth 65.13.0 (MAJOR), oauthlib 4.0.0 (MAJOR), pillow 12.3.0 (MAJOR), pyjwt 2.15.0, pyyaml 5.4, sqlparse 0.6.0 (MAJOR), urllib3 2.8.0 (MAJOR), werkzeug 3.0.3 (MAJOR)",
+    "majors": [
+     "cryptography",
+     "django-allauth",
+     "oauthlib",
+     "pillow",
+     "sqlparse",
+     "urllib3",
+     "werkzeug"
+    ],
+    "resolved": 62,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-a1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   },
+   {
+    "summary": "certifi 2023.7.22, cryptography 49.0.0 (MAJOR), django 4.2.28, django-allauth 65.13.0 (MAJOR), oauthlib 4.0.0 (MAJOR), pillow 12.3.0 (MAJOR), pyjwt 2.15.0, pyyaml 5.4, sqlparse 0.6.0 (MAJOR), urllib3 2.8.0 (MAJOR), werkzeug 3.0.3 (MAJOR)",
+    "majors": [
+     "cryptography",
+     "django-allauth",
+     "oauthlib",
+     "pillow",
+     "sqlparse",
+     "urllib3",
+     "werkzeug"
+    ],
+    "resolved": 62,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-a1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   },
+   {
+    "summary": "certifi 2023.7.22, cryptography 49.0.0 (MAJOR), django 4.2.28, django-allauth 65.13.0 (MAJOR), oauthlib 4.0.0 (MAJOR), pillow 12.3.0 (MAJOR), pyjwt 2.15.0, pyyaml 5.4, sqlparse 0.6.0 (MAJOR), urllib3 2.8.0 (MAJOR), werkzeug 3.0.3 (MAJOR)",
+    "majors": [
+     "cryptography",
+     "django-allauth",
+     "oauthlib",
+     "pillow",
+     "sqlparse",
+     "urllib3",
+     "werkzeug"
+    ],
+    "resolved": 62,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-a1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   }
+  ],
+  "D": [
+   {
+    "summary": "django 4.2.28, pyjwt 2.15.0, pyyaml 5.4",
+    "majors": [],
+    "resolved": 23,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-d1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 36
+    }
+   },
+   {
+    "summary": "django 4.2.28, pyjwt 2.15.0, pyyaml 5.4",
+    "majors": [],
+    "resolved": 23,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-d1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 36
+    }
+   },
+   {
+    "summary": "django 4.2.28, pyjwt 2.15.0, pyyaml 5.4",
+    "majors": [],
+    "resolved": 23,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-d1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-dpfb7m8n/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 36
+    }
+   }
+  ],
+  "B": [
+   {
+    "summary": "certifi 2023.7.22, django 4.2.28, pyjwt 2.15.0, pyyaml 5.4, urllib3 1.26.19, werkzeug 2.3.8",
+    "majors": [],
+    "resolved": 25,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-b1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   },
+   {
+    "summary": "certifi 2023.7.22, django 4.2.28, pyjwt 2.15.0, pyyaml 5.4, urllib3 1.26.19, werkzeug 2.3.8",
+    "majors": [],
+    "resolved": 25,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-b1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   },
+   {
+    "summary": "certifi 2023.7.22, django 4.2.28, pyjwt 2.15.0, pyyaml 5.4, urllib3 1.26.19, werkzeug 2.3.8",
+    "majors": [],
+    "resolved": 25,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-b1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   }
+  ],
+  "C": [
+   {
+    "summary": "certifi 2023.7.22, django 4.2.28, pyjwt 2.15.0, pyyaml 5.4, urllib3 1.26.19, werkzeug 2.3.8",
+    "majors": [],
+    "resolved": 25,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-b1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   },
+   {
+    "summary": "certifi 2023.7.22, django 4.2.28, pyjwt 2.15.0, pyyaml 5.4, urllib3 1.26.19, werkzeug 2.3.8",
+    "majors": [],
+    "resolved": 25,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-b1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   },
+   {
+    "summary": "certifi 2023.7.22, django 4.2.28, pyjwt 2.15.0, pyyaml 5.4, urllib3 1.26.19, werkzeug 2.3.8",
+    "majors": [],
+    "resolved": 25,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-b1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-vrrowf9e/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   }
+  ],
+  "A_ci": [
+   {
+    "summary": "certifi 2023.7.22, cryptography 49.0.0 (MAJOR), django 4.2.28, django-allauth 65.13.0 (MAJOR), oauthlib 4.0.0 (MAJOR), pillow 12.3.0 (MAJOR), pyjwt 2.15.0, pyyaml 5.4, sqlparse 0.6.0 (MAJOR), urllib3 2.8.0 (MAJOR), werkzeug 3.0.3 (MAJOR)",
+    "majors": [
+     "cryptography",
+     "django-allauth",
+     "oauthlib",
+     "pillow",
+     "sqlparse",
+     "urllib3",
+     "werkzeug"
+    ],
+    "resolved": 62,
+    "total": 62,
+    "other_changes": [],
+    "check": {
+     "name": "pygoat-a1",
+     "changed_files": [
+      "requirements.txt"
+     ],
+     "built": false,
+     "ready": false,
+     "smoke": null,
+     "failed_checks": [],
+     "installed": [],
+     "error": "the image did not build: pip failed at PyYAML==5.4: × Getting requirements to build wheel did not run successfully. | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 333, in get_requires_for_build_wheel | return self._get_build_requires(config_settings, requirements=[]) | File \"/tmp/pip-build-env-e3lw0pao/overlay/lib/python3.11/site-packages/setuptools/build_meta.py\", line 301, in _get_build_requires",
+     "build_seconds": 35
+    }
+   }
+  ]
+ },
+ "baseline": {
+  "name": "pygoat-baseline",
+  "changed_files": [
+   "requirements.txt"
+  ],
+  "built": true,
+  "ready": true,
+  "smoke": "passed",
+  "failed_checks": [],
+  "installed": [
+   "certifi==2022.12.7",
+   "cryptography==39.0.1",
+   "Django==4.2",
+   "django-allauth==0.52.0",
+   "oauthlib==3.2.2",
+   "Pillow==9.4.0",
+   "PyJWT==2.4.0",
+   "PyYAML==5.1",
+   "requests==2.28.2",
+   "sqlparse==0.3.1",
+   "urllib3==1.26.9",
+   "Werkzeug==2.1.2"
+  ],
+  "error": null,
+  "build_seconds": 105,
+  "ready_after": 9.0
+ }
+}

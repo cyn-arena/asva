@@ -1,0 +1,198 @@
+{
+ "tags": [
+  "latest",
+  "4",
+  "4.4.30",
+  "8.0.32-noble",
+  "4.4",
+  "5.0",
+  "6.0",
+  "7.0",
+  "8.0",
+  "9.0"
+ ],
+ "configs": {
+  "4.4": {
+   "created": "2025-12-29T20:13:14.290438749Z",
+   "config": {
+    "Labels": {
+     "org.opencontainers.image.ref.name": "ubuntu",
+     "org.opencontainers.image.version": "20.04"
+    },
+    "Env": [
+     "GOSU_VERSION=1.19",
+     "JSYAML_VERSION=3.13.1",
+     "MONGO_VERSION=4.4.30"
+    ]
+   },
+   "history": [
+    {
+     "created": "2025-04-08T10:42:46.731796017Z",
+     "created_by": "/bin/sh -c #(nop)  ARG RELEASE",
+     "empty_layer": true
+    },
+    {
+     "created": "2025-04-08T10:42:46.756436969Z",
+     "created_by": "/bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH",
+     "empty_layer": true
+    },
+    {
+     "created": "2025-04-08T10:42:46.777916661Z",
+     "created_by": "/bin/sh -c #(nop)  LABEL org.opencontainers.image.ref.name=ubuntu",
+     "empty_layer": true
+    }
+   ]
+  },
+  "5.0": {
+   "created": "2026-05-15T16:43:28.444453756Z",
+   "config": {
+    "Labels": {
+     "org.opencontainers.image.ref.name": "ubuntu",
+     "org.opencontainers.image.version": "20.04"
+    },
+    "Env": [
+     "GOSU_VERSION=1.19",
+     "JSYAML_VERSION=3.13.1",
+     "MONGO_VERSION=5.0.33"
+    ]
+   },
+   "history": [
+    {
+     "created": "2025-04-08T10:42:46.731796017Z",
+     "created_by": "/bin/sh -c #(nop)  ARG RELEASE",
+     "empty_layer": true
+    },
+    {
+     "created": "2025-04-08T10:42:46.756436969Z",
+     "created_by": "/bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH",
+     "empty_layer": true
+    },
+    {
+     "created": "2025-04-08T10:42:46.777916661Z",
+     "created_by": "/bin/sh -c #(nop)  LABEL org.opencontainers.image.ref.name=ubuntu",
+     "empty_layer": true
+    }
+   ]
+  },
+  "6.0": {
+   "created": "2026-05-15T21:20:34.953147072Z",
+   "config": {
+    "Labels": {
+     "org.opencontainers.image.version": "22.04"
+    },
+    "Env": [
+     "GOSU_VERSION=1.19",
+     "JSYAML_VERSION=3.13.1",
+     "MONGO_VERSION=6.0.28"
+    ]
+   },
+   "history": [
+    {
+     "created": "2026-05-09T04:49:21.13252211Z",
+     "created_by": "/bin/sh -c #(nop)  ARG RELEASE",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-05-09T04:49:21.172080751Z",
+     "created_by": "/bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-05-09T04:49:21.201472883Z",
+     "created_by": "/bin/sh -c #(nop)  LABEL org.opencontainers.image.version=22.04",
+     "empty_layer": true
+    }
+   ]
+  },
+  "7.0": {
+   "created": "2026-10-02T01:32:10.380137062Z",
+   "config": {
+    "Labels": {
+     "org.opencontainers.image.version": "22.04"
+    },
+    "Env": [
+     "GOSU_VERSION=1.19",
+     "JSYAML_VERSION=3.13.1",
+     "MONGO_VERSION=7.0.43"
+    ]
+   },
+   "history": [
+    {
+     "created": "2026-09-24T22:24:04.688908979Z",
+     "created_by": "/bin/sh -c #(nop)  ARG RELEASE",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-09-24T22:24:04.723527376Z",
+     "created_by": "/bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-09-24T22:24:04.751455651Z",
+     "created_by": "/bin/sh -c #(nop)  LABEL org.opencontainers.image.version=22.04",
+     "empty_layer": true
+    }
+   ]
+  },
+  "8.0": {
+   "created": "2026-10-02T01:32:02.070367839Z",
+   "config": {
+    "Labels": {
+     "org.opencontainers.image.version": "24.04"
+    },
+    "Env": [
+     "GOSU_VERSION=1.19",
+     "JSYAML_VERSION=3.13.1",
+     "MONGO_VERSION=8.0.32"
+    ]
+   },
+   "history": [
+    {
+     "created": "2026-09-18T21:20:35.594318434Z",
+     "created_by": "/bin/sh -c #(nop)  ARG RELEASE",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-09-18T21:20:35.618842266Z",
+     "created_by": "/bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-09-18T21:20:35.647177412Z",
+     "created_by": "/bin/sh -c #(nop)  LABEL org.opencontainers.image.version=24.04",
+     "empty_layer": true
+    }
+   ]
+  },
+  "9.0": {
+   "created": "2026-10-02T01:31:50.371729513Z",
+   "config": {
+    "Labels": {
+     "org.opencontainers.image.version": "24.04"
+    },
+    "Env": [
+     "GOSU_VERSION=1.19",
+     "JSYAML_VERSION=3.13.1",
+     "MONGO_VERSION=9.0.2"
+    ]
+   },
+   "history": [
+    {
+     "created": "2026-09-18T21:20:35.594318434Z",
+     "created_by": "/bin/sh -c #(nop)  ARG RELEASE",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-09-18T21:20:35.618842266Z",
+     "created_by": "/bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH",
+     "empty_layer": true
+    },
+    {
+     "created": "2026-09-18T21:20:35.647177412Z",
+     "created_by": "/bin/sh -c #(nop)  LABEL org.opencontainers.image.version=24.04",
+     "empty_layer": true
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,14 @@
+package        from the npm repository address    from Context7 name search          same?
+body-parser    /expressjs/body-parser             /expressjs/body-parser             yes
+express        /expressjs/express                 /expressjs/express                 yes
+forever        /foreverjs/forever                 /nexusforever/nexusforever         NO
+jsonwebtoken   /auth0/node-jsonwebtoken           /auth0/node-jsonwebtoken           yes
+lodash         /lodash/lodash                     /lodash/lodash                     yes
+marked         /markedjs/marked                   /markedjs/marked                   yes
+mongodb        /mongodb/node-mongodb-native       /websites/mongodb_manual           NO
+underscore     /jashkenas/underscore              /automattic/_s                     NO
+same library for 5 of 8 packages
+mongodb 2.2.36 -> 3.1.13 via npm address (/mongodb/node-mongodb-native): 4 note(s): Collection.prototype.aggregate: 2.x vs 3.x Syntax; Collection.prototype.aggregate: Callback Return Value Change; Collection.prototype.aggregate Changes
+mongodb 2.2.36 -> 3.1.13 via name search (/websites/mongodb_manual): 0 note(s): 
+jsonwebtoken 8.5.1 -> 9.0.0 via npm address (/auth0/node-jsonwebtoken): 4 note(s): Verify unsigned token with explicit 'none' algorithm; Sign with allowInsecureKeySizes for small RSA keys; Sign asynchronously with callback
+jsonwebtoken 8.5.1 -> 9.0.0 via name search (/auth0/node-jsonwebtoken): 4 note(s): Verify unsigned token with explicit 'none' algorithm; Sign with allowInsecureKeySizes for small RSA keys; Sign asynchronously with callback

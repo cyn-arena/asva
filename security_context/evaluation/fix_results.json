@@ -1,0 +1,433 @@
+{
+ "generated_at": "2026-10-22 18:48 UTC",
+ "model": "unknown",
+ "runs": 3,
+ "scan": "20261013062102 @ 765e1949",
+ "cases": {
+  "package.json": {
+   "kind": "sca",
+   "findings": 26,
+   "ways": {
+    "A": [
+     {
+      "valid": true,
+      "summary": "body-parser 1.20.4, express 4.16.4, marked 0.3.18, mongodb 3.1.13, underscore 1.13.8",
+      "changed": {
+       "body-parser": "1.20.4",
+       "express": "4.16.4",
+       "marked": "0.3.18",
+       "mongodb": "3.1.13",
+       "underscore": "1.13.8"
+      },
+      "major": [
+       "mongodb"
+      ],
+      "fixed": 12,
+      "total": 26,
+      "not_fixable_by_bump": 14,
+      "other_changes": [],
+      "runs": 3,
+      "check": {
+       "name": "A-package-04c617",
+       "changed_files": [
+        "package.json"
+       ],
+       "ready": false,
+       "ready_after": null,
+       "installed": [
+        "mongodb@3.1.13",
+        "body-parser@1.20.4",
+        "express@4.16.4",
+        "marked@0.3.18",
+        "underscore@1.13.8"
+       ],
+       "error": "(node:11) UnhandledPromiseRejectionWarning: TypeError: db.dropCollection is not a function"
+      }
+     }
+    ],
+    "D": [
+     {
+      "valid": true,
+      "summary": "body-parser 1.20.4, marked 0.3.18, underscore 1.13.8",
+      "changed": {
+       "body-parser": "1.20.4",
+       "marked": "0.3.18",
+       "underscore": "1.13.8"
+      },
+      "major": [],
+      "fixed": 9,
+      "total": 26,
+      "not_fixable_by_bump": 14,
+      "other_changes": [],
+      "runs": 3,
+      "check": {
+       "name": "B-package-0db558",
+       "changed_files": [
+        "package.json"
+       ],
+       "ready": true,
+       "ready_after": 4.0,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.20.4",
+        "express@4.16.4",
+        "marked@0.3.18",
+        "underscore@1.13.8"
+       ],
+       "error": null
+      }
+     }
+    ],
+    "B": [
+     {
+      "valid": true,
+      "summary": "body-parser 1.20.4, marked 0.3.18, underscore 1.13.8",
+      "changed": {
+       "body-parser": "1.20.4",
+       "marked": "0.3.18",
+       "underscore": "1.13.8"
+      },
+      "major": [],
+      "fixed": 9,
+      "total": 26,
+      "not_fixable_by_bump": 14,
+      "other_changes": [],
+      "runs": 2,
+      "check": {
+       "name": "B-package-0db558",
+       "changed_files": [
+        "package.json"
+       ],
+       "ready": true,
+       "ready_after": 4.0,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.20.4",
+        "express@4.16.4",
+        "marked@0.3.18",
+        "underscore@1.13.8"
+       ],
+       "error": null
+      }
+     },
+     {
+      "valid": true,
+      "summary": "body-parser 1.20.4, express 4.16.4, marked 0.3.18, underscore 1.13.8",
+      "changed": {
+       "body-parser": "1.20.4",
+       "express": "4.16.4",
+       "marked": "0.3.18",
+       "underscore": "1.13.8"
+      },
+      "major": [],
+      "fixed": 9,
+      "total": 26,
+      "not_fixable_by_bump": 14,
+      "other_changes": [],
+      "runs": 1,
+      "check": {
+       "name": "B-package-e81951",
+       "changed_files": [
+        "package.json"
+       ],
+       "ready": true,
+       "ready_after": 4.0,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.20.4",
+        "express@4.16.4",
+        "marked@0.3.18",
+        "underscore@1.13.8"
+       ],
+       "error": null
+      }
+     }
+    ],
+    "C": [
+     {
+      "valid": true,
+      "summary": "body-parser 1.20.4, marked 0.3.18, underscore 1.13.8",
+      "changed": {
+       "body-parser": "1.20.4",
+       "marked": "0.3.18",
+       "underscore": "1.13.8"
+      },
+      "major": [],
+      "fixed": 9,
+      "total": 26,
+      "not_fixable_by_bump": 14,
+      "other_changes": [],
+      "runs": 3,
+      "check": {
+       "name": "B-package-0db558",
+       "changed_files": [
+        "package.json"
+       ],
+       "ready": true,
+       "ready_after": 4.0,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.20.4",
+        "express@4.16.4",
+        "marked@0.3.18",
+        "underscore@1.13.8"
+       ],
+       "error": null
+      }
+     }
+    ]
+   },
+   "held": [
+    "express 4.16.4: express is already at 4.16.4; the vulnerable packages (proxy-addr) come in through it and need a lockfile refresh or npm overrides.",
+    "forever 2.0.0: forever is already at 2.0.0; the vulnerable packages (brace-expansion, ini, minimatch, mixin-deep, set-value, y18n) come in through it and need a lockfile refresh or npm overrides.",
+    "mongodb 2.2.36: No compatible fix: OSV.dev lists no fix within 2.x (first fixed in 3.1.13). This needs a migration to 3.x, not a version bump."
+   ],
+   "not_fixable_by_bump": 14
+  },
+  "docker-compose.yml": {
+   "kind": "container",
+   "findings": 7,
+   "ways": {
+    "A": [
+     {
+      "valid": true,
+      "summary": "mongo:latest (unpinned tag; 9.0.4 today)",
+      "changed": {
+       "mongo": "latest"
+      },
+      "major": [
+       "mongo"
+      ],
+      "fixed": 7,
+      "total": 7,
+      "other_changes": [],
+      "end_of_life": false,
+      "runs": 2,
+      "check": {
+       "name": "A-docker-compose-943f7e",
+       "changed_files": [
+        "docker-compose.yml"
+       ],
+       "ready": false,
+       "ready_after": null,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.18.3",
+        "express@4.16.4",
+        "marked@0.3.5",
+        "underscore@1.9.1"
+       ],
+       "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+      }
+     },
+     {
+      "valid": true,
+      "summary": "mongo:8.0",
+      "changed": {
+       "mongo": "8.0"
+      },
+      "major": [
+       "mongo"
+      ],
+      "fixed": 7,
+      "total": 7,
+      "other_changes": [],
+      "end_of_life": false,
+      "runs": 1,
+      "check": {
+       "name": "line-mongo-8.0",
+       "changed_files": [
+        "docker-compose.yml"
+       ],
+       "ready": false,
+       "ready_after": null,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.18.3",
+        "express@4.16.4",
+        "marked@0.3.5",
+        "underscore@1.9.1"
+       ],
+       "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+      }
+     }
+    ],
+    "D": [
+     {
+      "valid": true,
+      "summary": "mongo:4.4.29",
+      "changed": {
+       "mongo": "4.4.29"
+      },
+      "major": [],
+      "fixed": 0,
+      "total": 7,
+      "other_changes": [],
+      "end_of_life": false,
+      "runs": 3,
+      "check": {
+       "name": "D-docker-compose-bfadbd",
+       "changed_files": [
+        "docker-compose.yml"
+       ],
+       "ready": true,
+       "ready_after": 4.2,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.18.3",
+        "express@4.16.4",
+        "marked@0.3.5",
+        "underscore@1.9.1"
+       ],
+       "error": null
+      }
+     }
+    ],
+    "B": [
+     {
+      "valid": true,
+      "summary": "mongo:4.4 (unchanged)",
+      "changed": {},
+      "major": [],
+      "fixed": 0,
+      "total": 7,
+      "other_changes": [],
+      "end_of_life": false,
+      "runs": 3,
+      "check": {
+       "name": "unchanged",
+       "changed_files": [],
+       "ready": true,
+       "ready_after": 4.1,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.18.3",
+        "express@4.16.4",
+        "marked@0.3.5",
+        "underscore@1.9.1"
+       ],
+       "error": null
+      }
+     }
+    ],
+    "C": [
+     {
+      "valid": true,
+      "summary": "mongo:4.4 (unchanged)",
+      "changed": {},
+      "major": [],
+      "fixed": 0,
+      "total": 7,
+      "other_changes": [],
+      "end_of_life": false,
+      "runs": 3,
+      "check": {
+       "name": "unchanged",
+       "changed_files": [],
+       "ready": true,
+       "ready_after": 4.1,
+       "installed": [
+        "mongodb@2.2.36",
+        "body-parser@1.18.3",
+        "express@4.16.4",
+        "marked@0.3.5",
+        "underscore@1.9.1"
+       ],
+       "error": null
+      }
+     }
+    ]
+   },
+   "held": [
+    "mongo 4.4: No compatible fix: no 4.x line of mongo resolves these findings. Migration target: mongo:7.0."
+   ],
+   "not_fixable_by_bump": 0
+  }
+ },
+ "lines": [
+  {
+   "tag": "5.0",
+   "check": {
+    "name": "line-mongo-5.0",
+    "changed_files": [
+     "docker-compose.yml"
+    ],
+    "ready": true,
+    "ready_after": 4.0,
+    "installed": [
+     "mongodb@2.2.36",
+     "body-parser@1.18.3",
+     "express@4.16.4",
+     "marked@0.3.5",
+     "underscore@1.9.1"
+    ],
+    "error": null
+   },
+   "resolved": "0 of 7",
+   "support": "past end of life"
+  },
+  {
+   "tag": "6.0",
+   "check": {
+    "name": "line-mongo-6.0",
+    "changed_files": [
+     "docker-compose.yml"
+    ],
+    "ready": false,
+    "ready_after": null,
+    "installed": [
+     "mongodb@2.2.36",
+     "body-parser@1.18.3",
+     "express@4.16.4",
+     "marked@0.3.5",
+     "underscore@1.9.1"
+    ],
+    "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+   },
+   "resolved": "7 of 7",
+   "support": "past end of life"
+  },
+  {
+   "tag": "7.0",
+   "check": {
+    "name": "line-mongo-7.0",
+    "changed_files": [
+     "docker-compose.yml"
+    ],
+    "ready": false,
+    "ready_after": null,
+    "installed": [
+     "mongodb@2.2.36",
+     "body-parser@1.18.3",
+     "express@4.16.4",
+     "marked@0.3.5",
+     "underscore@1.9.1"
+    ],
+    "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+   },
+   "resolved": "7 of 7",
+   "support": "until 2027-08-31"
+  },
+  {
+   "tag": "8.0",
+   "check": {
+    "name": "line-mongo-8.0",
+    "changed_files": [
+     "docker-compose.yml"
+    ],
+    "ready": false,
+    "ready_after": null,
+    "installed": [
+     "mongodb@2.2.36",
+     "body-parser@1.18.3",
+     "express@4.16.4",
+     "marked@0.3.5",
+     "underscore@1.9.1"
+    ],
+    "error": "{\"name\":\"MongoError\",\"message\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"ok\":0,\"errmsg\":\"Unsupported OP_QUERY command: insert. The client driver may require an upgrade. For more details see https://dochub.mongodb.org/core/legacy-opcode-removal\",\"code\":352,\"codeName\":\"UnsupportedOpQue"
+   },
+   "resolved": "7 of 7",
+   "support": "until 2029-10-31"
+  }
+ ]
+}

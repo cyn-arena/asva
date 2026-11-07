@@ -14,6 +14,8 @@ permissions:
 
 jobs:
   validate:
+    # PRs the pipeline opens with GITHUB_TOKEN are tested by the pipeline's own candidate check.
+    if: github.event_name != 'pull_request' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:

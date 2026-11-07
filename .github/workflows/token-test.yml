@@ -4,6 +4,8 @@ name: TEMP - GITHUB_TOKEN test (delete after)
 # push a new branch, open a PR, comment and mark it as a draft, and see whether the PR starts the
 # PyGoat PR checks. Runs once when this file is pushed to feat/testing. Delete this file, the test
 # branch and the test PR afterwards.
+# Run 2: pygoat-validate.yml and pygoat-baseline.yml skip PRs from github-actions[bot]. Does that turn
+# their "startup failure" into "skipped"?
 
 on:
   push:
@@ -64,8 +66,8 @@ jobs:
         continue-on-error: true
         run: |
           sleep 90
-          gh run list --branch "$TEST_BRANCH" --json name,event,status \
-            --jq '.[] | "\(.event) | \(.name) | \(.status)"' > runs.txt
+          gh run list --branch "$TEST_BRANCH" --json name,event,status,conclusion \
+            --jq '.[] | "\(.event) | \(.name) | \(.status) \(.conclusion)"' > runs.txt
           echo "Runs started on $TEST_BRANCH:"; cat runs.txt
           echo "count=$(grep -c . runs.txt || true)" >> "$GITHUB_OUTPUT"
 

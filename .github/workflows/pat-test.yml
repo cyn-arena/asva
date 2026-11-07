@@ -1,0 +1,83 @@
+name: TEMP - GHPAT_ASVA_GITOPS test (delete after)
+
+# Temporary. Tests what GHPAT_ASVA_GITOPS can do in this repo today, the same way the fix jobs use it:
+# read the repo, push a new branch, open a PR, and whether that PR starts the PyGoat PR checks.
+# Runs once when this file is pushed to feat/testing. Delete this file, the test branch and the
+# test PR afterwards.
+
+on:
+  push:
+    branches:
+      - feat/testing
+    paths:
+      - '.github/workflows/pat-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  pat-test:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS }}
+      TEST_BRANCH: test/ghpat-${{ github.run_id }}
+    steps:
+      - name: 1. What can the token do here?
+        id: read
+        continue-on-error: true
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY" --jq '"read: ok, push: \(.permissions.push), admin: \(.permissions.admin)"' | tee access.txt
+          echo "access=$(cat access.txt)" >> "$GITHUB_OUTPUT"
+          gh api user --jq '"token belongs to: \(.login)"' || echo "token owner: not readable with this token"
+
+      - name: Checkout with GHPAT_ASVA_GITOPS (as the fix jobs do)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GHPAT_ASVA_GITOPS }}
+
+      - name: 2. Push a new branch with GHPAT_ASVA_GITOPS
+        id: push
+        continue-on-error: true
+        run: |
+          git config user.name "asva-pat-test"
+          git config user.email "asva-pat-test@users.noreply.github.com"
+          git switch -c "$TEST_BRANCH"
+          echo "Temporary file from the GHPAT_ASVA_GITOPS test. Deleted with this branch." > target-apps/PyGoat/asva-pat-test.txt
+          git add target-apps/PyGoat/asva-pat-test.txt
+          git commit -m "test: GHPAT_ASVA_GITOPS push (temporary)"
+          git push -u origin "$TEST_BRANCH"
+
+      - name: 3. Open a PR with GHPAT_ASVA_GITOPS
+        id: pr
+        if: steps.push.outcome == 'success'
+        continue-on-error: true
+        run: |
+          url=$(gh pr create --base feat/testing --head "$TEST_BRANCH" \
+            --title "TEMP: GHPAT_ASVA_GITOPS test, do not merge" \
+            --body "Opened by a temporary workflow to test GHPAT_ASVA_GITOPS. It will be closed and deleted.")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Opened $url"
+
+      - name: 4. Did the PR start the PyGoat PR checks?
+        id: checks
+        if: steps.pr.outcome == 'success'
+        continue-on-error: true
+        run: |
+          sleep 90
+          gh run list --branch "$TEST_BRANCH" --json name,event,status,conclusion \
+            --jq '.[] | "\(.event) | \(.name) | \(.status) \(.conclusion)"' > runs.txt
+          echo "Runs started on $TEST_BRANCH:"; cat runs.txt
+          echo "count=$(grep -c . runs.txt || true)" >> "$GITHUB_OUTPUT"
+
+      - name: Results
+        if: always()
+        run: |
+          {
+            echo "## GHPAT_ASVA_GITOPS test"
+            echo "| Step | Outcome |"
+            echo "|---|---|"
+            echo "| 1. Read the repo | ${{ steps.read.outcome }}: ${{ steps.read.outputs.access }} |"
+            echo "| 2. Push a new branch | ${{ steps.push.outcome }} |"
+            echo "| 3. Open a PR | ${{ steps.pr.outcome }} ${{ steps.pr.outputs.url }} |"
+            echo "| 4. Workflows started by the PR | ${{ steps.checks.outputs.count }} |"
+          } | tee -a "$GITHUB_STEP_SUMMARY"

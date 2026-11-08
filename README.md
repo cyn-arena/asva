@@ -287,10 +287,10 @@ If gitleaks is not on PATH, set `GITLEAKS_BINARY` in `.env` to its absolute path
 ## GitOps (branch, commit, push, PR)
 
 Uses native `git` and `gh`, already installed on the runners. The NodeGoat and
-PyGoat fix workflows use `GHPAT_ASVA_GITOPS` for scanned-source Git pushes and agent
-PR creation. It needs repository Contents and Pull requests write access plus
-Workflows write access, because new fix branches inherit the development branch's
-workflow files. Routine artifact access still uses `GITHUB_TOKEN`.
+PyGoat fix workflows push the fix branches with `GITHUB_TOKEN` and open the PRs with
+`GHPAT_ASVA_GITOPS`, a bot user's token that needs Pull requests write access. PRs opened
+with `GITHUB_TOKEN` would not start other workflows, such as the PyGoat PR checks.
+Everything else, including artifacts and issues, uses `GITHUB_TOKEN`.
 The agent opens PRs for human review and **never merges**.
 
 One PR per triage batch:

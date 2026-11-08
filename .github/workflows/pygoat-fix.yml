@@ -176,7 +176,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Set GHPAT_ASVA_GITOPS to a valid repository token with Contents, Pull requests and Workflows write access. GITHUB_TOKEN cannot push these workflow-bearing fix branches."
+            echo "::error::Set GHPAT_ASVA_GITOPS to a valid repository token with Pull requests write access. It opens the fix PRs; the fix branches are pushed with GITHUB_TOKEN."
             exit 1
           fi
           if ! gh api "repos/$GITHUB_REPOSITORY" --silent; then
@@ -191,8 +191,9 @@ jobs:
           ref: ${{ steps.source.outputs.sha }}
           path: asva-fix-source
           fetch-depth: 0
-          # Git push uses checkout's persisted credentials, not GH_TOKEN alone.
-          token: ${{ secrets.GHPAT_ASVA_GITOPS }}
+          # Git push uses checkout's persisted credentials, so the fix branches are pushed with
+          # GITHUB_TOKEN. The PRs are opened with GHPAT_ASVA_GITOPS (GH_TOKEN in the agent step).
+          token: ${{ github.token }}
 
       - name: Install gitleaks
         run: |
@@ -263,6 +264,7 @@ jobs:
       - name: Generate AI fixes and open PRs
         id: agent
         env:
+          # gh opens, comments on and drafts the PRs as the bot user, so they start the PR checks.
           GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS }}
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           SNYK_CFG_ORG: ${{ secrets.SNYK_ORG }}

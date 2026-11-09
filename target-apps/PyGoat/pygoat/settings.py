@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import time
 
 import django_heroku
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +24,42 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _get_secret_key():
+    secret_key = os.environ.get('SECRET_KEY') or os.environ.get('DJANGO_SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_file = os.path.join(BASE_DIR, '.secret_key')
+    for _ in range(20):
+        try:
+            with open(secret_file, 'r') as f:
+                stored_key = f.read().strip()
+            if stored_key:
+                return stored_key
+        except FileNotFoundError:
+            pass
+
+        generated_key = get_random_secret_key()
+        tmp_file = f"{secret_file}.{os.getpid()}.tmp"
+        with open(tmp_file, 'w') as f:
+            f.write(generated_key)
+
+        try:
+            os.link(tmp_file, secret_file)
+            os.unlink(tmp_file)
+            return generated_key
+        except FileExistsError:
+            try:
+                os.unlink(tmp_file)
+            except OSError:
+                pass
+            time.sleep(0.05)
+
+    with open(secret_file, 'r') as f:
+        return f.read().strip()
+
+
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

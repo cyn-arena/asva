@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -19,6 +20,20 @@ from .views import authentication_decorator
 # 2. extract inputs form 2nd code 
 # 3. Run the code 
 # 4. get the result
+def _is_safe_ssrf_lab_input(file_name):
+    if not isinstance(file_name, str):
+        return False
+    if not file_name or '\x00' in file_name:
+        return False
+    if file_name in ('.', '..'):
+        return False
+    if os.path.basename(file_name) != file_name:
+        return False
+    if os.path.isabs(file_name):
+        return False
+    return True
+
+
 @csrf_exempt
 def ssrf_code_checker(request):
     if request.user.is_authenticated:
@@ -35,6 +50,8 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
+                if not _is_safe_ssrf_lab_input(inputs):
+                    return JsonResponse({"status": "error", "message": "Invalid input"}, status=400)
                 outputs.append(main.ssrf_lab(inputs))
             if outputs == correct_output1:
                 outputs = []

@@ -90,6 +90,15 @@ def test_the_safe_versions_are_what_gets_set_not_the_scanners(repo, monkeypatch)
     assert "Django==4.2.28" in result["files"][0]["content"] and "PyYAML==5.1" in result["files"][0]["content"]
 
 
+def test_a_file_set_in_code_does_not_say_memory_was_injected(repo, monkeypatch, capsys):
+    from memory import memory_store
+    django = finding("django@4.2", "django@4.2.28")
+    memory_store.save_fix(memory_store.make_fingerprint(django), "requirements.txt", "sca", "", "run-1", "committed", "s", "old")
+    monkeypatch.setattr(agent_loop, "call_llm", lambda *_: pytest.fail("called the LLM"))
+    agent_loop.process_batch(_batch(repo, [django]), str(repo), use_repo_context=False)
+    assert "[MEMORY]" not in capsys.readouterr().out  # no prompt, so nothing was injected
+
+
 def test_a_finding_a_reviewer_excluded_is_not_upgraded(repo, monkeypatch):
     monkeypatch.setattr(agent_loop, "call_llm", lambda *_: pytest.fail("called the LLM"))
     monkeypatch.setattr(agent_loop, "apply_reviewer_memory", lambda entries, decisions: ([{**e, "findings": e["findings"][:1]} for e in entries], {}))

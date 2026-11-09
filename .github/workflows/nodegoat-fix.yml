@@ -21,8 +21,6 @@ on:
           type: string
           required: false
     secrets:
-      GHPAT_ASVA_GITOPS:
-        required: false
       OLLAMA_API_KEY:
         required: false
       OLLAMA_API_KEY_TEST:
@@ -180,28 +178,15 @@ jobs:
             --source-branch "$SOURCE_BRANCH" --source-sha "$SOURCE_SHA" \
             --ref-type "$CURRENT_REF_TYPE" --repository "$GITHUB_REPOSITORY"
 
-      - name: Check GitOps token before checkout and paid AI calls
-        env:
-          GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS }}
-        run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Set GHPAT_ASVA_GITOPS to a valid repository token with Contents, Pull requests and Workflows write access. GITHUB_TOKEN cannot push these workflow-bearing fix branches."
-            exit 1
-          fi
-          if ! gh api "repos/$GITHUB_REPOSITORY" --silent; then
-            echo "::error::GHPAT_ASVA_GITOPS cannot access this repository. Check expiration, repository selection and organization approval before retrying AI fixes."
-            exit 1
-          fi
-          echo "GitOps token can access the repository. Required write permissions must also be configured in GitHub."
-
       - name: Checkout exact scanned application source
         uses: actions/checkout@v7
         with:
           ref: ${{ steps.source.outputs.sha }}
           path: asva-fix-source
           fetch-depth: 0
-          # Git push uses checkout's persisted credentials, not GH_TOKEN alone.
-          token: ${{ secrets.GHPAT_ASVA_GITOPS }}
+          # Git push uses checkout's persisted credentials, so the fix branches are pushed with
+          # GITHUB_TOKEN. gh opens the PRs with the job's GH_TOKEN, also GITHUB_TOKEN.
+          token: ${{ github.token }}
 
       - name: Set up Node.js for npm dependency remediation
         if: env.ASVA_SCA_FIX_MODE == 'npm'
@@ -346,7 +331,6 @@ jobs:
       - name: Generate fix candidates and open PRs
         id: agent
         env:
-          GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS }}
           # One of the security tests the fixes are tested with before the PR rescans with Snyk.
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           SNYK_ORG: ${{ secrets.SNYK_ORG }}

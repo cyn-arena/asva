@@ -5,9 +5,9 @@ Uses the tools already present on the runners:
   - git : create branch, stage files, commit, push
   - gh  : open the pull request
 
-Git uses checkout-persisted credentials; gh uses GH_TOKEN. CI workflows select the
-credential (PAT for candidate pushes and PRs); local runs use `gh auth login` and
-`gh auth setup-git`. This module does not read or store token values.
+Git uses checkout-persisted credentials; gh uses GH_TOKEN. CI workflows use GITHUB_TOKEN
+for both; local runs use `gh auth login` and `gh auth setup-git`. This module does not read
+or store token values.
 
 Granularity — ONE pull request per batch, normally ONE commit per file:
     1 triage batch  ->  1 fix branch (fix/<batch_id>)  ->  1 commit per fixed file  ->  1 PR

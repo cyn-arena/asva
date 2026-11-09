@@ -24,7 +24,6 @@ Set these under *Settings → Secrets and variables → Actions* before running 
 | Secret | What it is |
 |---|---|
 | `AZURE_CREDENTIALS` | Service principal JSON for `azure/login` |
-| `GHPAT_ASVA_GITOPS` | GitHub token that pushes fix branches and opens PRs |
 | `OLLAMA_API_KEY` (optional `OLLAMA_API_KEY_TEST`) | LLM gateway keys |
 | `SNYK_TOKEN`, `SNYK_ORG` | Snyk account used by the scans |
 | `NVD_API_KEY`, `CONTEXT7_API_KEY` | Security-context data sources |

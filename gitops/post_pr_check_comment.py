@@ -41,21 +41,27 @@ def tested_sha(report):
     return report.get("tested_sha") or report.get("commit_sha")
 
 
-def format_validation_comment(report, marked_draft=False):
-    """Render exactly the checks retained in the dashboard's validation JSON."""
+def format_validation_comment(report, marked_draft=False, new_findings=None):
+    """Render exactly the checks retained in the dashboard's validation JSON, plus what the scan
+    before the PR left (agent/test_first.py), which the validation does not know about."""
     checks = report["checks"]
     counts = {status: sum(c["status"] == status for c in checks)
               for status in ("passed", "failed", "skipped", "not_available")}
-    heading = ("## :white_check_mark: Ready to merge, pending review" if report["result"] == "passed"
-               else "## :x: Not ready to merge")
+    heading = ("## :white_check_mark: Ready to merge, pending review"
+               if report["result"] == "passed" and not new_findings else "## :x: Not ready to merge")
     lines = [heading, "",
              f"**Result: {report['result']}** — {len(checks)} checks: {counts['passed']} passed, "
              f"{counts['failed']} failed, {counts['skipped']} skipped, {counts['not_available']} not available.", "",
+             *([f"**The scan before this PR also found new critical or high findings:** "
+                f"{'; '.join(new_findings)}. It should not be merged until someone has checked them.", ""]
+               if new_findings else []),
              f"Tested commit: `{tested_sha(report)}`", "",
              "| Check | Kind | Result | Detail |", "|---|---|---|---|"]
     def cell(value):
         return str(value or "").replace("|", "\\|").replace("\n", " ").replace("\r", " ")
     lines.extend("| " + " | ".join(cell(c.get(key)) for key in ("name", "kind", "status", "detail")) + " |" for c in checks)
+    if new_findings:
+        lines.append(f"| New findings (scan before this PR) | security_scan | found | {cell('; '.join(new_findings))} |")
     out_of_scope = report.get("out_of_scope_checks") or []
     if out_of_scope:
         lines.extend(["", "Security checks this batch did not target (shown, not counted in the result):", "",
@@ -175,15 +181,16 @@ def main() -> None:
         if args.sha and tested_sha(report) != args.sha:
             parser.error("Validation does not match the PR candidate SHA")
         failing = report["result"] != "passed"
+        new_findings = new_before_pr(args.batch_file)
         # Same order as the JUnit path: draft first, so the comment can say it happened.
         marked_draft = False
-        if args.execute and failing and not args.no_draft:
+        if args.execute and (failing or new_findings) and not args.no_draft:
             try:
                 convert_pr_to_draft(args.pr, repo_dir=args.repo_dir)
                 marked_draft = True
             except GitOpError as e:
                 print(f"[WARN] Could not convert PR to draft: {e}")
-        comment = format_validation_comment(report, marked_draft=marked_draft)
+        comment = format_validation_comment(report, marked_draft=marked_draft, new_findings=new_findings)
         print(comment)
         if not args.execute:
             print("[DRY RUN] Not posted. Re-run with --execute to comment on the PR.")

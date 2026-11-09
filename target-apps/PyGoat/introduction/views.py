@@ -1,12 +1,15 @@
+import ast
 import base64
 import datetime
 import hashlib
+import ipaddress
 import json
 import logging
+import operator
 import os
-import pickle
 import random
 import re
+import socket
 import string
 import subprocess
 import uuid
@@ -14,9 +17,10 @@ from dataclasses import dataclass
 from hashlib import md5
 from io import BytesIO
 from random import randint
+from urllib.parse import urlparse
 from xml.dom.pulldom import START_ELEMENT, parseString
 from xml.sax import make_parser
-from xml.sax.handler import feature_external_ges
+from xml.sax.handler import feature_external_ges, feature_external_pes
 
 import jwt
 import requests
@@ -80,6 +84,85 @@ def authentication_decorator(func):
         else:
             return redirect('login')
     return function
+
+_SAFE_BINARY_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+
+_SAFE_UNARY_OPERATORS = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
+
+def _safe_eval_expression(expression):
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        if isinstance(node, ast.Constant):
+            value = node.value
+            if isinstance(value, (int, float, complex, str, bool, type(None))):
+                return value
+            raise ValueError("Unsupported constant")
+        if isinstance(node, ast.BinOp):
+            op = _SAFE_BINARY_OPERATORS.get(type(node.op))
+            if op is None:
+                raise ValueError("Unsupported operator")
+            return op(_eval(node.left), _eval(node.right))
+        if isinstance(node, ast.UnaryOp):
+            op = _SAFE_UNARY_OPERATORS.get(type(node.op))
+            if op is None:
+                raise ValueError("Unsupported operator")
+            return op(_eval(node.operand))
+        raise ValueError("Unsupported expression")
+
+    tree = ast.parse(expression, mode='eval')
+    return _eval(tree)
+
+def _is_safe_url(url):
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False
+
+    if parsed.scheme not in ("http", "https"):
+        return False
+    if not parsed.hostname:
+        return False
+    if parsed.username or parsed.password:
+        return False
+
+    hostname = parsed.hostname
+    if hostname.lower() == "localhost" or hostname.lower().endswith(".localhost"):
+        return False
+
+    try:
+        addr_info = socket.getaddrinfo(hostname, None)
+    except socket.gaierror:
+        return False
+
+    for info in addr_info:
+        try:
+            ip = ipaddress.ip_address(info[4][0].split('%')[0])
+        except ValueError:
+            return False
+        if (ip.is_private or ip.is_loopback or ip.is_link_local or
+                ip.is_reserved or ip.is_multicast or ip.is_unspecified):
+            return False
+
+    return True
+
+def _safe_join(base_dir, user_path):
+    base_dir = os.path.realpath(base_dir)
+    target = os.path.realpath(os.path.join(base_dir, user_path))
+    if os.path.commonpath([base_dir, target]) != base_dir:
+        raise ValueError("Invalid path")
+    return target
 
 #*****************************************XSS****************************************************#
 
@@ -155,12 +238,12 @@ def sql_lab(request):
 
             if login.objects.filter(user=name):
 
-                sql_query = "SELECT * FROM introduction_login WHERE user='"+name+"' AND password='"+password+"'"
+                sql_query = "SELECT * FROM introduction_login WHERE user=%s AND password=%s"
                 print(sql_query)
                 try:
                     print("\nin try\n")
-                    val=login.objects.raw(sql_query)
-                except:
+                    val = login.objects.filter(user=name, password=password)
+                except Exception:
                     print("\nin except\n")
                     return render(
                         request, 
@@ -199,8 +282,7 @@ def insec_des(request):
 @dataclass
 class TestUser:
     admin: int = 0
-pickled_user = pickle.dumps(TestUser())
-encoded_user = base64.b64encode(pickled_user)
+encoded_user = base64.b64encode(json.dumps({"admin": 0}).encode("utf-8"))
 
 def insec_des_lab(request):
     if request.user.is_authenticated:
@@ -210,8 +292,14 @@ def insec_des_lab(request):
             token = encoded_user
             response.set_cookie(key='token',value=token.decode('utf-8'))
         else:
-            token = base64.b64decode(token)
-            admin = pickle.loads(token)
+            try:
+                token = base64.b64decode(token.encode('utf-8'), validate=True)
+                token_data = json.loads(token.decode('utf-8'))
+                admin = TestUser(admin=int(token_data.get('admin', 0)))
+            except Exception:
+                token = encoded_user
+                response.set_cookie(key='token',value=token.decode('utf-8'))
+                return response
             if admin.admin == 1:
                 response = render(request,'Lab/insec_des/insec_des_lab.html', {"message":"Welcome Admin, SECRETKEY:ADMIN123"})
                 return response
@@ -256,7 +344,8 @@ def xxe_see(request):
 def xxe_parse(request):
 
     parser = make_parser()
-    parser.setFeature(feature_external_ges, True)
+    parser.setFeature(feature_external_ges, False)
+    parser.setFeature(feature_external_pes, False)
     doc = parseString(request.body.decode('utf-8'), parser=parser)
     for event, node in doc:
         if event == START_ELEMENT and node.tagName == 'text':
@@ -457,8 +546,8 @@ def cmd_lab2(request):
             
             print(val)
             try:
-                output = eval(val)
-            except:
+                output = _safe_eval_expression(val)
+            except Exception:
                 output = "Something went wrong"
                 return render(request,'Lab/CMD/cmd_lab2.html',{"output":output})
             print("Output = ", output)
@@ -557,7 +646,7 @@ def a9_lab(request):
             try :
                 file=request.FILES["file"]
                 try :
-                    data = yaml.load(file,yaml.Loader)
+                    data = yaml.safe_load(file)
                     
                     return render(request,"Lab/A9/a9_lab.html",{"data":data})
                 except:
@@ -861,7 +950,7 @@ def injection_sql_lab(request):
         print(password)
 
         if name:
-            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id='"+name+"'AND password='"+password+"'"
+            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id=%s AND password=%s"
 
             sql_instance = sql_lab_table(id="admin", password="65079b006e85a7e798abecb99e47c154")
             sql_instance.save()
@@ -875,11 +964,11 @@ def injection_sql_lab(request):
             print(sql_query)
 
             try:
-                user = sql_lab_table.objects.raw(sql_query)
-                user = user[0].id
+                user_obj = sql_lab_table.objects.filter(id=name, password=password).first()
+                user = user_obj.id if user_obj else None
                 print(user)
 
-            except:
+            except Exception:
                 return render(
                     request, 
                     'Lab_2021/A3_Injection/sql_lab.html',
@@ -923,9 +1012,9 @@ def ssrf_lab(request):
             file=request.POST["blog"]
             try :
                 dirname = os.path.dirname(__file__)
-                filename = os.path.join(dirname, file)
-                file = open(filename,"r")
-                data = file.read()
+                filename = _safe_join(dirname, file)
+                with open(filename, "r") as f:
+                    data = f.read()
                 return render(request,"Lab/ssrf/ssrf_lab.html",{"blog":data})
             except:
                 return render(request, "Lab/ssrf/ssrf_lab.html", {"blog": "No blog found"})
@@ -960,7 +1049,9 @@ def ssrf_lab2(request):
     elif request.method == "POST":
         url = request.POST["url"]
         try:
-            response = requests.get(url)
+            if not _is_safe_url(url):
+                return render(request, "Lab/ssrf/ssrf_lab2.html", {"error": "Invalid URL"})
+            response = requests.get(url, timeout=5, allow_redirects=False)
             return render(request, "Lab/ssrf/ssrf_lab2.html", {"response": response.content.decode()})
         except:
             return render(request, "Lab/ssrf/ssrf_lab2.html", {"error": "Invalid URL"})

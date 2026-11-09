@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -12,6 +13,21 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+def _safe_ssrf_lab(file_name):
+    if not isinstance(file_name, str) or not file_name or "\x00" in file_name:
+        return {"blog": "No blog found"}
+
+    ssrf_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "playground", "ssrf"))
+    requested_path = os.path.realpath(os.path.join(ssrf_dir, file_name))
+    try:
+        if requested_path == ssrf_dir or os.path.commonpath([ssrf_dir, requested_path]) != ssrf_dir:
+            return {"blog": "No blog found"}
+    except ValueError:
+        return {"blog": "No blog found"}
+
+    return main.ssrf_lab(file_name)
 
 
 # steps --> 
@@ -35,7 +51,7 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
-                outputs.append(main.ssrf_lab(inputs))
+                outputs.append(_safe_ssrf_lab(inputs))
             if outputs == correct_output1:
                 outputs = []
             else:
@@ -43,7 +59,7 @@ def ssrf_code_checker(request):
 
             correct_output2 = [{"blog": "No blog found"}]
             for inputs in test_bench2:
-                outputs.append(main.ssrf_lab(inputs))
+                outputs.append(_safe_ssrf_lab(inputs))
             if outputs == correct_output2:
                 return JsonResponse({'message':'Congratulation, you have written a secure code.', 'passed':1}, status = 200)
             

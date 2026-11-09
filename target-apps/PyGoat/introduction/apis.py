@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -35,7 +36,10 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
-                outputs.append(main.ssrf_lab(inputs))
+                safe_input = os.path.basename(inputs)
+                if safe_input in ('', '.', '..'):
+                    return JsonResponse({'message': 'Invalid input path'}, status=400)
+                outputs.append(main.ssrf_lab(safe_input))
             if outputs == correct_output1:
                 outputs = []
             else:

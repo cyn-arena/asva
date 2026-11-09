@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
+import time
 
 import django_heroku
 
@@ -18,11 +20,51 @@ import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _get_secret_key():
+    secret_key = os.environ.get("DJANGO_SECRET_KEY")
+    if secret_key:
+        return secret_key
+
+    secret_file = os.environ.get(
+        "DJANGO_SECRET_KEY_FILE",
+        os.path.join(BASE_DIR, ".django_secret_key"),
+    )
+
+    for _ in range(50):
+        try:
+            with open(secret_file, "r", encoding="utf-8") as f:
+                secret_key = f.read().strip()
+                if secret_key:
+                    return secret_key
+        except FileNotFoundError:
+            pass
+
+        try:
+            fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            time.sleep(0.02)
+            continue
+        else:
+            new_secret = secrets.token_urlsafe(50)
+            os.write(fd, new_secret.encode("utf-8"))
+            os.close(fd)
+            with open(secret_file, "r", encoding="utf-8") as f:
+                secret_key = f.read().strip()
+                if secret_key:
+                    return secret_key
+            return new_secret
+
+    with open(secret_file, "w", encoding="utf-8") as f:
+        f.write(secrets.token_urlsafe(50))
+    with open(secret_file, "r", encoding="utf-8") as f:
+        return f.read().strip()
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

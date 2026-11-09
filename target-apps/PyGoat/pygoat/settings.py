@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
+import time
 
 import django_heroku
 
@@ -18,11 +20,65 @@ import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def get_secret_key():
+    secret_key = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_key_file = os.environ.get(
+        'DJANGO_SECRET_KEY_FILE',
+        os.path.join(BASE_DIR, '.django-secret-key'),
+    )
+
+    for attempt in range(20):
+        try:
+            with open(secret_key_file, 'r', encoding='utf-8') as f:
+                secret_key = f.read().strip()
+                if secret_key:
+                    return secret_key
+        except FileNotFoundError:
+            pass
+        except OSError:
+            break
+
+        if attempt == 0:
+            secret_key = secrets.token_urlsafe(50)
+            try:
+                fd = os.open(
+                    secret_key_file,
+                    os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+                    0o600,
+                )
+            except FileExistsError:
+                time.sleep(0.05)
+                continue
+            except OSError:
+                break
+            else:
+                try:
+                    os.write(fd, secret_key.encode('utf-8'))
+                finally:
+                    os.close(fd)
+                return secret_key
+        else:
+            time.sleep(0.05)
+
+    try:
+        with open(secret_key_file, 'r', encoding='utf-8') as f:
+            secret_key = f.read().strip()
+            if secret_key:
+                return secret_key
+    except OSError:
+        pass
+
+    return secrets.token_urlsafe(50)
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+SECRET_KEY = get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

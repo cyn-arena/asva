@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
 
 import django_heroku
 
@@ -18,11 +19,46 @@ import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _get_secret_key():
+    for env_var in ('DJANGO_SECRET_KEY', 'SECRET_KEY'):
+        secret_key = os.environ.get(env_var)
+        if secret_key:
+            return secret_key
+
+    secret_file = os.path.join(BASE_DIR, '.django_secret_key')
+    try:
+        with open(secret_file, 'r') as secret_key_file:
+            secret_key = secret_key_file.read().strip()
+        if secret_key:
+            return secret_key
+    except OSError:
+        pass
+
+    secret_key = secrets.token_urlsafe(50)
+    try:
+        fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        try:
+            with open(secret_file, 'r') as secret_key_file:
+                existing_secret_key = secret_key_file.read().strip()
+            if existing_secret_key:
+                return existing_secret_key
+        except OSError:
+            pass
+        return secret_key
+    except OSError:
+        return secret_key
+    else:
+        with os.fdopen(fd, 'w') as secret_key_file:
+            secret_key_file.write(secret_key)
+        return secret_key
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 
@@ -149,8 +185,7 @@ django_heroku.settings(locals())
 #Authentication Backend
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 SITE_ID=3

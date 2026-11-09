@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response
-import pickle
+import json
 import base64
 from dataclasses import dataclass
 
@@ -10,10 +10,6 @@ class User:
     username: str 
     is_admin: bool = False
 
-    def __reduce__(self):
-        # Intentionally vulnerable __reduce__ method to match PyGoat
-        return (User, (self.username, self.is_admin))
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -23,8 +19,10 @@ def serialize_data():
     username = request.form.get('username', 'guest')
     # Create regular user with admin=False
     user = User(username=username, is_admin=False)
-    # Match PyGoat's serialization format
-    serialized = base64.b64encode(pickle.dumps(user)).decode()
+    serialized = base64.b64encode(json.dumps({
+        "username": user.username,
+        "is_admin": user.is_admin,
+    }).encode('utf-8')).decode('utf-8')
     return render_template('result.html', serialized=serialized)
 
 @app.route('/deserialize', methods=['POST'])
@@ -32,8 +30,16 @@ def deserialize_data():
     try:
         serialized_data = request.form.get('serialized_data', '')
         decoded_data = base64.b64decode(serialized_data)
-        # Intentionally vulnerable deserialization, matching PyGoat
-        user = pickle.loads(decoded_data)
+        data = json.loads(decoded_data.decode('utf-8'))
+        if not isinstance(data, dict):
+            raise ValueError("Invalid user data")
+
+        username = data.get('username', 'guest')
+        is_admin = data.get('is_admin', False)
+        if not isinstance(username, str) or not isinstance(is_admin, bool):
+            raise ValueError("Invalid user data")
+
+        user = User(username=username, is_admin=is_admin)
         
         if isinstance(user, User):
             if user.is_admin:
@@ -49,5 +55,3 @@ def deserialize_data():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
-
-    

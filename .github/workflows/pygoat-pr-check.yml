@@ -8,8 +8,6 @@ on:
         type: string
         required: true
     secrets:
-      GHPAT_ASVA_GITOPS:
-        required: false
       SNYK_TOKEN:
         required: false
       SNYK_ORG:
@@ -108,7 +106,7 @@ jobs:
         id: comment
         if: always()
         env:
-          GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS || github.token }}
+          GH_TOKEN: ${{ github.token }}
           CHECKED_SHA: ${{ steps.meta.outputs.sha || matrix.sha }}
         run: |
           validation="asva-results/candidate/validation/$BATCH_ID.json"
@@ -117,6 +115,7 @@ jobs:
             exit 1
           fi
           python -m gitops.post_pr_check_comment --validation-json "$validation" \
+            --batch-file "asva-results/fix/fix_batches/$BATCH_ID.json" \
             --pr "$CANDIDATE_PR" --sha "$CHECKED_SHA" --execute
 
       - name: Collect candidate logs and container status

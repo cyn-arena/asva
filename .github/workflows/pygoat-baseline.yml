@@ -10,11 +10,14 @@ on:
       - 'target-apps/PyGoat/**'
       - 'scripts/pygoat-smoke.py'
       - '.github/workflows/pygoat-baseline.yml'
-  pull_request:
-    paths:
-      - 'target-apps/PyGoat/**'
-      - 'scripts/pygoat-smoke.py'
-      - '.github/workflows/pygoat-baseline.yml'
+  # Paused: the pipeline opens its PRs with GITHUB_TOKEN, which can't start other workflows, so
+  # on those PRs this showed only as "startup failure". The pipeline still runs this job itself
+  # (pygoat-orchestrator.yml). Uncomment to run it on every PyGoat PR again.
+  # pull_request:
+  #   paths:
+  #     - 'target-apps/PyGoat/**'
+  #     - 'scripts/pygoat-smoke.py'
+  #     - '.github/workflows/pygoat-baseline.yml'
 
 permissions:
   contents: read

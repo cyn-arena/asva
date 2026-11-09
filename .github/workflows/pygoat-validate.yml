@@ -3,11 +3,14 @@ name: PyGoat - Build and Validate
 on:
   workflow_dispatch:
   workflow_call:
-  pull_request:
-    paths:
-      - 'target-apps/PyGoat/**'
-      - 'scripts/pygoat-smoke.py'
-      - '.github/workflows/pygoat-validate.yml'
+  # Paused: the pipeline opens its PRs with GITHUB_TOKEN, which can't start other workflows, so
+  # on those PRs this showed only as "startup failure". The pipeline checks its own fixes
+  # (pygoat-pr-check.yml). Uncomment to run it on every PyGoat PR again.
+  # pull_request:
+  #   paths:
+  #     - 'target-apps/PyGoat/**'
+  #     - 'scripts/pygoat-smoke.py'
+  #     - '.github/workflows/pygoat-validate.yml'
 
 permissions:
   contents: read

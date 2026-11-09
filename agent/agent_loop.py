@@ -777,18 +777,20 @@ def apply_reviewer_memory(entries: list[dict], decisions_data: dict) -> tuple[li
             history.extend(load_memory(fingerprint))
 
         hint = "\n".join(h for h in hints if h) or None
+        log = ""
         if history:
             runs = sorted({str(h["run_id"]) for h in history if h.get("outcome") == "committed"})
             last_run, errors = previous_errors(history)
-            print(f"    [MEMORY] {path}: injecting {len(runs)} previous run(s) of fix history "
-                  f"({', '.join(runs) or 'none'}) and {len(errors)} error(s) from the previous pass"
-                  f"{f' (run {last_run})' if errors else ''}")
+            log = (f"    [MEMORY] {path}: injecting {len(runs)} previous run(s) of fix history "
+                   f"({', '.join(runs) or 'none'}) and {len(errors)} error(s) from the previous pass"
+                   f"{f' (run {last_run})' if errors else ''}")
 
         kept.append({**e, "findings": actionable})
         memory_context[path] = {
             "findings": actionable,
             "fix_type": e["fix_type"],
             "memory":   build_memory_context({"history": history}, hint),
+            "log":      log,  # printed when the file's prompt goes to the LLM (not for a fix set in code)
         }
     return kept, memory_context
 
@@ -1153,6 +1155,9 @@ def process_batch(
             after_pass1.update(in_code)
             after_pass2.update(in_code)
             continue
+        for e in group:
+            if memory_context.get(e["path"], {}).get("log"):
+                print(memory_context[e["path"]]["log"])
         try:
             result = run_pass(group, pass1_contexts, second_pass=False)
         except LLMUnavailableError:

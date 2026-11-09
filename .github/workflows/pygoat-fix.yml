@@ -225,13 +225,77 @@ jobs:
             --commit-sha "$ASVA_SCANNED_SHA" \
             --container-file Dockerfile.asva
 
-      # ---------- RAG ----------
-      # Only for the RAG's saved database; without a login the RAG still runs, without it.
+      # ---------- RAG and memory ----------
+      # For the RAG's saved database and the memory DB; without a login both still run, without them.
       - name: Authenticate to Azure
+        id: azure_login
         continue-on-error: true
         uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # ---------- Memory injection ----------
+      # PyGoat keeps its own DB next to its decisions, so a PyGoat run and a NodeGoat run
+      # at the same time never overwrite each other's history.
+      - name: Download SQLite memory database
+        id: memory_download
+        if: steps.azure_login.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p memory
+          # A failed lookup fails this step (and so skips the upload), rather than reading as
+          # "no DB yet" and replacing the saved history with an empty one.
+          exists=$(az storage blob exists \
+            --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+            --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+            --name pygoat/memory/asva_memory.db \
+            --auth-mode login \
+            --query exists -o tsv)
+          if [ "$exists" = "true" ]; then
+            az storage blob download \
+              --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+              --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+              --name pygoat/memory/asva_memory.db \
+              --file memory/asva_memory.db \
+              --auth-mode login \
+              --overwrite \
+              -o none --no-progress
+          else
+            echo "No existing memory database found; the agent will create it."
+          fi
+
+      # Reviewer decisions written by the dashboard. Kept out of memory/ so the
+      # sample memory/decisions.json in the repo is never used by accident.
+      - name: Download reviewer decisions
+        continue-on-error: true
+        shell: bash
+        run: |
+          # Set first: with no file here the agent applies no decisions (never the sample).
+          echo "ASVA_DECISIONS_PATH=$GITHUB_WORKSPACE/decisions/decisions.json" >> "$GITHUB_ENV"
+          mkdir -p decisions
+          if [ "${{ steps.azure_login.outcome }}" = "success" ] && az storage blob exists \
+            --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+            --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+            --name pygoat/memory/decisions.json \
+            --auth-mode login \
+            --query exists -o tsv | grep -qx true; then
+
+            az storage blob download \
+              --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+              --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+              --name pygoat/memory/decisions.json \
+              --file decisions/decisions.json \
+              --auth-mode login \
+              --overwrite \
+              -o none --no-progress
+          else
+            echo "No decisions.json in Azure; running without reviewer decisions."
+          fi
+
+      - name: Validate reviewer decisions format
+        continue-on-error: true
+        run: python -m memory.decisions_loader
 
       - name: Start the RAG
         env:
@@ -285,6 +349,28 @@ jobs:
       - name: Stop the RAG and save its database
         if: always()
         run: bash scripts/rag-container.sh stop
+
+      # Only after a good download (or a confirmed first run), so a failed download never
+      # replaces the saved history with this run's alone.
+      - name: Upload SQLite memory database
+        if: ${{ always() && steps.memory_download.outcome == 'success' }}
+        shell: bash
+        run: |
+          if [ -f memory/asva_memory.db ]; then
+            # The store runs in WAL mode -- fold the -wal file into the .db before uploading.
+            python -c "import sqlite3; c = sqlite3.connect('memory/asva_memory.db'); c.execute('PRAGMA wal_checkpoint(TRUNCATE)'); c.close()"
+            az storage blob upload \
+              --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+              --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+              --name pygoat/memory/asva_memory.db \
+              --file memory/asva_memory.db \
+              --auth-mode login \
+              --overwrite \
+              -o none --no-progress
+            echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/pygoat/memory/asva_memory.db"
+          else
+            echo "No SQLite database file exists; nothing to upload."
+          fi
 
       - name: Collect fix diffs, PR metadata and per-stage outcomes
         id: evidence

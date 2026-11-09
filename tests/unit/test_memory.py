@@ -125,6 +125,14 @@ def test_pass_n_is_told_what_pass_n_minus_1_broke(app_repo, fake_llm, monkeypatc
     assert "mongo:8.0 attempt" in prompt and "mongo:4.4.x attempt" in prompt   # passes 1 to N-1
 
 
+def test_a_file_sent_to_the_llm_says_what_memory_it_was_given(app_repo, fake_llm, monkeypatch, capsys):
+    _pass(app_repo, monkeypatch, "run-1", check_failure=MONGO_ERROR)
+    capsys.readouterr()
+    _pass(app_repo, monkeypatch, "run-2")
+    assert ("[MEMORY] app/x.js: injecting 1 previous run(s) of fix history (run-1) and "
+            "1 error(s) from the previous pass (run run-1)") in capsys.readouterr().out
+
+
 def test_a_gate_rejection_is_remembered_as_the_error(app_repo, fake_llm, monkeypatch):
     monkeypatch.setattr(agent_loop, "RUN_ID", "run-1")
     entry = agent_loop.process_batch(app_repo["batch"], app_repo["repo"], use_repo_context=False)

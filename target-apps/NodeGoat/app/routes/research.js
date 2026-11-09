@@ -12,7 +12,8 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
+            const symbol = encodeURIComponent(req.query.symbol);
+            const url = `https://www.google.com/finance?q=${symbol}`;
             return needle.get(url, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {

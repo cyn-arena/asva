@@ -251,6 +251,29 @@ def test_validation_main_rejects_a_different_candidate_sha(monkeypatch, tmp_path
         post_pr_check_comment.main()
     assert exc.value.code == 2
     assert gh_calls == []
+
+
+def test_validation_comment_with_new_findings_is_not_ready_and_names_them(tmp_path):
+    report = json.loads(_pygoat_validation(tmp_path).read_text(encoding="utf-8"))
+    new = ["`pygoat/settings.py`: python/PT, high (0 before this fix, 2 now)"]
+    comment = post_pr_check_comment.format_validation_comment(report, new_findings=new)
+    assert "Not ready to merge" in comment and "Ready to merge, pending review" not in comment
+    assert "scan before this PR also found new critical or high findings" in comment
+    assert "| New findings (scan before this PR) | security_scan | found | `pygoat/settings.py`: python/PT" in comment
+    assert "**Result: passed**" in comment  # the validation's own result is shown as it is
+
+
+def test_validation_main_new_findings_draft_and_say_so_but_do_not_fail_the_job(monkeypatch, tmp_path, gh_calls):
+    batch = tmp_path / "b.json"
+    batch.write_text(json.dumps({"new_before_pr": ["`a.py`: py/PT, high (1 before this fix, 2 now)"]}), encoding="utf-8")
+    _run_validation_main(monkeypatch, _pygoat_validation(tmp_path), "--batch-file", str(batch), "--execute")  # no SystemExit
+    assert [kind for kind, _ in gh_calls] == ["draft", "comment"]
+    assert "Not ready to merge" in gh_calls[1][1] and "`a.py`: py/PT" in gh_calls[1][1]
+
+
+def test_validation_main_without_a_batch_file_is_unchanged(monkeypatch, tmp_path, gh_calls):
+    _run_validation_main(monkeypatch, _pygoat_validation(tmp_path), "--batch-file", str(tmp_path / "missing.json"), "--execute")
+    assert [kind for kind, _ in gh_calls] == ["comment"] and "Ready to merge, pending review" in gh_calls[0][1]
 def test_new_findings_are_read_from_the_batch_file(tmp_path):
     path = tmp_path / "b.json"
     path.write_text(json.dumps({"new_before_pr": ["one"]}), encoding="utf-8")

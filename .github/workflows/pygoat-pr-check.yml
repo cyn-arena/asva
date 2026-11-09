@@ -115,6 +115,7 @@ jobs:
             exit 1
           fi
           python -m gitops.post_pr_check_comment --validation-json "$validation" \
+            --batch-file "asva-results/fix/fix_batches/$BATCH_ID.json" \
             --pr "$CANDIDATE_PR" --sha "$CHECKED_SHA" --execute
 
       - name: Collect candidate logs and container status

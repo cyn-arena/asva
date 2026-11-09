@@ -8,8 +8,6 @@ on:
         type: string
         required: true
     secrets:
-      GHPAT_ASVA_GITOPS:
-        required: false
       SNYK_TOKEN:
         required: false
       SNYK_ORG:
@@ -125,7 +123,7 @@ jobs:
         id: comment
         if: always() && steps.select.outcome == 'success'
         env:
-          GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS || github.token }}
+          GH_TOKEN: ${{ github.token }}
           CHECKED_SHA: ${{ steps.meta.outputs.sha }}
           APP_STARTED: ${{ steps.wait.outputs.ready == 'true' }}
         run: |

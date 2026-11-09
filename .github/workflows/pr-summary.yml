@@ -7,9 +7,6 @@ on:
       app-code:
         type: string
         required: true
-    secrets:
-      GHPAT_ASVA_GITOPS:
-        required: false
 
 permissions:
   contents: read
@@ -23,7 +20,7 @@ jobs:
     timeout-minutes: 10
     continue-on-error: true
     env:
-      GH_TOKEN: ${{ secrets.GHPAT_ASVA_GITOPS || github.token }}
+      GH_TOKEN: ${{ github.token }}
       APP_CODE: ${{ inputs.app-code }}
     steps:
       - name: Checkout

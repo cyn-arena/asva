@@ -68,8 +68,28 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
+        const target = req.query.url;
+        const fallback = "https://www.owasp.org/index.php/OWASP_Node_js_Goat_Project";
+
+        if (typeof target === "string") {
+            try {
+                const parsed = new URL(target, "http://localhost");
+                const allowedHosts = ["www.khanacademy.org", "khanacademy.org", "www.owasp.org", "owasp.org"];
+
+                if ((parsed.protocol === "https:" || parsed.protocol === "http:") && allowedHosts.includes(parsed.hostname.toLowerCase())) {
+                    return res.redirect(parsed.href);
+                }
+
+                if (parsed.origin === "http://localhost" && target.startsWith("/") && !target.startsWith("//") && !target.startsWith("/\\") && !target.includes("\\")) {
+                    const decodedPath = decodeURIComponent(parsed.pathname);
+                    if (!decodedPath.startsWith("//") && !decodedPath.startsWith("/\\") && !decodedPath.includes("\\")) {
+                        return res.redirect(parsed.pathname + parsed.search + parsed.hash);
+                    }
+                }
+            } catch (err) {}
+        }
+
+        return res.redirect(fallback);
     });
 
     // Research Page

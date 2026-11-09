@@ -3,6 +3,24 @@ const {
     environmentalScripts
 } = require("../../config/config");
 
+function parseContribution(value) {
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? value : NaN;
+    }
+
+    if (typeof value !== "string") {
+        return NaN;
+    }
+
+    const trimmed = value.trim();
+    if (trimmed === "" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(trimmed)) {
+        return NaN;
+    }
+
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : NaN;
+}
+
 /* The ContributionsHandler must be constructed with a connected db */
 function ContributionsHandler(db) {
     "use strict";
@@ -27,18 +45,10 @@ function ContributionsHandler(db) {
 
     this.handleContributionsUpdate = (req, res, next) => {
 
-        /*jslint evil: true */
-        // Insecure use of eval() to parse inputs
-        const preTax = eval(req.body.preTax);
-        const afterTax = eval(req.body.afterTax);
-        const roth = eval(req.body.roth);
+        const preTax = parseContribution(req.body.preTax);
+        const afterTax = parseContribution(req.body.afterTax);
+        const roth = parseContribution(req.body.roth);
 
-        /*
-        //Fix for A1 -1 SSJS Injection attacks - uses alternate method to eval
-        const preTax = parseInt(req.body.preTax);
-        const afterTax = parseInt(req.body.afterTax);
-        const roth = parseInt(req.body.roth);
-        */
         const {
             userId
         } = req.session;

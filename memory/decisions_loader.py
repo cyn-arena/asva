@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 
 
 # Local sample file. In CI the workflow downloads the dashboard's file from Azure
-# (<container>/nodegoat/memory/decisions.json) and points ASVA_DECISIONS_PATH at it.
+# (<container>/<app>/memory/decisions.json) and points ASVA_DECISIONS_PATH at it.
 DECISIONS_PATH = Path(__file__).parent / "decisions.json"
 
 VALID_DECISIONS = {"retry_fix", "needs_manual_fix", "accepted_risk", "false_positive"}

@@ -14,7 +14,7 @@ on:
 jobs:
   oci-registry:
     name: Build image and publish to OCI registry
-    uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@rel/26.07
+    uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
       working-directory: target-apps/NodeGoat
       oci-repo: dvapps

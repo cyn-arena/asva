@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import time
+
+from django.core.management.utils import get_random_secret_key
 
 import django_heroku
 
@@ -22,7 +25,37 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _load_or_create_secret_key():
+    secret_key = os.environ.get('DJANGO_SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_file = os.path.join(BASE_DIR, '.django_secret_key')
+
+    for _ in range(20):
+        try:
+            with open(secret_file, 'r') as f:
+                secret_key = f.read().strip()
+            if secret_key:
+                return secret_key
+        except FileNotFoundError:
+            pass
+
+        try:
+            fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            time.sleep(0.05)
+            continue
+
+        secret_key = get_random_secret_key()
+        with os.fdopen(fd, 'w') as f:
+            f.write(secret_key)
+        return secret_key
+
+    return get_random_secret_key()
+
+
+SECRET_KEY = _load_or_create_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

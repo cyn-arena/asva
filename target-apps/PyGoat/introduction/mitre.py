@@ -1,9 +1,14 @@
+import ast
 import datetime
+import ipaddress
+import operator
+import os
 import re
 import subprocess
 from hashlib import md5
 
 import jwt
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -19,6 +24,8 @@ from .views import authentication_decorator
 FLAG = "NOT_SUPPOSED_TO_BE_ACCESSED"
 
 # target zone end
+
+JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or settings.SECRET_KEY
 
 
 @authentication_decorator
@@ -166,7 +173,7 @@ def csrf_lab_login(request):
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=300),
                 'iat': datetime.datetime.utcnow()
             }
-            cookie = jwt.encode(payload, 'csrf_vulneribility', algorithm='HS256')
+            cookie = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
             response = redirect("/mitre/9/lab/transaction")
             response.set_cookie('auth_cookiee', cookie)
             return response
@@ -179,7 +186,7 @@ def csrf_transfer_monei(request):
     if request.method == 'GET':
         try:
             cookie = request.COOKIES['auth_cookiee']
-            payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+            payload = jwt.decode(cookie, JWT_SECRET_KEY, algorithms=['HS256'])
             username = payload['username']
             User = CSRF_user_tbl.objects.filter(username=username)
             if not User:
@@ -191,7 +198,7 @@ def csrf_transfer_monei(request):
 def csrf_transfer_monei_api(request,recipent,amount):
     if request.method == "GET":
         cookie = request.COOKIES['auth_cookiee']
-        payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+        payload = jwt.decode(cookie, JWT_SECRET_KEY, algorithms=['HS256'])
         username = payload['username']
         User = CSRF_user_tbl.objects.filter(username=username)
         if not User:
@@ -210,12 +217,72 @@ def csrf_transfer_monei_api(request,recipent,amount):
         return redirect ('/mitre/9/lab/transaction')
 
 
+_ALLOWED_BINARY_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+
+_ALLOWED_UNARY_OPERATORS = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
+
+
+def _calculate_node(node):
+    if isinstance(node, ast.Constant):
+        if type(node.value) in (int, float):
+            return node.value
+        raise ValueError('Unsupported constant')
+
+    if hasattr(ast, 'Num') and isinstance(node, ast.Num):
+        if type(node.n) in (int, float):
+            return node.n
+        raise ValueError('Unsupported constant')
+
+    if isinstance(node, ast.BinOp):
+        op = _ALLOWED_BINARY_OPERATORS.get(type(node.op))
+        if op is None:
+            raise ValueError('Unsupported operator')
+        left = _calculate_node(node.left)
+        right = _calculate_node(node.right)
+        if isinstance(node.op, ast.Pow):
+            if abs(right) > 1000 or (abs(left) > 1000000 and abs(right) > 10):
+                raise ValueError('Expression too large')
+        return op(left, right)
+
+    if isinstance(node, ast.UnaryOp):
+        op = _ALLOWED_UNARY_OPERATORS.get(type(node.op))
+        if op is None:
+            raise ValueError('Unsupported operator')
+        return op(_calculate_node(node.operand))
+
+    raise ValueError('Unsupported expression')
+
+
+def safe_calculate(expression):
+    if not isinstance(expression, str):
+        raise ValueError('Invalid expression')
+    expression = expression.strip()
+    if not expression or len(expression) > 1000:
+        raise ValueError('Invalid expression')
+    tree = ast.parse(expression, mode='eval')
+    return _calculate_node(tree.body)
+
+
 # @authentication_decorator
 @csrf_exempt
 def mitre_lab_25_api(request):
     if request.method == "POST":
         expression = request.POST.get('expression')
-        result = eval(expression)
+        try:
+            result = safe_calculate(expression)
+        except (SyntaxError, ValueError, TypeError, ZeroDivisionError, OverflowError):
+            return JsonResponse({'error': 'Invalid expression'}, status=400)
         return JsonResponse({'result': result})
     else:
         return redirect('/mitre/25/lab/')
@@ -229,8 +296,30 @@ def mitre_lab_25(request):
 def mitre_lab_17(request):
     return render(request, 'mitre/mitre_lab_17.html')
 
+
+def _is_safe_nmap_target(target):
+    if not target or len(target) > 255 or target.startswith('-'):
+        return False
+
+    try:
+        ipaddress.ip_network(target, strict=False)
+        return True
+    except ValueError:
+        pass
+
+    return re.fullmatch(
+        r'(?=.{1,253}\Z)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)*[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?',
+        target
+    ) is not None
+
+
 def command_out(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        command,
+        shell=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
     return process.communicate()
     
 
@@ -238,7 +327,9 @@ def command_out(command):
 def mitre_lab_17_api(request):
     if request.method == "POST":
         ip = request.POST.get('ip')
-        command = "nmap " + ip 
+        if not _is_safe_nmap_target(ip):
+            return JsonResponse({'error': 'Invalid target'}, status=400)
+        command = ["nmap", ip]
         res, err = command_out(command)
         res = res.decode()
         err = err.decode()

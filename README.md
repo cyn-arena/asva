@@ -289,9 +289,10 @@ If gitleaks is not on PATH, set `GITLEAKS_BINARY` in `.env` to its absolute path
 Uses native `git` and `gh`, already installed on the runners. The NodeGoat and
 PyGoat fix workflows push the fix branches and open the PRs with `GITHUB_TOKEN`, so no
 personal access token is needed. GitHub does not start other workflows from what
-`GITHUB_TOKEN` does, so the PyGoat PR checks that run when a person opens a PR show as
-"startup failure" in the Actions tab for the pipeline's PRs. The pipeline checks each fix
-itself, before the PR and again after it (`pygoat-pr-check.yml`, `nodegoat-pr-check.yml`).
+`GITHUB_TOKEN` does, so PyGoat's PR triggers in `pygoat-validate.yml` and
+`pygoat-baseline.yml` are paused (commented out): on the pipeline's PRs they only showed as
+"startup failure". The pipeline checks each fix itself, before the PR and again after it
+(`pygoat-pr-check.yml`, `nodegoat-pr-check.yml`).
 The agent opens PRs for human review and **never merges**.
 
 One PR per triage batch:

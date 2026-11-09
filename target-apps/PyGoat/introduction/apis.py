@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -12,6 +13,22 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+def _is_safe_ssrf_filename(filename):
+    if not isinstance(filename, str) or not filename:
+        return False
+    if "\x00" in filename:
+        return False
+    if os.path.isabs(filename):
+        return False
+    if filename in (".", ".."):
+        return False
+    if "/" in filename or "\\" in filename:
+        return False
+    if os.path.basename(filename) != filename:
+        return False
+    return True
 
 
 # steps --> 
@@ -35,6 +52,8 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
+                if not _is_safe_ssrf_filename(inputs):
+                    return JsonResponse({'message':'Invalid input path'},status = 400)
                 outputs.append(main.ssrf_lab(inputs))
             if outputs == correct_output1:
                 outputs = []

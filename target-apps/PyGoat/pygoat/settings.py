@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
+import time
+import tempfile
 
 import django_heroku
 
@@ -22,7 +25,74 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _read_secret(path):
+    try:
+        with open(path, 'r') as f:
+            return f.read().strip() or None
+    except OSError:
+        return None
+
+
+def _get_secret_key():
+    for env_name in ('SECRET_KEY', 'DJANGO_SECRET_KEY'):
+        value = os.environ.get(env_name)
+        if value:
+            return value
+
+    configured_path = os.environ.get('DJANGO_SECRET_KEY_FILE')
+    if configured_path:
+        secret_files = [configured_path]
+    else:
+        secret_files = [
+            os.path.join(BASE_DIR, '.secret_key'),
+            os.path.join(tempfile.gettempdir(), 'pygoat-django-secret-key'),
+        ]
+
+    for secret_file in secret_files:
+        for _ in range(5):
+            stored_key = _read_secret(secret_file)
+            if stored_key:
+                return stored_key
+            time.sleep(0.02)
+
+        generated_key = secrets.token_urlsafe(64)
+        tmp_file = f"{secret_file}.{os.getpid()}.{time.time_ns()}.tmp"
+        try:
+            with open(tmp_file, 'w') as f:
+                f.write(generated_key)
+                f.flush()
+                os.fsync(f.fileno())
+
+            try:
+                os.link(tmp_file, secret_file)
+            except FileExistsError:
+                pass
+            finally:
+                try:
+                    os.unlink(tmp_file)
+                except OSError:
+                    pass
+        except OSError:
+            try:
+                os.unlink(tmp_file)
+            except OSError:
+                pass
+            continue
+
+        for _ in range(20):
+            stored_key = _read_secret(secret_file)
+            if stored_key:
+                return stored_key
+            time.sleep(0.05)
+
+    raise RuntimeError(
+        "Unable to determine a stable SECRET_KEY. Set SECRET_KEY or DJANGO_SECRET_KEY."
+    )
+
+
+SECRET_KEY = _get_secret_key()
+
+SECRET_COOKIE_KEY = os.environ.get('SECRET_COOKIE_KEY', SECRET_KEY)
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 
@@ -149,8 +219,7 @@ django_heroku.settings(locals())
 #Authentication Backend
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 SITE_ID=3
@@ -168,5 +237,4 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SECRET_COOKIE_KEY = "PYGOAT"
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000","http://0.0.0.0:8000","http://172.16.189.10"]

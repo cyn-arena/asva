@@ -1,5 +1,11 @@
 name: NodeGoat - Normalise, triage and generate candidates
 
+# Four jobs, so the fix batches run at the same time instead of one after another:
+#   prepare     normalise and triage once, then list the fix batches
+#   fix         one job per batch, in parallel: the agent fixes, tests and opens that batch's PRs
+#   candidates  combine the fix jobs' results into the one nodegoat-fix-output the later jobs read
+#   memory      add each fix job's fix history to the saved memory database, then save it once
+
 on:
   workflow_call:
     inputs:
@@ -51,12 +57,165 @@ permissions:
   packages: read   # to pull the RAG image
 
 jobs:
-  fix:
-    name: Findings processing and candidate generation
+  prepare:
+    name: Normalise and triage findings
     runs-on: ubuntu-latest
 
     outputs:
-      prs: ${{ steps.evidence.outputs.prs }}
+      batches: ${{ steps.batches.outputs.batches }}
+      has_container: ${{ steps.batches.outputs.has_container }}
+      sha: ${{ steps.source.outputs.sha }}
+      # The scan run the fix jobs resolve the same source from.
+      scan_run_id: ${{ inputs.use_artifacts && github.run_id || inputs.scan_run_id || steps.latest_scan.outputs.run_id }}
+      normalise: ${{ steps.normalise.outcome }}
+      triage: ${{ steps.triage.outcome }}
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Initialize remediation results path
+        shell: bash
+        run: |
+          # Runner paths are available in steps, not in job-level env expressions.
+          echo "ASVA_RESULTS_DIR=$RUNNER_TEMP/nodegoat-fix-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Debug inputs
+        run: |
+          echo "event = ${{ github.event_name }}"
+          echo "inputs.scan_run_id = '${{ inputs.scan_run_id }}'"
+          echo "github.event.inputs.scan_run_id = '${{ github.event.inputs.scan_run_id }}'"
+          echo "inputs.use_artifacts = '${{ inputs.use_artifacts }}'"
+
+      # ---------- For run with scan + fix ----------
+      - name: Download scan artifacts from current run
+        # runs only when use_artifact: true
+        if: ${{ inputs.use_artifacts }}
+        uses: actions/download-artifact@v4
+        with:
+          name: nodegoat-scan-results
+          path: ${{ env.ASVA_RESULTS_DIR }}/scan
+
+      # ---------- For standalone fix (Download artifact from scan) ----------
+      - name: Find latest successful scan
+        if: ${{ !inputs.use_artifacts && inputs.scan_run_id == '' }}
+        id: latest_scan
+        run: |
+          RUN_ID=$(gh run list --workflow=nodegoat-orchestrator.yml --branch "$CURRENT_BRANCH" --status=success --limit=1 --json databaseId -q '.[0].databaseId')
+          if [ -z "$RUN_ID" ]; then
+            echo "::error::No successful NodeGoat pipeline run found for this branch; provide scan_run_id."
+            exit 1
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
+
+      - name: Download latest scan artifacts
+        # runs only when use_artifacts: false
+        if: ${{ !inputs.use_artifacts && inputs.scan_run_id == ''}}
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.latest_scan.outputs.run_id }}
+          name: nodegoat-scan-results
+          path: ${{ env.ASVA_RESULTS_DIR }}/scan
+
+      # ---------- For standalone fix (Download artifact from specified run ID) ----------
+      - name: Download specified scan artifacts
+        # runs only when use_artifacts: false and scan_run_id is provided
+        if: ${{ !inputs.use_artifacts && inputs.scan_run_id != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.scan_run_id }}
+          name: nodegoat-scan-results
+          path: ${{ env.ASVA_RESULTS_DIR }}/scan
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Resolve scanned branch and commit
+        id: source
+        env:
+          USE_CURRENT_ARTIFACTS: ${{ inputs.use_artifacts }}
+          SCAN_RUN_ID: ${{ inputs.use_artifacts && github.run_id || inputs.scan_run_id || steps.latest_scan.outputs.run_id }}
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          CURRENT_REF_TYPE: ${{ github.ref_type }}
+        run: |
+          python scripts/resolve-scan-source.py \
+            --use-current-artifacts "$USE_CURRENT_ARTIFACTS" \
+            --scan-run-id "$SCAN_RUN_ID" \
+            --source-branch "$SOURCE_BRANCH" --source-sha "$SOURCE_SHA" \
+            --ref-type "$CURRENT_REF_TYPE" --repository "$GITHUB_REPOSITORY"
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Prepare generated results directories
+        run: |
+          mkdir -p "$ASVA_RESULTS_DIR/findings" "$ASVA_RESULTS_DIR/fix_batches"
+
+      - name: Normalise scan findings
+        id: normalise
+        run: |
+          python normaliser/normaliser.py \
+            --inputs "$ASVA_RESULTS_DIR/scan/sast.sarif.json" \
+                     "$ASVA_RESULTS_DIR/scan/image.sarif.json" \
+                     "$ASVA_RESULTS_DIR/scan/sca.sarif.json" \
+            --output-dir "$ASVA_RESULTS_DIR/findings"
+
+      - name: Triage findings and create fix batches
+        id: triage
+        run: |
+          python triage/triage.py \
+            --input "$ASVA_RESULTS_DIR/findings/ranked_unified_findings.json" \
+            --output "$ASVA_RESULTS_DIR/findings/ranked_findings.json" \
+            --batch-dir "$ASVA_RESULTS_DIR/fix_batches" \
+            --repo-name asva-nodegoat \
+            --commit-sha "$ASVA_SCANNED_SHA"
+
+      - name: List the fix batches, one fix job each
+        id: batches
+        shell: python
+        run: |
+          import json, os, pathlib
+          rows = []
+          for path in sorted(pathlib.Path(os.environ["ASVA_RESULTS_DIR"], "fix_batches").glob("*.json")):
+              batch = json.loads(path.read_text(encoding="utf-8"))
+              rows.append({"file": path.name, "batch_id": batch["batch_id"], "batch_type": batch["batch_type"]})
+          print(f"{len(rows)} fix batch(es): " + ", ".join(r["batch_id"] for r in rows))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write("batches=" + json.dumps(rows, separators=(",", ":")) + "\n")
+              out.write("has_container=" + str(any(r["batch_type"] == "container" for r in rows)).lower() + "\n")
+
+      - name: Save findings and fix batches for the fix jobs
+        if: ${{ !cancelled() && steps.normalise.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixprep-nodegoat
+          retention-days: 14
+          overwrite: true
+          path: |
+            ${{ env.ASVA_RESULTS_DIR }}/findings/*.json
+            ${{ env.ASVA_RESULTS_DIR }}/fix_batches/*.json
+
+  fix:
+    name: Findings processing and candidate generation (${{ matrix.batch.batch_id }})
+    needs: prepare
+    if: needs.prepare.result == 'success' && needs.prepare.outputs.batches != '[]' && needs.prepare.outputs.batches != ''
+    runs-on: ubuntu-latest
+    strategy:
+      # A batch that opens no PR (a held-back container batch) must not stop the others.
+      fail-fast: false
+      matrix:
+        batch: ${{ fromJSON(needs.prepare.outputs.batches) }}
 
     env:
       GH_TOKEN: ${{ github.token }}
@@ -83,7 +242,8 @@ jobs:
       ASVA_APP_SMOKE_RUNS: '1'
       ASVA_APP_SECURITY_COMMAND: python -m pytest -m api tests/e2e/api/test_misuse_cases.py -k "{tests}" -vv --tb=short -p no:cacheprovider
       ASVA_APP_SECURITY_TESTS_FILE: tests/e2e/api/test_misuse_cases.py
-      # Where the RAG keeps its database between runs (scripts/rag-container.sh).
+      # Where the RAG keeps its database between runs (scripts/rag-container.sh). The fix jobs
+      # each save it, and the last one wins: it is only a cache of public lookups.
       # Azure Blob storage account and container, set as repository variables.
       ASVA_AZURE_STORAGE_ACCOUNT: ${{ vars.ASVA_AZURE_STORAGE_ACCOUNT }}
       ASVA_AZURE_STORAGE_CONTAINER: ${{ vars.ASVA_AZURE_STORAGE_CONTAINER }}
@@ -94,6 +254,7 @@ jobs:
       ASVA_SCA_FIX_MODE: ${{ vars.ASVA_SCA_FIX_MODE || 'npm' }}
       # The npm this app's lockfile is generated with (agent/npm_remediation.py).
       ASVA_NPM_VERSION: '8.19.4'
+      BATCH_FILE: ${{ matrix.batch.file }}
 
     steps:
       - name: Initialize remediation results path
@@ -105,58 +266,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v7
-      
-      - name: Debug inputs
-        run: |
-          echo "event = ${{ github.event_name }}"
-          echo "inputs.scan_run_id = '${{ inputs.scan_run_id }}'"
-          echo "github.event.inputs.scan_run_id = '${{ github.event.inputs.scan_run_id }}'"
-          echo "inputs.use_artifacts = '${{ inputs.use_artifacts }}'"
-
-      # ---------- For run with scan + fix ----------
-      - name: Download scan artifacts from current run
-        # runs only when use_artifact: true 
-        if: ${{ inputs.use_artifacts }}
-        uses: actions/download-artifact@v4
-        with:
-          name: nodegoat-scan-results
-          path: ${{ env.ASVA_RESULTS_DIR }}/scan
-
-      # ---------- For standalone fix (Download artifact from scan) ----------
-      - name: Find latest successful scan
-        if: ${{ !inputs.use_artifacts && inputs.scan_run_id == '' }}
-        id: latest_scan
-        run: |
-          RUN_ID=$(gh run list --workflow=nodegoat-orchestrator.yml --branch "$CURRENT_BRANCH" --status=success --limit=1 --json databaseId -q '.[0].databaseId')
-          if [ -z "$RUN_ID" ]; then
-            echo "::error::No successful NodeGoat pipeline run found for this branch; provide scan_run_id."
-            exit 1
-          fi
-          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ github.token }}
-          CURRENT_BRANCH: ${{ github.ref_name }}
-
-      - name: Download latest scan artifacts
-        # runs only when use_artifacts: false 
-        if: ${{ !inputs.use_artifacts && inputs.scan_run_id == ''}}
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: ${{ steps.latest_scan.outputs.run_id }}
-          name: nodegoat-scan-results
-          path: ${{ env.ASVA_RESULTS_DIR }}/scan
-      
-      # ---------- For standalone fix (Download artifact from specified run ID) ----------
-      - name: Download specified scan artifacts 
-        # runs only when use_artifacts: false and scan_run_id is provided
-        if: ${{ !inputs.use_artifacts && inputs.scan_run_id != '' }}
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: ${{ inputs.scan_run_id }}
-          name: nodegoat-scan-results
-          path: ${{ env.ASVA_RESULTS_DIR }}/scan
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -167,7 +276,7 @@ jobs:
         id: source
         env:
           USE_CURRENT_ARTIFACTS: ${{ inputs.use_artifacts }}
-          SCAN_RUN_ID: ${{ inputs.use_artifacts && github.run_id || inputs.scan_run_id || steps.latest_scan.outputs.run_id }}
+          SCAN_RUN_ID: ${{ needs.prepare.outputs.scan_run_id }}
           SOURCE_BRANCH: ${{ inputs.source_branch }}
           SOURCE_SHA: ${{ inputs.source_sha }}
           CURRENT_REF_TYPE: ${{ github.ref_type }}
@@ -227,28 +336,17 @@ jobs:
           fi
           python -c 'import os; from gitops.git_gh_ops import prepare_fix_source; prepare_fix_source(os.environ["GITHUB_BASE_BRANCH"], os.environ["ASVA_SOURCE_DIR"])'
 
-      - name: Prepare generated results directories
+      - name: Download findings and fix batches
+        uses: actions/download-artifact@v4
+        with:
+          name: fixprep-nodegoat
+          path: ${{ env.ASVA_RESULTS_DIR }}/prep
+
+      - name: Keep only this job's fix batch
         run: |
           mkdir -p "$ASVA_RESULTS_DIR/findings" "$ASVA_RESULTS_DIR/fix_batches"
-
-      - name: Normalise scan findings
-        id: normalise
-        run: |
-          python normaliser/normaliser.py \
-            --inputs "$ASVA_RESULTS_DIR/scan/sast.sarif.json" \
-                     "$ASVA_RESULTS_DIR/scan/image.sarif.json" \
-                     "$ASVA_RESULTS_DIR/scan/sca.sarif.json" \
-            --output-dir "$ASVA_RESULTS_DIR/findings"
-
-      - name: Triage findings and create fix batches
-        id: triage
-        run: |
-          python triage/triage.py \
-            --input "$ASVA_RESULTS_DIR/findings/ranked_unified_findings.json" \
-            --output "$ASVA_RESULTS_DIR/findings/ranked_findings.json" \
-            --batch-dir "$ASVA_RESULTS_DIR/fix_batches" \
-            --repo-name asva-nodegoat \
-            --commit-sha "$ASVA_SCANNED_SHA"
+          cp "$ASVA_RESULTS_DIR"/prep/findings/*.json "$ASVA_RESULTS_DIR/findings/"
+          cp "$ASVA_RESULTS_DIR/prep/fix_batches/$BATCH_FILE" "$ASVA_RESULTS_DIR/fix_batches/"
 
       # ---------- Authenticate to Azure ----------
       - name: Authenticate to Azure
@@ -258,6 +356,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # ---------- Memory injection ----------
+      # Read only here: this job's new rows are saved by the memory job, with the other fix jobs'.
       - name: Download SQLite memory database
         shell: bash
         run: |
@@ -328,8 +427,11 @@ jobs:
           CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
         run: bash scripts/rag-container.sh start
 
+      # The agent exits nonzero when its batch opens no PR, which is normal for one batch (a
+      # held-back container batch). The candidates job judges the run as a whole.
       - name: Generate fix candidates and open PRs
         id: agent
+        continue-on-error: true
         env:
           # One of the security tests the fixes are tested with before the PR rescans with Snyk.
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -341,10 +443,6 @@ jobs:
             echo "::error::Tracked source was modified before remediation; cannot safely switch fix branches."
             exit 1
           fi
-          if ! compgen -G "$ASVA_RESULTS_DIR/fix_batches/*.json" > /dev/null; then
-            echo '[]' > "$ASVA_RESULTS_DIR/prs.json"
-            exit 0
-          fi
           python -u agent/agent_loop.py \
             --batch-dir "$ASVA_RESULTS_DIR/fix_batches" \
             --repo-dir "$ASVA_SOURCE_DIR" \
@@ -353,8 +451,9 @@ jobs:
             --findings-json "$ASVA_RESULTS_DIR/findings/ranked_unified_findings.json"
 
       # Before the RAG stops, so it can say where fixes are published. Never fails the job.
+      # Only the container batch's job: without one, the candidates job posts the report.
       - name: Update the container report issue
-        if: ${{ !cancelled() && steps.normalise.outcome == 'success' }}
+        if: ${{ !cancelled() && matrix.batch.batch_type == 'container' }}
         continue-on-error: true
         run: |
           python -m gitops.post_container_report \
@@ -374,8 +473,8 @@ jobs:
         id: evidence
         if: always()
         env:
-          NORMALISE_RESULT: ${{ steps.normalise.outcome }}
-          TRIAGE_RESULT: ${{ steps.triage.outcome }}
+          NORMALISE_RESULT: ${{ needs.prepare.outputs.normalise }}
+          TRIAGE_RESULT: ${{ needs.prepare.outputs.triage }}
           AGENT_RESULT: ${{ steps.agent.outcome }}
         run: |
           python scripts/dashboard_evidence.py fixes --app nodegoat \
@@ -395,29 +494,161 @@ jobs:
             --repo-dir "$ASVA_SOURCE_DIR" \
             --execute
 
-      - name: Save findings, fix batches, PR list and dashboard fix evidence
+      - name: Save this batch's results for the candidates job
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nodegoat-fix-output
+          name: fixpart-nodegoat-${{ matrix.batch.batch_id }}
           retention-days: 14
           overwrite: true
           path: |
-            ${{ env.ASVA_RESULTS_DIR }}/findings/*.json
             ${{ env.ASVA_RESULTS_DIR }}/fix_batches/*.json
             ${{ env.ASVA_RESULTS_DIR }}/prs.json
             ${{ env.ASVA_RESULTS_DIR }}/fixes.json
             ${{ env.ASVA_RESULTS_DIR }}/stage-status.json
             ${{ env.ASVA_RESULTS_DIR }}/import_maps/*.html
 
-      - name: Upload SQLite memory database
-        if: ${{ always() }}
+      - name: Save this batch's memory rows for the memory job
+        if: always()
         shell: bash
         run: |
           if [ -f memory/asva_memory.db ]; then
-            # The store runs in WAL mode -- fold the -wal file into the .db before uploading.
+            # The store runs in WAL mode -- fold the -wal file into the .db before it is copied.
             python -c "import sqlite3; c = sqlite3.connect('memory/asva_memory.db'); c.execute('PRAGMA wal_checkpoint(TRUNCATE)'); c.close()"
-            az storage blob upload \
+          fi
+
+      - name: Upload this batch's memory database copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixmem-nodegoat-${{ matrix.batch.batch_id }}
+          retention-days: 3
+          overwrite: true
+          if-no-files-found: ignore
+          path: memory/asva_memory.db
+
+  # Combines the fix jobs' results into the one nodegoat-fix-output that pr-check, the rescan, the
+  # PR summary and the dashboard read, and lists the PRs for them. No secrets here: AZURE_CREDENTIALS
+  # is multi-line JSON, so in a job that uses it GitHub masks a lone "{" and drops the JSON `prs`
+  # output ("Skip output 'prs' since it may contain secret").
+  candidates:
+    name: Combine fix results and publish the candidate list
+    needs: [prepare, fix]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+
+    outputs:
+      prs: ${{ steps.combine.outputs.prs }}
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download findings and fix batches
+        uses: actions/download-artifact@v4
+        with:
+          name: fixprep-nodegoat
+          path: prep
+
+      - name: Download each fix job's results
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: fixpart-nodegoat-*
+          path: parts
+
+      - name: Combine into one fix output and list the PRs
+        id: combine
+        env:
+          NORMALISE_RESULT: ${{ needs.prepare.outputs.normalise }}
+          TRIAGE_RESULT: ${{ needs.prepare.outputs.triage }}
+        run: python scripts/combine_fix_parts.py --prep prep --parts parts --output fix-output
+
+      - name: Save findings, fix batches, PR list and dashboard fix evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: nodegoat-fix-output
+          retention-days: 14
+          overwrite: true
+          path: |
+            fix-output/findings/*.json
+            fix-output/fix_batches/*.json
+            fix-output/prs.json
+            fix-output/fixes.json
+            fix-output/stage-status.json
+            fix-output/import_maps/*.html
+
+      # With no container batch there is no container fix job to post the report, and it is posted
+      # every run. Without the RAG it leaves out the RAG's notes. Never fails the job.
+      - name: Update the container report issue
+        if: needs.prepare.outputs.has_container != 'true'
+        continue-on-error: true
+        run: |
+          pip install -r requirements.txt
+          python -m gitops.post_container_report \
+            --findings fix-output/findings/ranked_unified_findings.json \
+            --batch-dir fix-output/fix_batches \
+            --prs-json fix-output/prs.json \
+            --commit-sha "${{ needs.prepare.outputs.sha }}" \
+            --repo-name asva-nodegoat \
+            --repo-dir . \
+            --execute
+
+      # As before the fix jobs ran in parallel: a run that had batches to fix but opened no PR fails.
+      - name: Fail when there were batches to fix and no PR opened
+        if: steps.combine.outputs.planned != '0' && steps.combine.outputs.opened == '0'
+        run: |
+          echo "::error::${{ steps.combine.outputs.planned }} fix batch(es) and no PR opened. See the fix jobs."
+          exit 1
+
+  memory:
+    name: Save fix history to the memory database
+    needs: [prepare, fix]
+    if: always() && needs.fix.result != 'skipped'
+    runs-on: ubuntu-latest
+
+    env:
+      ASVA_AZURE_STORAGE_ACCOUNT: ${{ vars.ASVA_AZURE_STORAGE_ACCOUNT }}
+      ASVA_AZURE_STORAGE_CONTAINER: ${{ vars.ASVA_AZURE_STORAGE_CONTAINER }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Authenticate to Azure
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download SQLite memory database
+        id: memory_download
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p memory
+          # A failed lookup fails this step (and so skips the upload), rather than reading as
+          # "no DB yet" and replacing the saved history with this run's alone.
+          exists=$(az storage blob exists \
+            --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+            --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+            --name asva-memory/asva_memory.db \
+            --auth-mode login \
+            --query exists -o tsv)
+          if [ "$exists" = "true" ]; then
+            az storage blob download \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
               --name asva-memory/asva_memory.db \
@@ -425,44 +656,34 @@ jobs:
               --auth-mode login \
               --overwrite \
               -o none --no-progress
-            echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/asva-memory/asva_memory.db"
           else
-            echo "No SQLite database file exists; nothing to upload."
+            echo "No existing memory database found; it is created from this run's rows."
           fi
 
-  # The fix job logs in to Azure for the memory DB, and AZURE_CREDENTIALS is stored as
-  # multi-line JSON, so GitHub masks a lone "{" in that job and drops its JSON `prs`
-  # output ("Skip output 'prs' since it may contain secret"). This job uses no secrets:
-  # it rebuilds the same list from the fixes.json the evidence step saved.
-  candidates:
-    name: Publish fix candidate list
-    needs: fix
-    if: always() && needs.fix.result != 'skipped'
-    runs-on: ubuntu-latest
-
-    outputs:
-      prs: ${{ steps.matrix.outputs.prs }}
-
-    steps:
-      - name: Download fix output
+      - name: Download each fix job's memory database copy
+        if: steps.memory_download.outcome == 'success'
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
-          name: nodegoat-fix-output
-          path: fix-output
+          pattern: fixmem-nodegoat-*
+          path: memory-parts
 
-      - name: Build PR matrix from fixes.json
-        id: matrix
-        shell: python
+      - name: Add each fix job's rows from this run
+        id: merge
+        if: steps.memory_download.outcome == 'success'
         run: |
-          import json, os, pathlib
-          # Same entries dashboard_evidence.collect_fixes puts in its matrix.
-          path = next(pathlib.Path("fix-output").rglob("fixes.json"), None)
-          rows = json.loads(path.read_text(encoding="utf-8")) if path else []
-          prs = [{"batch_id": r["batch_id"], "branch": r["branch"], "sha": r["candidate_sha"],
-                  "pr_url": r["pr_url"], "status": "pr_opened"}
-                 for r in rows
-                 if r.get("status") == "pr_opened" and r.get("pr_url") and r.get("candidate_sha")]
-          print(f"{len(prs)} fix candidate(s): " + ", ".join(p["batch_id"] for p in prs))
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write("prs=" + json.dumps(prs, separators=(",", ":")) + "\n")
+          python scripts/merge_memory.py --base memory/asva_memory.db --parts memory-parts --run-id "$GITHUB_RUN_ID"
+
+      - name: Upload SQLite memory database
+        if: steps.merge.outcome == 'success'
+        shell: bash
+        run: |
+          az storage blob upload \
+            --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
+            --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
+            --name asva-memory/asva_memory.db \
+            --file memory/asva_memory.db \
+            --auth-mode login \
+            --overwrite \
+            -o none --no-progress
+          echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/asva-memory/asva_memory.db"

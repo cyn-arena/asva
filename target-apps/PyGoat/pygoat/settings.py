@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 import django_heroku
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +23,41 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _get_secret_key():
+    secret_key = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_key_file = os.path.join(BASE_DIR, '.secret_key')
+    try:
+        with open(secret_key_file, 'r') as f:
+            stored_key = f.read().strip()
+        if stored_key:
+            return stored_key
+    except OSError:
+        pass
+
+    generated_key = get_random_secret_key()
+    try:
+        fd = os.open(secret_key_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, 'w') as f:
+            f.write(generated_key)
+        return generated_key
+    except FileExistsError:
+        try:
+            with open(secret_key_file, 'r') as f:
+                stored_key = f.read().strip()
+            if stored_key:
+                return stored_key
+        except OSError:
+            pass
+    except OSError:
+        pass
+
+    return generated_key
+
+
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

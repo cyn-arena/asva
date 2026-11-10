@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
 
 import django_heroku
 
@@ -22,9 +23,53 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _get_secret_key():
+    for env_name in ('SECRET_KEY', 'DJANGO_SECRET_KEY'):
+        value = os.environ.get(env_name)
+        if value:
+            return value
 
-SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
+    secret_file = os.environ.get(
+        'DJANGO_SECRET_KEY_FILE',
+        os.path.join(BASE_DIR, '.secret_key'),
+    )
+    try:
+        with open(secret_file, 'r') as f:
+            stored_key = f.read().strip()
+        if stored_key:
+            return stored_key
+    except OSError:
+        pass
+
+    generated_key = secrets.token_urlsafe(64)
+    try:
+        secret_dir = os.path.dirname(secret_file)
+        if secret_dir:
+            os.makedirs(secret_dir, exist_ok=True)
+        fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, 'w') as f:
+            f.write(generated_key)
+            f.flush()
+            os.fsync(f.fileno())
+        return generated_key
+    except FileExistsError:
+        try:
+            with open(secret_file, 'r') as f:
+                stored_key = f.read().strip()
+            if stored_key:
+                return stored_key
+        except OSError:
+            pass
+    except OSError:
+        pass
+
+    return generated_key
+
+
+SECRET_KEY = _get_secret_key()
+
+_DEFAULT_LAB_VALUE = 'FLAGTHATNEEDSTOBEFOUND'
+SENSITIVE_DATA = os.environ.get('SENSITIVE_DATA', _DEFAULT_LAB_VALUE)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -168,5 +213,5 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SECRET_COOKIE_KEY = "PYGOAT"
+SECRET_COOKIE_KEY = os.environ.get('SECRET_COOKIE_KEY') or SECRET_KEY
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000","http://0.0.0.0:8000","http://172.16.189.10"]

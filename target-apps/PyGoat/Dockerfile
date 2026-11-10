@@ -22,6 +22,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
 
+# Create static directory and grant ownership
+RUN mkdir -p /app/staticfiles && \
+    chown -R 1000:1000 /app
+
 EXPOSE 8000
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "6", "--pythonpath", "/app", "pygoat.wsgi:application"]

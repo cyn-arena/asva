@@ -542,6 +542,8 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
+      # The container report's issue title comes from this, so it updates the same issue as the fix jobs.
+      ASVA_FIX_PATH_PREFIX: target-apps/NodeGoat
 
     steps:
       - name: Checkout

@@ -186,7 +186,11 @@ jobs:
           rows = []
           for path in sorted(pathlib.Path(os.environ["ASVA_RESULTS_DIR"], "fix_batches").glob("*.json")):
               batch = json.loads(path.read_text(encoding="utf-8"))
-              rows.append({"file": path.name, "batch_id": batch["batch_id"], "batch_type": batch["batch_type"]})
+              rows.append({"file": path.name, "batch_id": batch["batch_id"], "batch_type": batch["batch_type"], "base_image": False})
+          # The agent adds a base-image container batch when triage made none (agent/base_image.py). Each fix
+          # job sees only its own batch, so only one job may add it, or two jobs push the same branch.
+          if rows and not any(r["batch_type"] == "container" for r in rows):
+              rows[0]["base_image"] = True
           print(f"{len(rows)} fix batch(es): " + ", ".join(r["batch_id"] for r in rows))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               out.write("batches=" + json.dumps(rows, separators=(",", ":")) + "\n")
@@ -229,7 +233,8 @@ jobs:
       # Test fixes before there is a PR: try held-back upgrades, retry code fixes (agent/test_first.py).
       ASVA_TEST_FIRST: '1'
       # Try a newer OS under this app's image when that is where the fixes are (agent/base_image.py).
-      ASVA_BASE_IMAGE_FIX: '1'
+      # Only in the one fix job the prepare job picks for it.
+      ASVA_BASE_IMAGE_FIX: ${{ matrix.batch.base_image && '1' || '0' }}
       # Scan a code fix before its PR, for what it adds (agent/code_scan.py).
       ASVA_SCAN_BEFORE_PR: '1'
       # How this app is checked (agent/app_check.py). It has six workers: a fix that makes them disagree,
@@ -517,6 +522,8 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
+      # The container report's issue title comes from this, so it updates the same issue as the fix jobs.
+      ASVA_FIX_PATH_PREFIX: target-apps/PyGoat
 
     steps:
       - name: Checkout

@@ -24,4 +24,4 @@ COPY . /app/
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "6", "--chdir", "pygoat", "wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "6", "--pythonpath", "/app", "pygoat.wsgi:application"]

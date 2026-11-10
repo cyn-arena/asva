@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, make_response
-import pickle
+from flask import Flask, render_template, request
 import base64
 from dataclasses import dataclass
 
@@ -7,12 +6,25 @@ app = Flask(__name__)
 
 @dataclass
 class User:
-    username: str 
+    username: str
     is_admin: bool = False
 
-    def __reduce__(self):
-        # Intentionally vulnerable __reduce__ method to match PyGoat
-        return (User, (self.username, self.is_admin))
+def _serialize_user(user: User) -> str:
+    username_b64 = base64.b64encode(user.username.encode('utf-8')).decode('ascii')
+    return f"{username_b64}.{1 if user.is_admin else 0}"
+
+def _deserialize_user(serialized_data: str) -> User:
+    if not isinstance(serialized_data, str):
+        raise ValueError("Invalid data")
+    parts = serialized_data.split('.')
+    if len(parts) != 2:
+        raise ValueError("Invalid data")
+    username_b64, admin_flag = parts
+    if admin_flag not in ('0', '1'):
+        raise ValueError("Invalid data")
+    username_bytes = base64.b64decode(username_b64.encode('ascii'), validate=True)
+    username = username_bytes.decode('utf-8')
+    return User(username=username, is_admin=admin_flag == '1')
 
 @app.route('/')
 def index():
@@ -21,33 +33,24 @@ def index():
 @app.route('/serialize', methods=['POST'])
 def serialize_data():
     username = request.form.get('username', 'guest')
-    # Create regular user with admin=False
     user = User(username=username, is_admin=False)
-    # Match PyGoat's serialization format
-    serialized = base64.b64encode(pickle.dumps(user)).decode()
+    serialized = _serialize_user(user)
     return render_template('result.html', serialized=serialized)
 
 @app.route('/deserialize', methods=['POST'])
 def deserialize_data():
     try:
         serialized_data = request.form.get('serialized_data', '')
-        decoded_data = base64.b64decode(serialized_data)
-        # Intentionally vulnerable deserialization, matching PyGoat
-        user = pickle.loads(decoded_data)
+        user = _deserialize_user(serialized_data)
         
-        if isinstance(user, User):
-            if user.is_admin:
-                message = f"Welcome Admin {user.username}! Here's the secret admin content: ADMIN_KEY_123"
-            else:
-                message = f"Welcome {user.username}. Only admins can see the secret content."
+        if user.is_admin:
+            message = f"Welcome Admin {user.username}! Here's the secret admin content: ADMIN_KEY_123"
         else:
-            message = "Invalid user data"
+            message = f"Welcome {user.username}. Only admins can see the secret content."
         
         return render_template('result.html', message=message)
-    except Exception as e:
-        return render_template('result.html', message=f"Error: {str(e)}")
+    except Exception:
+        return render_template('result.html', message="Invalid user data")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
-
-    

@@ -1,5 +1,30 @@
 // console.log("imported a9.js");
 
+function getCsrfToken() {
+    var inputs = document.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++) {
+        var name = (inputs[i].name || '').toLowerCase();
+        if (name.indexOf('csrf') !== -1 && inputs[i].value) {
+            return inputs[i].value;
+        }
+    }
+
+    var cookies = document.cookie ? document.cookie.split(';') : [];
+    for (var j = 0; j < cookies.length; j++) {
+        var cookie = cookies[j].trim();
+        var separator = cookie.indexOf('=');
+        if (separator === -1) {
+            continue;
+        }
+        var cookieName = cookie.substring(0, separator).toLowerCase();
+        if (cookieName.indexOf('csrf') !== -1) {
+            return decodeURIComponent(cookie.substring(separator + 1));
+        }
+    }
+
+    return null;
+}
+
 event1 = function(){
     document.getElementById("a9_b1").style.display = 'none';
     document.getElementById("a9_d1").style.display = 'flex';
@@ -14,18 +39,18 @@ event3 = function(){
     var log_code = document.getElementById('a9_log').value
     var target_code = document.getElementById('a9_api').value
 
-    var myHeaders = new Headers();
-    myHeaders.append("Cookie", "csrftoken=5fVOTXh2HNahtvJFJNRSrKkwPAgPM9YCHlrCGprAxhAAKOUWMxqMnWm8BUomv0Yd; jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjUzMzEzMDIxLCJpYXQiOjE2NTMzMDk0MjF9.dh2gfP9wKD8GKu1J-jVs2jJUYMgKu_kMaJjrD0hHP-I");
-
     var formdata = new FormData();
-    formdata.append("csrfmiddlewaretoken", "5fVOTXh2HNahtvJFJNRSrKkwPAgPM9YCHlrCGprAxhAAKOUWMxqMnWm8BUomv0Yd");
+    var csrfToken = getCsrfToken();
+    if (csrfToken) {
+        formdata.append("csrfmiddlewaretoken", csrfToken);
+    }
     formdata.append("log_code", log_code);
     formdata.append("api_code", target_code);
 
     var requestOptions = {
     method: 'POST',
-    headers: myHeaders,
     body: formdata,
+    credentials: 'same-origin',
     redirect: 'follow'
     };
 

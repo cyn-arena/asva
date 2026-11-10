@@ -13,9 +13,8 @@ on:
           required: false
   push:
     branches:
-    #  - feat/nodegoat
-    #  - rel/26.07 
-       - feat/app-types
+    #  - rel/26.11
+       - feat/k8s-deploy
     paths:
     #   - 'target-apps/NodeGoat/**'
     #   - '.github/workflows/nodegoat-build.yml' 
@@ -29,7 +28,7 @@ env:
   
 jobs:
   deploy:
-    name: Deploy to Kubernetes (${{ inputs.deploy_target || 'green' }})
+    name: Deploy to Kubernetes (${{ inputs.deploy_target || 'blue' }})
     runs-on:
       ${{ vars.ASVA_K8S_RUNNER }}
 

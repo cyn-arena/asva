@@ -15,7 +15,9 @@ on:
     paths:
     #  - 'target-apps/NodeGoat/Dockerfile'
       - '.github/workflows/any-app-build-oci.yml'
-      - 'target-apps/PyGoat/Dockerfile'
+    #  - 'target-apps/PyGoat/Dockerfile'
+    #  - 'target-apps/vulnbank/Dockerfile'
+    #  - 'target-apps/NodeGoat/Dockerfile'
 
   workflow_call:
     inputs:
@@ -32,11 +34,6 @@ on:
         default: dvapps
         required: false
 
-env:
-  APP_NAME: ${{ inputs.app_name || 'PyGoat' }}
-  APP_WORK_DIR: ${{ inputs.work_dir_parent }}/${APP_NAME}
-  OCI_REPO: ${{ inputs.oci_repo || 'dvapps' }}
-
 jobs:
 
 ## DVNG build and push to OCI registry
@@ -51,12 +48,12 @@ jobs:
 #       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}
 
   build-to-oci-registry:
-    name: Build and Push ${APP_NAME} to OCI registry
+    name: Build and Push ${{ inputs.app_name || 'PyGoat' }} to OCI registry
     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
-      working-directory: ${APP_WORK_DIR}
-      oci-repo: ${OCI_REPO}
-      tag-prefix: ${APP_NAME}
+      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
+      oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
+      tag-prefix: ${{ inputs.app_name || 'PyGoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

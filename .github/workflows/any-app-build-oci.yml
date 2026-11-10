@@ -13,11 +13,10 @@ on:
        - k8s/deploy
 
     paths:
-    #  - 'target-apps/NodeGoat/Dockerfile'
       - '.github/workflows/any-app-build-oci.yml'
-    #  - 'target-apps/PyGoat/Dockerfile'
-    #  - 'target-apps/vulnbank/Dockerfile'
-    #  - 'target-apps/NodeGoat/Dockerfile'
+      - 'target-apps/PyGoat/Dockerfile'
+      - 'target-apps/vulnbank/Dockerfile'
+      - 'target-apps/NodeGoat/Dockerfile'
 
   workflow_call:
     inputs:

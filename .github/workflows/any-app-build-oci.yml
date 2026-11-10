@@ -22,6 +22,7 @@ on:
     inputs:
       app_name:
         type: string
+        # == Replace App ==
         default: PyGoat
         required: false
       work_dir_parent:
@@ -35,35 +36,15 @@ on:
 
 jobs:
 
-## DVNG build and push to OCI registry
-#   build-to-oci-dvng:
-#     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
-#     with:
-#       working-directory: target-apps/NodeGoat
-#       oci-repo: dvapps
-#       tag-prefix: dvng
-#     secrets:
-#       oci-reg-id: ${{ secrets.OCI_REG_ID }}
-#       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}
-
   build-to-oci-registry:
     name: Build and Push ${{ inputs.app_name || 'PyGoat' }} to OCI registry
     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
+      # == Replace App ==
       working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
       oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
+      # == Replace App ==
       tag-prefix: ${{ inputs.app_name || 'PyGoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}
-
-## VulnBank build and push to OCI registry      
-  # build-to-oci-vulnbank:
-  #   uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
-  #   with:
-  #     working-directory: target-apps/vulnbank
-  #     oci-repo: dvapps
-  #     tag-prefix: vulnbank
-  #   secrets:
-  #     oci-reg-id: ${{ secrets.OCI_REG_ID }}
-  #     oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

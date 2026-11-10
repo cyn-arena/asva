@@ -266,14 +266,14 @@ jobs:
           if az storage blob exists \
             --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
             --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-            --name asva-memory/forget-test.db \
+            --name asva-memory/asva_memory.db \
             --auth-mode login \
             --query exists -o tsv | grep -qx true; then
 
             az storage blob download \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-              --name asva-memory/forget-test.db \
+              --name asva-memory/asva_memory.db \
               --file memory/asva_memory.db \
               --auth-mode login \
               --overwrite \
@@ -420,12 +420,12 @@ jobs:
             az storage blob upload \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-              --name asva-memory/forget-test.db \
+              --name asva-memory/asva_memory.db \
               --file memory/asva_memory.db \
               --auth-mode login \
               --overwrite \
               -o none --no-progress
-            echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/asva-memory/forget-test.db"
+            echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/asva-memory/asva_memory.db"
           else
             echo "No SQLite database file exists; nothing to upload."
           fi

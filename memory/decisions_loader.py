@@ -128,7 +128,8 @@ def apply_decision(decision: dict, finding: dict) -> str:
         print(f"    [MEMORY] Needs manual fix — skipping PR: {decision['note']}")
         finding["memory_applied"] = {
             "decision": d_type,
-            "decided_at": decision["decided_at"]
+            "decided_at": decision["decided_at"],
+            "note": decision.get("note", ""),  # shown by the PR check (agent_loop.save_for_pr_check)
         }
         return "skip_pr"
 
@@ -136,7 +137,8 @@ def apply_decision(decision: dict, finding: dict) -> str:
         print(f"    [MEMORY] {d_type} — skipping: {decision['note']}")
         finding["memory_applied"] = {
             "decision": d_type,
-            "decided_at": decision["decided_at"]
+            "decided_at": decision["decided_at"],
+            "note": decision.get("note", ""),
         }
         return "skip"
 

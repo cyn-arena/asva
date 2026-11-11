@@ -194,6 +194,25 @@ def _no_fix_reason(m: dict, changed_files: list[str]) -> str:
     return "This PR touches a related file but doesn't fix this specific issue."
 
 
+_DECISION_WORDS = {"false_positive": "false positive", "accepted_risk": "accepted risk",
+                   "needs_manual_fix": "needs a manual fix"}
+
+
+def _decision_text(decision: dict) -> str:
+    words = _DECISION_WORDS.get(decision.get("decision"), decision.get("decision") or "reviewer decision")
+    return f"{words}: {decision['note']}" if decision.get("note") else words
+
+
+def reviewer_skipped_lines(skipped: list[dict] | None) -> list[str]:
+    """The findings a reviewer's decision kept out of this PR (agent/agent_loop.py's
+    save_for_pr_check): listed so the reader knows they were left alone on purpose. Not counted."""
+    if not skipped:
+        return []
+    return ["**Skipped by reviewer decision** (not fixed by this PR, not counted in the result):", "",
+            *[f"- `{s.get('rule_id')}` in `{s.get('file')}:{s.get('line')}` -- {_decision_text(s)}" for s in skipped],
+            ""]
+
+
 def _row(check: str, passed: bool, note: str, *, verb: tuple[str, str] = ("Passed", "Failed")) -> str:
     result = f":white_check_mark: {verb[0]}" if passed else f":x: {verb[1]}"
     return f"| {check} | {result} | {note} |"
@@ -244,6 +263,7 @@ def format_pr_check_comment(
     marked_draft: bool = False,
     rescan: RescanResult | None = None,
     new_findings: list[str] | None = None,
+    reviewer_skipped: list[dict] | None = None,
 ) -> str:
     """Build pr-check's pre-merge PR comment: one results table covering
     whether the app starts, the smoke suite's core-flow + off-site-redirect checks, and
@@ -266,12 +286,16 @@ def format_pr_check_comment(
     `rescan` is the Snyk rescan of this PR's code. When given, it adds one last row that
     counts like any other, so the headline can't say "ready" while the scanner still
     finds the issue. None (no rescan available) leaves the comment exactly as before.
+
+    `reviewer_skipped` = the findings a reviewer's decision kept out of this PR. A matched check
+    with `reviewer_decision` is shown as skipped, whatever its result, and not counted.
     """
     rows: list[str] = []
     failed_count = 0
     total_count = 0
     still_open: list[str] = []  # failed, but this PR did not attempt them: shown, not counted
     left_out: list[str] = []  # the same, but a fix was tried and dropped
+    decided: list[str] = []  # skipped by a reviewer's decision: shown, not counted
 
     def add(check: str, passed: bool, note: str, verb=("Passed", "Failed")) -> None:
         nonlocal failed_count, total_count
@@ -305,6 +329,11 @@ def format_pr_check_comment(
             add('"Learning Resources" link', link_ok, "" if link_ok else _LEARNING_LINK_EXPLANATION)
 
         for m in matched_tests:
+            if m.get("reviewer_decision"):
+                decided.append(m["label"])
+                rows.append(f"| {m['label']} | :fast_forward: Skipped, reviewer decision | "
+                            f"{_decision_text(m['reviewer_decision'])} |")
+                continue
             case_result = None
             if misuse is not None:
                 case_result = next(
@@ -346,6 +375,7 @@ def format_pr_check_comment(
            "them or make them worse, but merging it does not fix them.", ""] if still_open else []),
         *([f"**Still vulnerable, fix tried and dropped:** {', '.join(left_out)}. No fix passed the app's tests, so "
            "merging this PR does not fix them.", ""] if left_out else []),
+        *reviewer_skipped_lines(reviewer_skipped),
         f"This was tested by building this PR's branch (`{short_sha}`) on its own and "
         "running it in isolation.",
         "",
@@ -371,6 +401,9 @@ def format_pr_check_comment(
         summary = ("**Summary:** every test passed, but the scan before this PR found new critical or high findings. "
                    "It should not be merged until someone has checked them." if summary == _ALL_PASSED_SUMMARY else
                    f"{summary} The scan before this PR also found new critical or high findings.")
+    if decided:
+        summary += (f" {len(decided)} check{'s' if len(decided) > 1 else ''} ({', '.join(decided)}) "
+                    "skipped by reviewer decision, not counted.")
     lines.append(summary)
 
     if marked_draft:
@@ -441,7 +474,7 @@ def _tests_summary(
     fixed_labels = []
     vulnerable = []
     for m in matched_tests:
-        if misuse is None:
+        if misuse is None or m.get("reviewer_decision"):  # skipped by a reviewer: not part of the verdict
             continue
         case_result = next(
             (c for c in misuse.cases if _strip_param_suffix(c.name) == m["test_name"]), None

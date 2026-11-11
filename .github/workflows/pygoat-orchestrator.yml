@@ -107,7 +107,8 @@ jobs:
   publish:
     name: PyGoat - Publish dashboard evidence
     needs: [baseline, scan, test-unit, fix, pr-check, after-fix]
-    if: always()
+    # TEST BRANCH ONLY (no-RAG comparison): keep this run off the team's dashboard.
+    if: ${{ false }}
     uses: ./.github/workflows/publish-dashboard-results.yml
     with:
       app-code: pygoat

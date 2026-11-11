@@ -137,7 +137,8 @@ jobs:
   publish:
     name: NodeGoat - Publish dashboard evidence
     needs: [scan, test-unit, fix, pr-check, build, deploy, test-e2e, after-fix]
-    if: always()
+    # TEST BRANCH ONLY (no-RAG comparison): keep this run off the team's dashboard.
+    if: ${{ false }}
     uses: ./.github/workflows/publish-dashboard-results.yml
     with:
       app-code: nodegoat

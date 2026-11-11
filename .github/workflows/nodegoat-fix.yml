@@ -321,7 +321,10 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       # ---------- RAG ----------
+      # TEST BRANCH ONLY (no-RAG comparison): the RAG is not started, so ASVA_RAG_URL stays empty
+      # and the agent runs without it. Everything else (test-first, scans, memory reads) is as on rel.
       - name: Start the RAG
+        if: ${{ false }}
         env:
           GHCR_TOKEN: ${{ github.token }}
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
@@ -366,8 +369,9 @@ jobs:
             --repo-dir "$ASVA_SOURCE_DIR" \
             --execute
 
+      # TEST BRANCH ONLY (no-RAG comparison): nothing to stop or save.
       - name: Stop the RAG and save its database
-        if: always()
+        if: ${{ false }}
         run: bash scripts/rag-container.sh stop
 
       - name: Collect fix diffs, PR metadata and per-stage outcomes
@@ -410,8 +414,10 @@ jobs:
             ${{ env.ASVA_RESULTS_DIR }}/stage-status.json
             ${{ env.ASVA_RESULTS_DIR }}/import_maps/*.html
 
+      # TEST BRANCH ONLY (no-RAG comparison): read memory like rel, but do not upload this run's
+      # fix history, so no-RAG attempts never reach the shared memory database.
       - name: Upload SQLite memory database
-        if: ${{ always() }}
+        if: ${{ false }}
         shell: bash
         run: |
           if [ -f memory/asva_memory.db ]; then

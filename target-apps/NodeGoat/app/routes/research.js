@@ -12,8 +12,20 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
-            return needle.get(url, (error, newResponse, body) => {
+            if (typeof req.query.symbol !== "string") {
+                return res.status(400).send("Invalid stock symbol");
+            }
+
+            const symbol = req.query.symbol.toUpperCase();
+            if (!/^[A-Z0-9.-]{1,15}$/.test(symbol)) {
+                return res.status(400).send("Invalid stock symbol");
+            }
+
+            return needle.get("http://download.finance.yahoo.com/d/quotes.csv", {
+                qs: {
+                    s: symbol
+                }
+            }, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
                         "Content-Type": "text/html"

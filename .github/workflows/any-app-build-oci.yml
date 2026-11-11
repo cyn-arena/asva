@@ -24,7 +24,7 @@ on:
       app_name:
         type: string
         # == Replace App ==
-        default: NodeGoat
+        default: PyGoat
         required: false
       work_dir_parent:
         type: string
@@ -39,14 +39,14 @@ jobs:
 
   build-to-oci-registry:
     # == Replace App ==
-    name: Build and Push ${{ inputs.app_name || 'NodeGoat' }} to OCI registry
+    name: Build and Push ${{ inputs.app_name || 'PyGoat' }} to OCI registry
     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
       # == Replace App ==
-      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'NodeGoat' }}
+      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
       oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
       # == Replace App ==
-      tag-prefix: ${{ inputs.app_name || 'NodeGoat' }}
+      tag-prefix: ${{ inputs.app_name || 'PyGoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

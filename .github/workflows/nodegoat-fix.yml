@@ -266,14 +266,14 @@ jobs:
           if az storage blob exists \
             --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
             --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-            --name asva-memory/asva_memory.db \
+            --name asva-memory/no-memory-test.db \
             --auth-mode login \
             --query exists -o tsv | grep -qx true; then
 
             az storage blob download \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-              --name asva-memory/asva_memory.db \
+              --name asva-memory/no-memory-test.db \
               --file memory/asva_memory.db \
               --auth-mode login \
               --overwrite \
@@ -411,7 +411,8 @@ jobs:
             ${{ env.ASVA_RESULTS_DIR }}/import_maps/*.html
 
       - name: Upload SQLite memory database
-        if: ${{ always() }}
+        # TEST BRANCH ONLY (no-memory runs): upload nothing, so every run starts with empty memory.
+        if: ${{ false }}
         shell: bash
         run: |
           if [ -f memory/asva_memory.db ]; then

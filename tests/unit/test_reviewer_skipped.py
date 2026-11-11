@@ -12,7 +12,7 @@ import json
 import pytest
 
 from agent import agent_loop
-from agent.pr_test_selector import batch_rule_ids, build_match_report
+from agent.pr_test_selector import batch_rule_ids, build_match_report, reviewer_skipped_tests
 from gitops import config
 from gitops.post_pr_check_comment import format_validation_comment, reviewer_skipped
 from gitops.smoke_report import format_pr_check_comment, misuse_fails_pr, parse_junit_xml
@@ -76,6 +76,16 @@ def test_a_finding_marked_while_the_agent_works_is_not_attempted_either():
     fixed = _finding("javascript/OR", "index.js", 72)
     assert batch_rule_ids({"files_to_fix": [{"file": "development.js", "findings": [skipped]},
                                             {"file": "index.js", "findings": [fixed]}]}) == {"javascript/OR"}
+
+
+def test_the_misuse_round_is_told_which_tests_a_reviewer_skipped():
+    skipped = dict(_finding(ZAP_RULE, "development.js", 6), memory_applied={"decision": "false_positive", "note": ""})
+    batch = {"files_to_fix": [{"file": "development.js", "findings": [skipped]},
+                              {"file": "index.js", "findings": [_finding("javascript/OR", "index.js", 72)]}]}
+    assert reviewer_skipped_tests(batch) == {ZAP_TEST}
+    # A rule the PR still fixes elsewhere is not skipped.
+    batch["files_to_fix"][1]["findings"].append(_finding(ZAP_RULE, "index.js", 9))
+    assert reviewer_skipped_tests(batch) == set()
 
 
 def test_a_retry_fix_is_not_a_skip(tmp_path):

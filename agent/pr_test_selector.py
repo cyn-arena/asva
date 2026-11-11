@@ -149,6 +149,17 @@ def batch_rule_ids(batch: dict) -> set[str]:
     }
 
 
+def reviewer_skipped_tests(batch: dict) -> set[str]:
+    """The security tests for findings a reviewer kept out of this PR, and that nothing else in the
+    batch aims at: the misuse round (agent/test_first.py) must not fix those holes either."""
+    rules = {(f.get("identifiers") or {}).get("rule_id")
+             for entry in batch.get("files_to_fix", []) for f in entry.get("findings", [])
+             if (f.get("memory_applied") or {}).get("decision") in SKIP_DECISIONS}
+    rules |= {s.get("rule_id") for s in batch.get("reviewer_skipped") or []}
+    rules -= batch_rule_ids(batch)
+    return {name for name, label in TEST_CASE_LABELS.items() if set(label.rule_ids) & rules}
+
+
 def build_match_report(
     changed_files: list[str], test_source: str, rule_ids: set[str] | None = None,
     reviewer_skipped: list[dict] | None = None,

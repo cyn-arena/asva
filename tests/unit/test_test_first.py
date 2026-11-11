@@ -570,6 +570,15 @@ def test_a_fix_that_passes_is_kept_for_its_own_commit_on_top_of_the_code_fix(app
     assert "own commit" in result["batch"]["rag_pr_text"] and "Review these carefully" in result["batch"]["rag_pr_text"]
 
 
+def test_a_hole_whose_findings_a_reviewer_skipped_is_left_alone(app, misuse, monkeypatch):
+    # e.g. a false positive: the reviewer said not to fix it, so the misuse round doesn't either.
+    monkeypatch.setattr(test_first.pr_test_selector, "reviewer_skipped_tests", lambda batch: {"test_hole_one"})
+    result = misuse_run(app, misuse, lambda files: {"app/third.js": "closed two"})
+    assert [f["test"] for f in result["batch"]["misuse_fixes"]] == ["test_hole_two"]
+    assert all("test_hole_one" not in tests for _, tests in misuse["runs"])
+    assert "skipped, reviewer decision" in result["batch"]["rag_pr_text"]
+
+
 def test_the_llm_gets_the_files_the_test_is_linked_to_as_they_stand_and_the_failure(app, misuse):
     misuse_run(app, misuse, lambda files: {})
     files, failure = misuse["asked"][0]

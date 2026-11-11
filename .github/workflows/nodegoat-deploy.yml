@@ -1,4 +1,4 @@
-# Deploying PyGoat—an intentionally vulnerable web application—using a standard Dockerfile and Kubernetes (k8s) introduces severe security and architectural risks. Because PyGoat contains deliberate remote code execution (RCE), server-side request forgery (SSRF), and injection flaws, hosting it in a cluster requires strict isolation and security measures. The following Kubernetes manifest (pygoat.yaml) is designed to deploy PyGoat in a controlled environment, but it is crucial to understand the implications of running such an application in a production-like setting.
+# Deploying NodeGoat, an intentionally vulnerable web application, with Kubernetes (k8s) introduces severe security and architectural risks. Hosting it in a cluster requires strict isolation and security measures. The Kubernetes manifest (kubernetes/dvng.yaml.template) is designed to deploy NodeGoat in a controlled environment, but it is crucial to understand the implications of running such an application in a production-like setting.
 
 name: NodeGoat - Deploy to Kubernetes
 
@@ -13,6 +13,10 @@ on:
         deploy_nodeport: # K8s internal cluster port for NodeGoat service
           type: string
           required: false
+        image_sha: # Commit the image was built from; the build tags it dvng-<first 7 characters>
+          type: string
+          default: '' # empty: deploy dvng-latest
+          required: false
   push:
     branches:
     #  - rel/26.11
@@ -21,12 +25,13 @@ on:
     #   - 'target-apps/NodeGoat/**'
     #   - '.github/workflows/nodegoat-build.yml' 
       - '.github/workflows/nodegoat-deploy.yml'
-      - 'target-apps/NodeGoat/dvng.yaml.template'
+      - 'target-apps/NodeGoat/kubernetes/dvng.yaml.template'
 
-# Edit according to deployment target 
+# Edit according to deployment target
 env:
   DEPLOY_TARGET: ${{ inputs.deploy_target || 'green' }} # blue|green
   DEPLOY_NODEPORT: ${{ inputs.deploy_nodeport || vars.NODEPORT_GREEN }} # NODE_PORT_BLUE|GREEN
+  IMAGE_SHA: ${{ inputs.image_sha }}
   
 jobs:
   deploy:
@@ -47,10 +52,23 @@ jobs:
         with:
            version: 'latest'
 
+      # DEPLOY_RUN is new on every run, so the pod template always changes and apply rolls out a
+      # new pod that pulls the image again, without a separate restart.
       - name: Apply NodeGoat Kubernetes resources
         run: |
+          IMAGE_TAG="${IMAGE_SHA:0:7}"
+          IMAGE_TAG="${IMAGE_TAG:-latest}"
+          DEPLOY_RUN="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "Deploying dvng-${IMAGE_TAG} to ${DEPLOY_TARGET} (deploy run ${DEPLOY_RUN})"
           sed \
           -e "s|\${DEPLOY_TARGET}|$DEPLOY_TARGET|g" \
           -e "s|\${DEPLOY_NODEPORT}|$DEPLOY_NODEPORT|g" \
+          -e "s|\${IMAGE_TAG}|$IMAGE_TAG|g" \
+          -e "s|\${DEPLOY_RUN}|$DEPLOY_RUN|g" \
           target-apps/NodeGoat/kubernetes/dvng.yaml.template > target-apps/NodeGoat/kubernetes/dvng.yaml
           kubectl apply -f target-apps/NodeGoat/kubernetes/dvng.yaml --validate=false
+
+      # Read-only: fails the job if the new pod never becomes ready, instead of reporting a
+      # deploy that did not happen.
+      - name: Wait for the new pod
+        run: kubectl rollout status "deployment/dep-nodegoat-${DEPLOY_TARGET}" -n dvapps --timeout=300s

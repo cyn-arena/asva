@@ -34,6 +34,10 @@ metadata:
 spec:
   replicas: 1
 
+  # Stop the old pod before starting the new one, so a deploy never needs room for two.
+  strategy:
+    type: Recreate
+
   selector:
     matchLabels:
       app: nodegoat-${DEPLOY_TARGET}
@@ -42,6 +46,10 @@ spec:
     metadata:
       labels:
         app: nodegoat-${DEPLOY_TARGET}
+      # Filled in by nodegoat-deploy.yml. A new value on every deploy changes the pod template,
+      # so kubectl apply always rolls out a new pod (and pulls the image again).
+      annotations:
+        asva/deploy-run: "${DEPLOY_RUN}"
 
     spec:
       automountServiceAccountToken: false
@@ -51,10 +59,19 @@ spec:
 
       containers:
       - name: nodegoat
-        image: cyntillate/dvapps:dvng-latest
+        image: cyntillate/dvapps:dvng-${IMAGE_TAG}
         imagePullPolicy: Always
         ports:
         - containerPort: 4043
+        # Ready only once the login page answers, so a pod that fails to start fails the deploy
+        # (nodegoat-deploy.yml waits for this) instead of reporting success while the site is down.
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 4043
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
 
         securityContext:
           allowPrivilegeEscalation: false

@@ -96,6 +96,7 @@ jobs:
     with:
       deploy_target: green
       deploy_nodeport: ${{ vars.NODEPORT_GREEN }}
+      image_sha: ${{ github.sha }} # the build above tagged this run's image dvng-<short sha>
 
   test-e2e:
     name: NodeGoat - Test deployed application

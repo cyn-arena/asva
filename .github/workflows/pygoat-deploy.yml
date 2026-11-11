@@ -5,13 +5,23 @@ name: PyGoat - Deploy to Kubernetes
 on:
   # workflow_dispatch:
   workflow_call:
+    inputs:
+      image_sha:
+        # Commit the image was built from. The build tags it PyGoat-<first 7 characters>.
+        # Leave empty to deploy PyGoat-latest.
+        type: string
+        default: ''
+        required: false
   push:
     branches:
     #  - rel/26.11
        - k8s/deploy
     paths:
       - '.github/workflows/pygoat-deploy.yml'
-      - 'target-apps/PyGoat/kubernetes/pygoat.yaml'
+      - 'target-apps/PyGoat/kubernetes/pygoat.yaml.template'
+
+env:
+  IMAGE_SHA: ${{ inputs.image_sha }}
 
 jobs:
   deploy:
@@ -32,5 +42,21 @@ jobs:
         with:
            version: 'latest'
 
+      # DEPLOY_RUN is new on every run, so the pod template always changes and apply rolls out a
+      # new pod that pulls the image again, without a separate restart.
       - name: Apply PyGoat Kubernetes resources
-        run: kubectl apply -f target-apps/PyGoat/kubernetes/pygoat.yaml --validate=false
+        run: |
+          IMAGE_TAG="${IMAGE_SHA:0:7}"
+          IMAGE_TAG="${IMAGE_TAG:-latest}"
+          DEPLOY_RUN="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "Deploying PyGoat-${IMAGE_TAG} (deploy run ${DEPLOY_RUN})"
+          sed \
+          -e "s|\${IMAGE_TAG}|$IMAGE_TAG|g" \
+          -e "s|\${DEPLOY_RUN}|$DEPLOY_RUN|g" \
+          target-apps/PyGoat/kubernetes/pygoat.yaml.template > target-apps/PyGoat/kubernetes/pygoat.yaml
+          kubectl apply -f target-apps/PyGoat/kubernetes/pygoat.yaml --validate=false
+
+      # Read-only: fails the job if the new pod never becomes ready (for example a missing image
+      # tag or a failed migration), instead of reporting a deploy that did not happen.
+      - name: Wait for the new pod
+        run: kubectl rollout status deployment/dep-pygoat -n dvapps --timeout=300s

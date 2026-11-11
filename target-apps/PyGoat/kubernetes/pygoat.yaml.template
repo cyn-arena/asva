@@ -35,6 +35,11 @@ metadata:
 spec:
   replicas: 1
 
+  # One pod with a local SQLite DB: stop the old pod before starting the new one, so a
+  # deploy never needs room for two.
+  strategy:
+    type: Recreate
+
   selector:
     matchLabels:
       app: pygoat
@@ -43,6 +48,10 @@ spec:
     metadata:
       labels:
         app: pygoat
+      # Filled in by pygoat-deploy.yml. A new value on every deploy changes the pod template,
+      # so kubectl apply always rolls out a new pod (and pulls the image again).
+      annotations:
+        asva/deploy-run: "${DEPLOY_RUN}"
 
     spec:
       automountServiceAccountToken: false
@@ -52,7 +61,7 @@ spec:
 
       containers:
       - name: pygoat
-        image: cyntillate/dvapps:PyGoat-latest
+        image: cyntillate/dvapps:PyGoat-${IMAGE_TAG}
         imagePullPolicy: Always
         ports:
         - containerPort: 8000

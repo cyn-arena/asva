@@ -89,7 +89,7 @@ jobs:
     if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
     uses: ./.github/workflows/any-app-build-oci.yml
     with:
-      app_name: PyGoat # pygoat.yaml pulls PyGoat-latest
+      app_name: PyGoat # pushes PyGoat-<short sha> and PyGoat-latest
     secrets: inherit
 
   deploy:
@@ -97,6 +97,8 @@ jobs:
     needs: build
     if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
     uses: ./.github/workflows/pygoat-deploy.yml
+    with:
+      image_sha: ${{ github.sha }} # the build above tagged this run's image PyGoat-<short sha>
 
   after-fix:
     name: PyGoat - Scan each independent candidate

@@ -476,6 +476,18 @@ def test_only_security_tests_the_batch_aims_at_are_run(app, monkeypatch):
     assert app["security_tests"] == ["test_unvalidated_redirect_learn"]
 
 
+def test_a_security_test_for_a_finding_a_reviewer_skipped_is_not_run(app, monkeypatch):
+    # The fix leaves that finding alone on purpose, so its test would fail every retry and draft the PR.
+    monkeypatch.setenv("ASVA_APP_SECURITY_COMMAND", "python tests.py")
+    monkeypatch.setenv("ASVA_APP_SECURITY_TESTS_FILE", "tests/e2e/api/test_misuse_cases.py")
+    entry = code_entry({"app/routes/index.js": "x"})
+    finding = entry["batch"]["files_to_fix"][0]["findings"][0]
+    finding["identifiers"]["rule_id"] = "javascript/OR"
+    finding["memory_applied"] = {"decision": "false_positive", "decided_at": "2026-11-10T00:00:00Z", "note": "n"}
+    code_run(entry, app, make_refix({}))
+    assert "test_unvalidated_redirect_learn" not in (app.get("security_tests") or [])
+
+
 def test_an_app_without_security_tests_runs_none(app):
     code_run(code_entry(), app, make_refix({}))
     assert app["security_tests"] == []

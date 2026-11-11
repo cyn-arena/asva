@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 DECISIONS_PATH = Path(__file__).parent / "decisions.json"
 
 VALID_DECISIONS = {"retry_fix", "needs_manual_fix", "accepted_risk", "false_positive"}
+# Decisions that keep a finding out of the PR (apply_decision returns skip or skip_pr).
+SKIP_DECISIONS = ("false_positive", "accepted_risk", "needs_manual_fix")
 REQUIRED_FIELDS = ("finding_key", "decision", "decided_by", "decided_at")
 
 

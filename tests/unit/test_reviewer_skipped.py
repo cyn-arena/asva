@@ -70,6 +70,14 @@ def test_the_batch_file_gets_the_findings_a_reviewer_skipped(tmp_path, monkeypat
     assert batch_rule_ids(saved) == {"javascript/OR"}  # the skipped finding is not something the PR attempted
 
 
+def test_a_finding_marked_while_the_agent_works_is_not_attempted_either():
+    # Before the batch file is written (the test before the PR, agent/test_first.py).
+    skipped = dict(_finding(ZAP_RULE, "development.js", 6), memory_applied={"decision": "false_positive", "note": ""})
+    fixed = _finding("javascript/OR", "index.js", 72)
+    assert batch_rule_ids({"files_to_fix": [{"file": "development.js", "findings": [skipped]},
+                                            {"file": "index.js", "findings": [fixed]}]}) == {"javascript/OR"}
+
+
 def test_a_retry_fix_is_not_a_skip(tmp_path):
     finding = dict(_finding("javascript/OR", "index.js", 72), memory_applied={"decision": "retry_fix", "note": "hint"})
     assert agent_loop.reviewer_skipped({"files_to_fix": [{"file": "index.js", "findings": [finding]}]}) == []

@@ -59,7 +59,8 @@ from datetime import datetime, timezone
 
 from memory.memory_context import build_memory_context, previous_errors
 from memory.memory_store import init_db, load_memory, make_fingerprint, save_fix
-from memory.decisions_loader import load_decisions_file, make_finding_key, find_decision, apply_decision
+from memory.decisions_loader import (load_decisions_file, make_finding_key, find_decision, apply_decision,
+                                     SKIP_DECISIONS)
 
 # One id per pipeline run (batch ids repeat across runs on the same commit).
 RUN_ID = os.environ.get("GITHUB_RUN_ID") or f"local-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}"
@@ -1271,9 +1272,6 @@ def make_refix_fn(cycle: list[dict], repo_dir: str, *, use_repo_context: bool | 
     return refix
 
 
-REVIEWER_SKIPS = ("false_positive", "accepted_risk", "needs_manual_fix")
-
-
 def reviewer_skipped(batch: dict) -> list[dict]:
     """The findings a reviewer's decision kept out of this PR (apply_reviewer_memory), so the PR
     check shows them as skipped rather than as fixes that did not work."""
@@ -1283,7 +1281,7 @@ def reviewer_skipped(batch: dict) -> list[dict]:
              "decision": f["memory_applied"]["decision"],
              "note": f["memory_applied"].get("note", "")}
             for fe in batch.get("files_to_fix", []) for f in fe.get("findings", [])
-            if (f.get("memory_applied") or {}).get("decision") in REVIEWER_SKIPS]
+            if (f.get("memory_applied") or {}).get("decision") in SKIP_DECISIONS]
 
 
 def save_for_pr_check(batch_path: Path, entry: dict) -> None:

@@ -1,5 +1,28 @@
 // console.log("imported a9.js");
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function getCsrfToken() {
+    var input = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    if (input && input.value) {
+        return input.value;
+    }
+    return getCookie('csrftoken');
+}
+
 event1 = function(){
     document.getElementById("a9_b1").style.display = 'none';
     document.getElementById("a9_d1").style.display = 'flex';
@@ -14,18 +37,18 @@ event3 = function(){
     var log_code = document.getElementById('a9_log').value
     var target_code = document.getElementById('a9_api').value
 
-    var myHeaders = new Headers();
-    myHeaders.append("Cookie", "csrftoken=5fVOTXh2HNahtvJFJNRSrKkwPAgPM9YCHlrCGprAxhAAKOUWMxqMnWm8BUomv0Yd; jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjUzMzEzMDIxLCJpYXQiOjE2NTMzMDk0MjF9.dh2gfP9wKD8GKu1J-jVs2jJUYMgKu_kMaJjrD0hHP-I");
-
     var formdata = new FormData();
-    formdata.append("csrfmiddlewaretoken", "5fVOTXh2HNahtvJFJNRSrKkwPAgPM9YCHlrCGprAxhAAKOUWMxqMnWm8BUomv0Yd");
+    var csrfToken = getCsrfToken();
+    if (csrfToken) {
+        formdata.append("csrfmiddlewaretoken", csrfToken);
+    }
     formdata.append("log_code", log_code);
     formdata.append("api_code", target_code);
 
     var requestOptions = {
     method: 'POST',
-    headers: myHeaders,
     body: formdata,
+    credentials: 'same-origin',
     redirect: 'follow'
     };
 

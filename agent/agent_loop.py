@@ -59,7 +59,8 @@ from datetime import datetime, timezone
 
 from memory.memory_context import build_memory_context, previous_errors
 from memory.memory_store import init_db, load_memory, make_fingerprint, save_fix
-from memory.decisions_loader import load_decisions_file, make_finding_key, find_decision, apply_decision
+from memory.decisions_loader import (load_decisions_file, make_finding_key, find_decision, apply_decision,
+                                     SKIP_DECISIONS)
 
 # One id per pipeline run (batch ids repeat across runs on the same commit).
 RUN_ID = os.environ.get("GITHUB_RUN_ID") or f"local-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}"
@@ -1271,11 +1272,26 @@ def make_refix_fn(cycle: list[dict], repo_dir: str, *, use_repo_context: bool | 
     return refix
 
 
+def reviewer_skipped(batch: dict) -> list[dict]:
+    """The findings a reviewer's decision kept out of this PR (apply_reviewer_memory), so the PR
+    check shows them as skipped rather than as fixes that did not work."""
+    return [{"rule_id": (f.get("identifiers") or {}).get("rule_id"),
+             "file": (f.get("location") or {}).get("file") or fe.get("file"),
+             "line": (f.get("location") or {}).get("line"),
+             "decision": f["memory_applied"]["decision"],
+             "note": f["memory_applied"].get("note", "")}
+            for fe in batch.get("files_to_fix", []) for f in fe.get("findings", [])
+            if (f.get("memory_applied") or {}).get("decision") in SKIP_DECISIONS]
+
+
 def save_for_pr_check(batch_path: Path, entry: dict) -> None:
-    """Add what the scan before the PR left, and the misuse fixes that were dropped, to the batch file,
-    for the PR's later check to read. Only those: the rest of the file is what validation compares the PR with."""
+    """Add what the scan before the PR left, the misuse fixes that were dropped, and the findings a
+    reviewer skipped to the batch file, for the PR's later check to read. Only those: the rest of
+    the file is what validation compares the PR with."""
     batch = entry.get("batch") or {}
     notes = {key: batch[key] for key in ("new_before_pr", "misuse_dropped") if batch.get(key)}
+    if skipped := reviewer_skipped(batch):
+        notes["reviewer_skipped"] = skipped
     if notes:
         saved = json.loads(batch_path.read_text(encoding="utf-8"))
         saved.update(notes)

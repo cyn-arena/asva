@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from agent.test_annotations import parse_annotated_files
+from memory.decisions_loader import SKIP_DECISIONS
 
 DEFAULT_MISUSE_TEST_FILE = "tests/e2e/api/test_misuse_cases.py"
 
@@ -126,25 +127,51 @@ def matching_tests(changed_files: list[str], test_source: str) -> dict[str, list
     return {name: files for name, files in annotated.items() if changed & set(files)}
 
 
+def _skip_key(rule_id, file, line) -> tuple[str, str, str]:
+    return str(rule_id), str(file), str(line)
+
+
 def batch_rule_ids(batch: dict) -> set[str]:
-    """Every scanner rule_id in this batch's findings."""
+    """Every scanner rule_id in this batch's findings, except the findings a reviewer's decision
+    kept out of the PR: marked on the finding while the agent works (`memory_applied`, read by the
+    test before the PR, agent/test_first.py), and listed in the batch file afterwards
+    (`reviewer_skipped`, written by agent/agent_loop.py's save_for_pr_check, read by the PR check)."""
+    skipped = {_skip_key(s.get("rule_id"), s.get("file"), s.get("line"))
+               for s in batch.get("reviewer_skipped") or []}
     return {
         rule_id
         for entry in batch.get("files_to_fix", [])
         for f in entry.get("findings", [])
         if (rule_id := (f.get("identifiers") or {}).get("rule_id"))
+        and (f.get("memory_applied") or {}).get("decision") not in SKIP_DECISIONS
+        and _skip_key(rule_id, (f.get("location") or {}).get("file") or entry.get("file"),
+                      (f.get("location") or {}).get("line")) not in skipped
     }
 
 
+def reviewer_skipped_tests(batch: dict) -> set[str]:
+    """The security tests for findings a reviewer kept out of this PR, and that nothing else in the
+    batch aims at: the misuse round (agent/test_first.py) must not fix those holes either."""
+    rules = {(f.get("identifiers") or {}).get("rule_id")
+             for entry in batch.get("files_to_fix", []) for f in entry.get("findings", [])
+             if (f.get("memory_applied") or {}).get("decision") in SKIP_DECISIONS}
+    rules |= {s.get("rule_id") for s in batch.get("reviewer_skipped") or []}
+    rules -= batch_rule_ids(batch)
+    return {name for name, label in TEST_CASE_LABELS.items() if set(label.rule_ids) & rules}
+
+
 def build_match_report(
-    changed_files: list[str], test_source: str, rule_ids: set[str] | None = None
+    changed_files: list[str], test_source: str, rule_ids: set[str] | None = None,
+    reviewer_skipped: list[dict] | None = None,
 ) -> dict:
     """The JSON shape pr-check hands to gitops/post_pr_check_comment.py: which tests
     matched, their plain-language description, and the files that drove each match.
 
     With `rule_ids` (from batch_rule_ids), each match also gets `attempted` -- whether
     this PR contains a fix aimed at that case or only touches the same file, None for a
-    test TEST_CASE_LABELS doesn't know, so it stays in scope -- and `why_no_attempt`."""
+    test TEST_CASE_LABELS doesn't know, so it stays in scope -- and `why_no_attempt`.
+    A case not attempted because a reviewer skipped its findings also gets `reviewer_decision`
+    (the decision and its note), and is shown as skipped rather than still vulnerable."""
     matches = matching_tests(changed_files, test_source)
     fallback = CaseLabel(case_id="", label="", when_fixed="", when_vulnerable="")
     matched_tests = []
@@ -161,6 +188,9 @@ def build_match_report(
         if rule_ids is not None:
             entry["attempted"] = bool(set(label.rule_ids) & rule_ids) if name in TEST_CASE_LABELS else None
             entry["why_no_attempt"] = label.why_no_attempt
+            decided = next((s for s in reviewer_skipped or [] if s.get("rule_id") in label.rule_ids), None)
+            if entry["attempted"] is False and decided:
+                entry["reviewer_decision"] = {"decision": decided.get("decision"), "note": decided.get("note") or ""}
         matched_tests.append(entry)
     return {"changed_files": changed_files, "matched_tests": matched_tests}
 
@@ -181,7 +211,8 @@ def main() -> None:
     batch = json.loads(Path(args.batch_file).read_text(encoding="utf-8"))
     test_source = Path(args.test_file).read_text(encoding="utf-8")
     report = build_match_report(
-        batch_changed_files(batch), test_source, rule_ids=batch_rule_ids(batch)
+        batch_changed_files(batch), test_source, rule_ids=batch_rule_ids(batch),
+        reviewer_skipped=batch.get("reviewer_skipped"),
     )
 
     out = json.dumps(report, indent=2)

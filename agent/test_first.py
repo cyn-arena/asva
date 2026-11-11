@@ -601,11 +601,13 @@ def _misuse_round(entry: dict, repo_dir: str, logic_fix: Callable | None, passin
     what doesn't in batch["misuse_dropped"], and says what happened in the PR."""
     batch = entry["batch"]
     annotated = parse_annotated_files(_security_test_source())
-    others = [test for test in annotated if test not in passing]
+    decided = pr_test_selector.reviewer_skipped_tests(batch)  # a reviewer kept these out of the PR
+    others = [test for test in annotated if test not in passing and test not in decided]
     if batch.get("batch_type") != "sast" or logic_fix is None or not others:
         return
     current = {f["path"]: f["content"] for f in entry["files"]}
     kept_tests, fixes, rows, dropped = list(passing), [], [], []
+    rows += [(f"`{test}`", "not tried", "skipped, reviewer decision") for test in annotated if test in decided]
     for test in others:
         if time.monotonic() >= deadline:
             rows.append((f"`{test}`", "not tried", "out of time"))

@@ -162,10 +162,13 @@ def validation(*, app, batch_id, pr_url, sha, started, build_result, smoke_resul
                     # separately so it cannot fail the candidate. Missing flags stay in scope.
                     unattempted = {m["test_name"] for m in selected["matched_tests"]
                                    if m.get("attempted") is False}
+                    # Not attempted because a reviewer skipped its findings (agent_loop.save_for_pr_check).
+                    decided = {m["test_name"] for m in selected["matched_tests"] if m.get("reviewer_decision")}
                     misuse_rows = junit(misuse_xml, "misuse")
                     for row in misuse_rows:
                         if row["name"].split("[")[0] in unattempted:
-                            out_of_scope.append({**row, "scope": "not_targeted_by_batch"})
+                            scope = "reviewer_decision" if row["name"].split("[")[0] in decided else "not_targeted_by_batch"
+                            out_of_scope.append({**row, "scope": scope})
                         else:
                             rows.append(row)
                     # Only an unexplained step failure counts; scoped test failures are already rows.

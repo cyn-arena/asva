@@ -33,7 +33,8 @@ import sys
 from pathlib import Path
 
 from .git_gh_ops import GitOpError, comment_on_pr, convert_pr_to_draft
-from .smoke_report import RescanResult, format_pr_check_comment, misuse_fails_pr, parse_junit_xml
+from .smoke_report import (RescanResult, format_pr_check_comment, misuse_fails_pr, parse_junit_xml,
+                           reviewer_skipped_lines)
 
 
 def tested_sha(report):
@@ -41,9 +42,10 @@ def tested_sha(report):
     return report.get("tested_sha") or report.get("commit_sha")
 
 
-def format_validation_comment(report, marked_draft=False, new_findings=None):
+def format_validation_comment(report, marked_draft=False, new_findings=None, reviewer_skipped=None):
     """Render exactly the checks retained in the dashboard's validation JSON, plus what the scan
-    before the PR left (agent/test_first.py), which the validation does not know about."""
+    before the PR left (agent/test_first.py) and the findings a reviewer skipped, which the
+    validation does not know about."""
     checks = report["checks"]
     counts = {status: sum(c["status"] == status for c in checks)
               for status in ("passed", "failed", "skipped", "not_available")}
@@ -55,6 +57,7 @@ def format_validation_comment(report, marked_draft=False, new_findings=None):
              *([f"**The scan before this PR also found new critical or high findings:** "
                 f"{'; '.join(new_findings)}. It should not be merged until someone has checked them.", ""]
                if new_findings else []),
+             *reviewer_skipped_lines(reviewer_skipped),
              f"Tested commit: `{tested_sha(report)}`", "",
              "| Check | Kind | Result | Detail |", "|---|---|---|---|"]
     def cell(value):
@@ -129,6 +132,11 @@ def new_before_pr(path: str | None) -> list[str]:
     return _from_batch(path, "new_before_pr")
 
 
+def reviewer_skipped(path: str | None) -> list[dict]:
+    """The findings a reviewer's decision kept out of this PR (agent/agent_loop.py)."""
+    return _from_batch(path, "reviewer_skipped")
+
+
 def with_dropped_fixes(matched_tests: list[dict], path: str | None) -> list[dict]:
     """Mark the holes whose misuse fix was tried and dropped (agent/test_first.py), so the comment
     doesn't say nothing tried to fix them. They still don't count against this PR."""
@@ -190,7 +198,8 @@ def main() -> None:
                 marked_draft = True
             except GitOpError as e:
                 print(f"[WARN] Could not convert PR to draft: {e}")
-        comment = format_validation_comment(report, marked_draft=marked_draft, new_findings=new_findings)
+        comment = format_validation_comment(report, marked_draft=marked_draft, new_findings=new_findings,
+                                            reviewer_skipped=reviewer_skipped(args.batch_file))
         print(comment)
         if not args.execute:
             print("[DRY RUN] Not posted. Re-run with --execute to comment on the PR.")
@@ -235,6 +244,7 @@ def main() -> None:
         marked_draft=marked_draft,
         rescan=rescan,
         new_findings=new_findings,
+        reviewer_skipped=reviewer_skipped(args.batch_file),
     )
 
     print(comment)

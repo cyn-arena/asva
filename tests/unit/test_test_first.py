@@ -476,6 +476,18 @@ def test_only_security_tests_the_batch_aims_at_are_run(app, monkeypatch):
     assert app["security_tests"] == ["test_unvalidated_redirect_learn"]
 
 
+def test_a_security_test_for_a_finding_a_reviewer_skipped_is_not_run(app, monkeypatch):
+    # The fix leaves that finding alone on purpose, so its test would fail every retry and draft the PR.
+    monkeypatch.setenv("ASVA_APP_SECURITY_COMMAND", "python tests.py")
+    monkeypatch.setenv("ASVA_APP_SECURITY_TESTS_FILE", "tests/e2e/api/test_misuse_cases.py")
+    entry = code_entry({"app/routes/index.js": "x"})
+    finding = entry["batch"]["files_to_fix"][0]["findings"][0]
+    finding["identifiers"]["rule_id"] = "javascript/OR"
+    finding["memory_applied"] = {"decision": "false_positive", "decided_at": "2026-11-10T00:00:00Z", "note": "n"}
+    code_run(entry, app, make_refix({}))
+    assert "test_unvalidated_redirect_learn" not in (app.get("security_tests") or [])
+
+
 def test_an_app_without_security_tests_runs_none(app):
     code_run(code_entry(), app, make_refix({}))
     assert app["security_tests"] == []
@@ -556,6 +568,15 @@ def test_a_fix_that_passes_is_kept_for_its_own_commit_on_top_of_the_code_fix(app
     assert fixes[1]["files"] == [{"path": "app/third.js", "content": "closed two\n"}]  # keeps the last newline
     assert content_of(result) == {"app/a.js": "a fixed\n"}  # the code fix itself is untouched
     assert "own commit" in result["batch"]["rag_pr_text"] and "Review these carefully" in result["batch"]["rag_pr_text"]
+
+
+def test_a_hole_whose_findings_a_reviewer_skipped_is_left_alone(app, misuse, monkeypatch):
+    # e.g. a false positive: the reviewer said not to fix it, so the misuse round doesn't either.
+    monkeypatch.setattr(test_first.pr_test_selector, "reviewer_skipped_tests", lambda batch: {"test_hole_one"})
+    result = misuse_run(app, misuse, lambda files: {"app/third.js": "closed two"})
+    assert [f["test"] for f in result["batch"]["misuse_fixes"]] == ["test_hole_two"]
+    assert all("test_hole_one" not in tests for _, tests in misuse["runs"])
+    assert "skipped, reviewer decision" in result["batch"]["rag_pr_text"]
 
 
 def test_the_llm_gets_the_files_the_test_is_linked_to_as_they_stand_and_the_failure(app, misuse):

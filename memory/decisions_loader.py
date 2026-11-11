@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 DECISIONS_PATH = Path(__file__).parent / "decisions.json"
 
 VALID_DECISIONS = {"retry_fix", "needs_manual_fix", "accepted_risk", "false_positive"}
+# Decisions that keep a finding out of the PR (apply_decision returns skip or skip_pr).
+SKIP_DECISIONS = ("false_positive", "accepted_risk", "needs_manual_fix")
 REQUIRED_FIELDS = ("finding_key", "decision", "decided_by", "decided_at")
 
 
@@ -128,7 +130,8 @@ def apply_decision(decision: dict, finding: dict) -> str:
         print(f"    [MEMORY] Needs manual fix — skipping PR: {decision['note']}")
         finding["memory_applied"] = {
             "decision": d_type,
-            "decided_at": decision["decided_at"]
+            "decided_at": decision["decided_at"],
+            "note": decision.get("note", ""),  # shown by the PR check (agent_loop.save_for_pr_check)
         }
         return "skip_pr"
 
@@ -136,7 +139,8 @@ def apply_decision(decision: dict, finding: dict) -> str:
         print(f"    [MEMORY] {d_type} — skipping: {decision['note']}")
         finding["memory_applied"] = {
             "decision": d_type,
-            "decided_at": decision["decided_at"]
+            "decided_at": decision["decided_at"],
+            "note": decision.get("note", ""),
         }
         return "skip"
 

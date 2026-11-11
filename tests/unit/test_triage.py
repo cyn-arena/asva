@@ -126,9 +126,9 @@ def test_classify_reason_mentions_docker_compose_for_container():
 
 def test_classify_pygoat_container_targets_its_active_dockerfile():
     findings = [make_finding("1", finding_type="container", file="asva-pygoat_scan")]
-    classified = classify(findings, container_file="Dockerfile.asva")
-    assert classified[0]["location"]["file"] == "Dockerfile.asva"
-    assert "Dockerfile.asva" in classified[0]["triage_reason"]
+    classified = classify(findings, container_file="Dockerfile")
+    assert classified[0]["location"]["file"] == "Dockerfile"
+    assert "Dockerfile" in classified[0]["triage_reason"]
 
 
 def test_classify_container_keeps_the_scanned_image_when_remapping_the_file():
@@ -164,10 +164,10 @@ def test_validate_noop_when_nothing_missing(capsys):
 def test_restored_container_findings_keep_configured_target_and_single_edit():
     actionable = [make_finding("1", finding_type="container", file="image_one"),
                   make_finding("2", finding_type="container", file="image_two")]
-    restored = validate(classify(actionable[:1], "Dockerfile.asva"), actionable, "Dockerfile.asva")
+    restored = validate(classify(actionable[:1], "Dockerfile"), actionable, "Dockerfile")
     batch = build_batches(restored, "app", "12345678", "run")[0][1]
     assert batch["total_files"] == 1 and batch["total_findings"] == 2
-    assert batch["files_to_fix"][0]["file"] == "Dockerfile.asva"
+    assert batch["files_to_fix"][0]["file"] == "Dockerfile"
 
 
 # --------------------------------------------------------------------------------------

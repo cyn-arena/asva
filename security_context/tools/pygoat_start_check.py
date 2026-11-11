@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Does PyGoat still build, start and work with a candidate fix? The checks ASVA's PyGoat
 pipeline makes (pygoat-baseline.yml, pygoat-pr-check.yml): build the image from
-Dockerfile.asva with Docker Compose (compose.asva.yml), wait for /login/, then run ASVA's
+Dockerfile with Docker Compose (compose.asva.yml), wait for /login/, then run ASVA's
 smoke test scripts/pygoat-smoke.py (login page, register, logout, login, a lab page, static
 assets).
 

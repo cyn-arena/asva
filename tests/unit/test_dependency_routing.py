@@ -77,10 +77,10 @@ def test_multiple_images_resolve_before_root_selection(reverse):
     images = [observation("container", "deb", "image_one"), observation("container", "deb", "image_two")]
     if reverse:
         images.reverse()
-    classified = classify(images, "Dockerfile.asva")
+    classified = classify(images, "Dockerfile")
     batch = build_batches(classified, "app", "12345678", "run")[0][1]
     assert batch["total_files"] == 1 and batch["total_findings"] == 2
-    assert batch["files_to_fix"][0]["file"] == "Dockerfile.asva"
+    assert batch["files_to_fix"][0]["file"] == "Dockerfile"
     assert sum(f["covered_by"] is None for f in classified) == 1
 
 
@@ -99,7 +99,7 @@ def test_sast_and_sca_at_same_path_have_independent_roots(reverse):
 def test_image_application_paths_are_deferred_without_source_mapping():
     findings = [observation("container", "pip", "/app/requirements.txt"),
                 observation("container", "npm", "/usr/lib/node_modules/package.json")]
-    classified = classify(findings, "Dockerfile.asva")
+    classified = classify(findings, "Dockerfile")
     assert all(f["routing_status"] == "deferred" for f in classified)
     assert build_batches(classified, "app", "12345678", "run") == []
     assert {f["location"]["file"] for f in classified} == {f["location"]["file"] for f in findings}

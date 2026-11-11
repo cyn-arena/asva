@@ -6,12 +6,14 @@ its upstream source and licence are recorded in
 
 ## ASVA files added to PyGoat
 
-The upstream Dockerfile, settings and dependency pins are kept. ASVA adds:
+Upstream's settings and dependency pins are kept. Upstream's Dockerfile no longer builds, so ASVA
+customises it in place, as with NodeGoat: one `Dockerfile` is used by the scan, PR checks, candidate
+rescans and the Kubernetes deploy. ASVA adds or changes:
 
 | File | Purpose |
 |---|---|
-| `target-apps/PyGoat/Dockerfile.asva` | Python 3.11 on Debian Bookworm with the OS build packages the pinned dependencies need; collects static assets |
-| `target-apps/PyGoat/compose.asva.yml` | Local and CI run: port `8001`, readiness check, SQLite data volume only (code runs from the image) |
+| `target-apps/PyGoat/Dockerfile` | Customised in place: Python 3.11 on Debian Bookworm with the OS build packages the pinned dependencies need; collects static assets; app files and `/data` owned by user 1000, which the app runs as |
+| `target-apps/PyGoat/compose.asva.yml` | Local and CI run: port `8001`, runs as user 1000 like the Kubernetes pod, readiness check, SQLite data volume only (code runs from the image) |
 | `target-apps/PyGoat/pygoat/asva_settings.py` | SQLite path under `/data` and non-hashed static storage (upstream CSS refers to optional fonts that are missing) |
 | `target-apps/PyGoat/asva/start.py` | Runs migrations and seeds challenge data at container start, then starts Gunicorn |
 | `target-apps/PyGoat/.dockerignore` | Keeps local databases, environments and results out of the image |
@@ -62,7 +64,7 @@ Validate original application (pygoat-baseline.yml)
   completed scan (1 = findings). Other exit codes, missing reports or malformed SARIF fail
   the scan check. Needs `SNYK_TOKEN`, plus `SNYK_ORG` if set.
 - **Fix.** Downloads the scan results, checks out the exact scanned commit and runs the
-  normaliser, triage and agent. Container batches target `Dockerfile.asva`, and batch names
+  normaliser, triage and agent. Container batches target `Dockerfile`, and batch names
   start with `asva-pygoat`. Each batch becomes one PR against the scanned branch. This stage
   makes paid LLM calls and creates PRs and issues.
 - **Candidate checks.** Builds each PR's exact commit, starts temporary containers and runs

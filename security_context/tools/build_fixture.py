@@ -29,7 +29,7 @@ from pathlib import Path
 FIXTURES = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
 APPS = {  # --app -> (folder under asva/target-apps, files copied for the fix evaluations)
     "nodegoat": ("NodeGoat", ("package.json", "docker-compose.yml")),
-    "pygoat": ("PyGoat", ("requirements.txt", "Dockerfile.asva", "compose.asva.yml")),
+    "pygoat": ("PyGoat", ("requirements.txt", "Dockerfile", "compose.asva.yml")),
 }
 KEEP = ("finding_type", "severity", "score", "has_real_score", "title", "summary", "description",
         "identifiers", "location", "remediation", "ecosystem", "dependency")

@@ -21,9 +21,9 @@ on:
       - 'target-apps/PyGoat/kubernetes/pygoat.yaml.template'
 
 env:
-  # TEMPORARY test: a push deploys PyGoat-a9397b3 (built from Dockerfile at a9397b3, the last image
-  # that served the site) instead of PyGoat-latest. Remove the fallback after the test.
-  IMAGE_SHA: ${{ inputs.image_sha || 'a9397b3' }}
+  IMAGE_SHA: ${{ inputs.image_sha }}
+  # Public https address of the site, so PyGoat accepts form posts through the HTTPS proxy.
+  PYGOAT_BASE_URL: ${{ vars.PYGOAT_BASE_URL }}
 
 jobs:
   deploy:
@@ -55,6 +55,7 @@ jobs:
           sed \
           -e "s|\${IMAGE_TAG}|$IMAGE_TAG|g" \
           -e "s|\${DEPLOY_RUN}|$DEPLOY_RUN|g" \
+          -e "s|\${PYGOAT_BASE_URL}|$PYGOAT_BASE_URL|g" \
           target-apps/PyGoat/kubernetes/pygoat.yaml.template > target-apps/PyGoat/kubernetes/pygoat.yaml
           kubectl apply -f target-apps/PyGoat/kubernetes/pygoat.yaml --validate=false
 

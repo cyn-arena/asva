@@ -81,8 +81,8 @@ jobs:
     secrets: inherit
 
   # Deployment is owned by ST and stays off (run_build_deploy defaults to false).
-  # The image is built from this branch's target-apps/PyGoat/Dockerfile, not from a fix
-  # candidate and not from the Dockerfile.asva that the scan and candidate checks use.
+  # The image is built from this branch's target-apps/PyGoat/Dockerfile, the same file the scan
+  # and candidate checks use. It is not built from a fix candidate.
   build:
     name: PyGoat - Build and publish image
     needs: fix
@@ -110,7 +110,7 @@ jobs:
       app-path: target-apps/PyGoat
       ecosystem: pip
       manifest: requirements.txt
-      container-file: Dockerfile.asva
+      container-file: Dockerfile
       container-mode: application
       python-image: python:3.11-slim-bookworm
       pip-version: 22.0.4

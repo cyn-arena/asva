@@ -60,7 +60,7 @@ def main():
             command([sys.executable, "scripts/pygoat-smoke.py", "--output", str(smoke_file)])
             smoke = json.loads(smoke_file.read_text(encoding="utf-8"))
             checks.extend(smoke["checks"])
-            image_built = command(["docker", "build", "-f", "target-apps/PyGoat/Dockerfile.asva", "-t", "asva-pygoat:scan", f"target-apps/{title}"]) == 0
+            image_built = command(["docker", "build", "-f", "target-apps/PyGoat/Dockerfile", "-t", "asva-pygoat:scan", f"target-apps/{title}"]) == 0
         else:
             previous = json.loads(validation.read_text(encoding="utf-8"))
             started = previous["app_started"]
@@ -87,7 +87,7 @@ def main():
             sca = command(["docker", "run", "--rm", "--entrypoint", "/opt/asva-snyk", "-e", "SNYK_TOKEN", "-e", "SNYK_CFG_ORG",
                            "-v", f"{Path.home() / '.local/bin/snyk'}:/opt/asva-snyk:ro", "-v", f"{scans.resolve()}:/reports",
                            "asva-pygoat:scan", "test", "--file=requirements.txt", "--package-manager=pip", "--command=python", "--sarif-file-output=/reports/sca.sarif.json"])
-            container = command(["snyk", "container", "test", "asva-pygoat:scan", "--file=target-apps/PyGoat/Dockerfile.asva",
+            container = command(["snyk", "container", "test", "asva-pygoat:scan", "--file=target-apps/PyGoat/Dockerfile",
                                  f"--sarif-file-output={scans / 'container.sarif.json'}"])
         complete = all(code in (0, 1) and (scans / f"{kind}.sarif.json").is_file()
                        for kind, code in (("sast", sast), ("sca", sca), ("container", container)))

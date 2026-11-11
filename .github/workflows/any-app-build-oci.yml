@@ -24,7 +24,7 @@ on:
       app_name:
         type: string
         # == Replace App ==
-        default: vulnbank
+        default: nodegoat
         required: false
       work_dir_parent:
         type: string
@@ -39,14 +39,14 @@ jobs:
 
   build-to-oci-registry:
     # == Replace App ==
-    name: Build and Push ${{ inputs.app_name || 'vulnbank' }} to OCI registry
+    name: Build and Push ${{ inputs.app_name || 'nodegoat' }} to OCI registry
     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
       # == Replace App ==
-      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'vulnbank' }}
+      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'nodegoat' }}
       oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
       # == Replace App ==
-      tag-prefix: ${{ inputs.app_name || 'vulnbank' }}
+      tag-prefix: ${{ inputs.app_name || 'nodegoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

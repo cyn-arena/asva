@@ -1,3 +1,5 @@
+# Deploying PyGoat—an intentionally vulnerable web application—using a standard Dockerfile and Kubernetes (k8s) introduces severe security and architectural risks. Because PyGoat contains deliberate remote code execution (RCE), server-side request forgery (SSRF), and injection flaws, hosting it in a cluster requires strict isolation and security measures. The following Kubernetes manifest (pygoat.yaml) is designed to deploy PyGoat in a controlled environment, but it is crucial to understand the implications of running such an application in a production-like setting.
+
 name: NodeGoat - Deploy to Kubernetes
 
 on:
@@ -23,12 +25,12 @@ on:
 
 # Edit according to deployment target 
 env:
-  DEPLOY_TARGET: ${{ inputs.deploy_target || 'blue' }} # blue|green
-  DEPLOY_NODEPORT: ${{ inputs.deploy_nodeport || vars.NODEPORT_BLUE }} # NODE_PORT_BLUE|GREEN
+  DEPLOY_TARGET: ${{ inputs.deploy_target || 'green' }} # blue|green
+  DEPLOY_NODEPORT: ${{ inputs.deploy_nodeport || vars.NODEPORT_GREEN }} # NODE_PORT_BLUE|GREEN
   
 jobs:
   deploy:
-    name: Deploy to Kubernetes (${{ inputs.deploy_target || 'blue' }})
+    name: Deploy to Kubernetes (${{ inputs.deploy_target || 'green' }}) # blue|green
     runs-on:
       ${{ vars.ASVA_K8S_RUNNER }}
 

@@ -47,4 +47,5 @@ EXPOSE 8000
 # HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 #     CMD curl -f http://localhost:8000/healthz || exit 1
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "gthread", "--threads", "4", "--timeout", "600", "pygoat.wsgi"]
+# == With DB Migration ==
+CMD ["sh", "-c", "python manage.py migrate && exec gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-class gthread --threads 4 --timeout 600 pygoat.wsgi"]

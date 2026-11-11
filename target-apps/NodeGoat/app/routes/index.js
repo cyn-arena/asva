@@ -8,6 +8,23 @@ const ResearchHandler = require("./research");
 const tutorialRouter = require("./tutorial");
 const ErrorHandler = require("./error").errorHandler;
 
+const getLearnRedirect = (url) => {
+    switch (url) {
+        case "/research":
+        case "research":
+            return "/research";
+        case "https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras":
+            return "https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras";
+        default:
+            return "/tutorial";
+    }
+};
+
+const redirectTo = (res, target) => {
+    res.writeHead(302, { Location: target });
+    return res.end();
+};
+
 const index = (app, db) => {
 
     "use strict";
@@ -68,8 +85,8 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
+        const target = getLearnRedirect(req.query.url);
+        return redirectTo(res, target);
     });
 
     // Research Page

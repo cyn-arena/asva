@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
+import time
 
 import django_heroku
 
@@ -22,7 +24,52 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _read_secret_key(path):
+    try:
+        with open(path, 'r') as secret_file:
+            return secret_file.read().strip()
+    except OSError:
+        return None
+
+
+def _get_secret_key():
+    for env_name in ('DJANGO_SECRET_KEY', 'SECRET_KEY'):
+        secret_key = os.environ.get(env_name)
+        if secret_key:
+            return secret_key
+
+    secret_key_file = os.environ.get(
+        'DJANGO_SECRET_KEY_FILE',
+        os.path.join(BASE_DIR, '.secret_key'),
+    )
+    stored_key = _read_secret_key(secret_key_file)
+    if stored_key:
+        return stored_key
+
+    generated_key = secrets.token_urlsafe(64)
+    try:
+        secret_dir = os.path.dirname(secret_key_file)
+        if secret_dir:
+            os.makedirs(secret_dir, exist_ok=True)
+        fd = os.open(secret_key_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, 'w') as secret_file:
+            secret_file.write(generated_key)
+            secret_file.flush()
+            os.fsync(secret_file.fileno())
+        return generated_key
+    except FileExistsError:
+        for _ in range(20):
+            stored_key = _read_secret_key(secret_key_file)
+            if stored_key:
+                return stored_key
+            time.sleep(0.05)
+    except OSError:
+        pass
+
+    return generated_key
+
+
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

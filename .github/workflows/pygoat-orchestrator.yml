@@ -27,6 +27,13 @@ on:
         description: Original Actions run ID (required only for an after-fix run)
         type: string
         default: ''
+      run_build_deploy:
+        description: >-
+          Build and publish this branch's application image, then deploy it to Kubernetes.
+          Build starts after fix generation, alongside candidate validation; fix PRs are
+          not merged by this option. Available only for manual runs.
+        type: boolean
+        default: false # Set to true when deployment is safe
 
 permissions:
   contents: write
@@ -72,6 +79,24 @@ jobs:
     with:
       prs: ${{ needs.fix.outputs.prs }}
     secrets: inherit
+
+  # Deployment is owned by ST and stays off (run_build_deploy defaults to false).
+  # The image is built from this branch's target-apps/PyGoat/Dockerfile, not from a fix
+  # candidate and not from the Dockerfile.asva that the scan and candidate checks use.
+  build:
+    name: PyGoat - Build and publish image
+    needs: fix
+    if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
+    uses: ./.github/workflows/any-app-build-oci.yml
+    with:
+      app_name: PyGoat # pygoat.yaml pulls PyGoat-latest
+    secrets: inherit
+
+  deploy:
+    name: PyGoat - Deploy to Kubernetes
+    needs: build
+    if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
+    uses: ./.github/workflows/pygoat-deploy.yml
 
   after-fix:
     name: PyGoat - Scan each independent candidate

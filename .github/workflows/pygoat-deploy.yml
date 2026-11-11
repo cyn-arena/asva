@@ -1,0 +1,48 @@
+# PyGoat is intentionally vulnerable. Deploy it only to an isolated cluster.
+
+name: PyGoat - Deploy to Kubernetes
+
+on:
+  # workflow_dispatch:
+  workflow_call:
+  push:
+    branches:
+    #  - rel/26.11
+       - k8s/deploy
+    paths:
+      - '.github/workflows/pygoat-deploy.yml'
+      - 'target-apps/PyGoat/kubernetes/pygoat.yaml'
+
+# Must match the Deployment in target-apps/PyGoat/kubernetes/pygoat.yaml
+env:
+  K8S_NAMESPACE: dvapps
+  K8S_DEPLOYMENT: dep-pygoat
+
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on:
+      ${{ vars.ASVA_K8S_RUNNER }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            target-apps/PyGoat/kubernetes
+          sparse-checkout-cone-mode: true
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+           version: 'latest'
+
+      - name: Apply PyGoat Kubernetes resources
+        run: kubectl apply -f target-apps/PyGoat/kubernetes/pygoat.yaml --validate=false
+
+      # The manifest pulls the moving PyGoat-latest tag, so an unchanged manifest does not
+      # start a new pod. Restart to pull the image just built, and fail if it never becomes ready.
+      - name: Roll out the latest image
+        run: |
+          kubectl rollout restart "deployment/$K8S_DEPLOYMENT" -n "$K8S_NAMESPACE"
+          kubectl rollout status "deployment/$K8S_DEPLOYMENT" -n "$K8S_NAMESPACE" --timeout=180s

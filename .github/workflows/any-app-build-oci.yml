@@ -34,6 +34,12 @@ on:
         type: string
         default: dvapps
         required: false
+      tag_prefix:
+        # Image tag prefix. Leave empty to use app_name. Set it when the app's Kubernetes
+        # manifest pulls a different prefix (NodeGoat's pulls dvng-latest).
+        type: string
+        default: ''
+        required: false
 
 jobs:
 
@@ -46,7 +52,7 @@ jobs:
       working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
       oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
       # == Replace App ==
-      tag-prefix: ${{ inputs.app_name || 'PyGoat' }}
+      tag-prefix: ${{ inputs.tag_prefix || inputs.app_name || 'PyGoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

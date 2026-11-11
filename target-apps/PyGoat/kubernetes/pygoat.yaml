@@ -1,0 +1,85 @@
+# Deploying PyGoat—an intentionally vulnerable web application—using a standard Dockerfile and Kubernetes (k8s) introduces severe security and architectural risks. Because PyGoat contains deliberate remote code execution (RCE), server-side request forgery (SSRF), and injection flaws, hosting it in a cluster requires strict isolation and security measures. The following Kubernetes manifest (pygoat.yaml) is designed to deploy PyGoat in a controlled environment, but it is crucial to understand the implications of running such an application in a production-like setting.
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: svc-pygoat
+  namespace: dvapps
+  labels:
+    app: pygoat
+
+spec:
+  selector:
+    app: pygoat
+
+  type: NodePort
+
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 32007
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: dep-pygoat
+  namespace: dvapps
+  labels:
+    app: pygoat
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pygoat
+
+  template:
+    metadata:
+      labels:
+        app: pygoat
+
+    spec:
+      automountServiceAccountToken: false
+
+      imagePullSecrets:
+      - name: sec-docker-registry
+
+      containers:
+      - name: pygoat
+        image: cyntillate/dvapps:PyGoat-latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          # PyGoat requires write access for its functionality.
+          readOnlyRootFilesystem: false 
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          capabilities:
+            drop:
+              - ALL
+
+        resources:
+          limits:
+            memory: 300Mi
+            cpu: 200m
+          requests:
+            memory: 200Mi
+            cpu: 100m
+
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+
+      volumes:
+        - name: tmp
+          emptyDir: {}

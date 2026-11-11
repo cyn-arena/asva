@@ -1,4 +1,6 @@
-FROM python:3.9-slim
+# VulnBank is an intentionally vulnerable application, so any environment running it should be treated as compromised by design.
+
+FROM python:3.11-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1
 

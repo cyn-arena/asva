@@ -1,5 +1,6 @@
-# This Workflow is one of 2 ways to build + push to OCI registry for any app in target-apps folder.
-# The other way is to call cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main directly.
+# Deploying an intentionally vulnerable application—using a standard Dockerfile and Kubernetes (k8s) introduces severe security and architectural risks. Hosting it in a cluster requires strict isolation and security measures.
+
+# This Workflow is one of 2 ways to build + push to OCI registry for any app in target-apps folder.  The other way is to call cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main directly.
 
 name: Generic - Build & Push to OCI Registry
 
@@ -8,7 +9,7 @@ on:
   push:
     branches:
     #  - feat/nodegoat
-    #  - rel/26.07
+    #  - rel/26.11
     #  - feat/app-types
        - k8s/deploy
 
@@ -23,7 +24,7 @@ on:
       app_name:
         type: string
         # == Replace App ==
-        default: PyGoat
+        default: vulnbank
         required: false
       work_dir_parent:
         type: string
@@ -37,14 +38,15 @@ on:
 jobs:
 
   build-to-oci-registry:
-    name: Build and Push ${{ inputs.app_name || 'PyGoat' }} to OCI registry
+    # == Replace App ==
+    name: Build and Push ${{ inputs.app_name || 'vulnbank' }} to OCI registry
     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
       # == Replace App ==
-      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
+      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'vulnbank' }}
       oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
       # == Replace App ==
-      tag-prefix: ${{ inputs.app_name || 'PyGoat' }}
+      tag-prefix: ${{ inputs.app_name || 'vulnbank' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

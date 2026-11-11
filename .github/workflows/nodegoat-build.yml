@@ -6,9 +6,13 @@ on:
     branches:
       - feat/nodegoat
       - rel/26.07
+      # Temporary, for deploy testing on this branch: builds dvng-latest when NodeGoat's app or
+      # Dockerfile changes. Comment out before merging into rel/26.11.
+      - k8s/deploy
     paths:
       - 'target-apps/NodeGoat/Dockerfile'
-    #  - '.github/workflows/nodegoat-build.yml'
+      - 'target-apps/NodeGoat/app/**'
+      - '.github/workflows/nodegoat-build.yml'
   workflow_call:
 
 jobs:

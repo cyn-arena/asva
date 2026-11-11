@@ -17,7 +17,8 @@ RUN python -m pip install --no-cache-dir pip==22.0.4
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+# Owned by user 1000, which the Kubernetes pod runs as: some labs write files under /app.
+COPY --chown=1000:1000 . /app/
 EXPOSE 8000
 
 RUN python3 /app/manage.py collectstatic --noinput

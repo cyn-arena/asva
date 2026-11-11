@@ -1,0 +1,59 @@
+# Builds the PyGoat image from Dockerfile.asva, the same file the pipeline scans and validates,
+# so the deployed image is the one ASVA checked. Peter's shared build (any-app-build-oci.yml)
+# always uses the file named Dockerfile, so PyGoat builds here instead.
+
+name: PyGoat - Build and publish image
+
+on:
+  workflow_call:
+  push:
+    branches:
+    #  - rel/26.11
+       - k8s/deploy
+    paths:
+      - 'target-apps/PyGoat/**'
+      - '.github/workflows/pygoat-build.yml'
+      - '.github/workflows/pygoat-deploy.yml'
+
+permissions:
+  contents: read
+
+env:
+  OCI_REGISTRY: docker.io
+  OCI_REPO: dvapps
+  TAG_PREFIX: PyGoat
+
+jobs:
+  build:
+    name: Build image from Dockerfile.asva and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      # Same tags as the shared build: PyGoat-<short sha> and PyGoat-latest.
+      - name: Build and push image
+        env:
+          OCI_REG_ID: ${{ secrets.OCI_REG_ID }}
+          OCI_REG_TOKEN: ${{ secrets.OCI_REG_TOKEN }}
+        run: |
+          image="$OCI_REGISTRY/$OCI_REG_ID/$OCI_REPO"
+          sha_tag="$TAG_PREFIX-${GITHUB_SHA::7}"
+          echo "$OCI_REG_TOKEN" | podman login "$OCI_REGISTRY" -u "$OCI_REG_ID" --password-stdin
+          podman build -f target-apps/PyGoat/Dockerfile.asva \
+            -t "$image:$sha_tag" -t "$image:$TAG_PREFIX-latest" target-apps/PyGoat
+          podman push "$image:$sha_tag"
+          podman push "$image:$TAG_PREFIX-latest"
+          echo "Pushed $OCI_REPO:$sha_tag and $OCI_REPO:$TAG_PREFIX-latest"
+
+  # On a push, deploy the image this run just built. In a pipeline run the orchestrator
+  # calls the deploy itself, so this job is skipped there.
+  deploy:
+    name: Deploy the image just built
+    needs: build
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/pygoat-deploy.yml
+    with:
+      image_sha: ${{ github.sha }}

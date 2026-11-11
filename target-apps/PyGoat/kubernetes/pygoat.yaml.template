@@ -63,6 +63,16 @@ spec:
       - name: pygoat
         image: cyntillate/dvapps:PyGoat-${IMAGE_TAG}
         imagePullPolicy: Always
+        # Dockerfile.asva's entrypoint (asva/start.py) migrates and loads the challenges, then
+        # runs this. Fewer workers than the image default, to fit the memory limit below.
+        args: ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "gthread", "--threads", "4", "--timeout", "600", "pygoat.wsgi"]
+        env:
+          - name: PYGOAT_DB_PATH
+            value: /data/db.sqlite3
+          # Public https address of the site (repository variable PYGOAT_BASE_URL), so Django
+          # accepts form posts from it. Empty if the variable is not set.
+          - name: PYGOAT_CSRF_TRUSTED_ORIGINS
+            value: "${PYGOAT_BASE_URL}"
         ports:
         - containerPort: 8000
 
@@ -88,7 +98,12 @@ spec:
         volumeMounts:
           - name: tmp
             mountPath: /tmp
+          # SQLite database. Empty on every new pod, like before.
+          - name: data
+            mountPath: /data
 
       volumes:
         - name: tmp
+          emptyDir: {}
+        - name: data
           emptyDir: {}

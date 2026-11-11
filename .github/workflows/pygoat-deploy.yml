@@ -12,16 +12,12 @@ on:
         type: string
         default: ''
         required: false
-  push:
-    branches:
-    #  - rel/26.11
-       - k8s/deploy
-    paths:
-      - '.github/workflows/pygoat-deploy.yml'
-      - 'target-apps/PyGoat/kubernetes/pygoat.yaml.template'
+  # No push trigger of its own: a push to target-apps/PyGoat runs pygoat-build.yml, which
+  # deploys after the image is built, so the deploy never pulls an image still being built.
 
 env:
   IMAGE_SHA: ${{ inputs.image_sha }}
+  PYGOAT_BASE_URL: ${{ vars.PYGOAT_BASE_URL }}
 
 jobs:
   deploy:
@@ -53,6 +49,7 @@ jobs:
           sed \
           -e "s|\${IMAGE_TAG}|$IMAGE_TAG|g" \
           -e "s|\${DEPLOY_RUN}|$DEPLOY_RUN|g" \
+          -e "s|\${PYGOAT_BASE_URL}|$PYGOAT_BASE_URL|g" \
           target-apps/PyGoat/kubernetes/pygoat.yaml.template > target-apps/PyGoat/kubernetes/pygoat.yaml
           kubectl apply -f target-apps/PyGoat/kubernetes/pygoat.yaml --validate=false
 

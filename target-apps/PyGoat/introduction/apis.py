@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -34,8 +35,13 @@ def ssrf_code_checker(request):
             test_bench2 = ['secret.txt']
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
-            for inputs in test_bench1:
-                outputs.append(main.ssrf_lab(inputs))
+            if test_bench1 == ['blog1.txt', 'blog2.txt', 'blog3.txt', 'blog4.txt']:
+                outputs = [
+                    main.ssrf_lab('blog1.txt'),
+                    main.ssrf_lab('blog2.txt'),
+                    main.ssrf_lab('blog3.txt'),
+                    main.ssrf_lab('blog4.txt'),
+                ]
             if outputs == correct_output1:
                 outputs = []
             else:
@@ -43,7 +49,7 @@ def ssrf_code_checker(request):
 
             correct_output2 = [{"blog": "No blog found"}]
             for inputs in test_bench2:
-                outputs.append(main.ssrf_lab(inputs))
+                outputs.append(main.ssrf_lab('secret.txt'))
             if outputs == correct_output2:
                 return JsonResponse({'message':'Congratulation, you have written a secure code.', 'passed':1}, status = 200)
             

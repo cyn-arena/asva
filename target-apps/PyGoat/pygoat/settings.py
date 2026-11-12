@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
 
 import django_heroku
 
@@ -22,7 +23,30 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _get_secret_key():
+    secret_key = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_key_file = os.path.join(BASE_DIR, '.secret_key')
+    try:
+        with open(secret_key_file, 'r') as f:
+            secret_key = f.read().strip()
+        if secret_key:
+            return secret_key
+    except OSError:
+        pass
+
+    secret_key = secrets.token_urlsafe(64)
+    try:
+        with open(secret_key_file, 'w') as f:
+            f.write(secret_key)
+    except OSError:
+        pass
+    return secret_key
+
+
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 
@@ -168,5 +192,5 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SECRET_COOKIE_KEY = "PYGOAT"
+SECRET_COOKIE_KEY = os.environ.get('SECRET_COOKIE_KEY', SECRET_KEY)
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000","http://0.0.0.0:8000","http://172.16.189.10"]

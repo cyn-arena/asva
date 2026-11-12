@@ -40,6 +40,8 @@ def main():
     client = urllib.request.build_opener(
         urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar())
     )
+    # The live site's proxy answers 403 to Python's default User-Agent.
+    client.addheaders = [("User-Agent", "Mozilla/5.0 (compatible; ASVA-smoke/1.0)")]
 
     def request(path, data=None):
         payload = urllib.parse.urlencode(data).encode() if data is not None else None

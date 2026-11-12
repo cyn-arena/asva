@@ -1,9 +1,14 @@
+import ast
 import datetime
+import operator
+import os
 import re
+import shlex
 import subprocess
 from hashlib import md5
 
 import jwt
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -11,14 +16,88 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import CSRF_user_tbl
 from .views import authentication_decorator
 
-# import os
-
-## Mitre top1 | CWE:787
-
 # target zone
 FLAG = "NOT_SUPPOSED_TO_BE_ACCESSED"
-
 # target zone end
+
+_MAX_EXPRESSION_LENGTH = 512
+_ALLOWED_BINARY_OPS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+_ALLOWED_UNARY_OPS = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
+_SAFE_NMAP_TARGET_RE = re.compile(r'^(?![.-])[A-Za-z0-9._:/-]{1,253}$')
+
+
+def _get_jwt_secret():
+    secret = os.environ.get('MITRE_JWT_SECRET') or os.environ.get('DJANGO_SECRET_KEY')
+    if secret:
+        return secret
+    return settings.SECRET_KEY
+
+
+def _evaluate_ast_node(node):
+    if isinstance(node, ast.Constant):
+        if isinstance(node.value, (int, float, bool)):
+            return node.value
+        raise ValueError('Unsupported expression')
+
+    if isinstance(node, ast.BinOp):
+        op_type = type(node.op)
+        if op_type not in _ALLOWED_BINARY_OPS:
+            raise ValueError('Unsupported expression')
+        left = _evaluate_ast_node(node.left)
+        right = _evaluate_ast_node(node.right)
+        if op_type is ast.Pow and abs(right) > 1000:
+            raise ValueError('Exponent too large')
+        return _ALLOWED_BINARY_OPS[op_type](left, right)
+
+    if isinstance(node, ast.UnaryOp):
+        op_type = type(node.op)
+        if op_type not in _ALLOWED_UNARY_OPS:
+            raise ValueError('Unsupported expression')
+        return _ALLOWED_UNARY_OPS[op_type](_evaluate_ast_node(node.operand))
+
+    raise ValueError('Unsupported expression')
+
+
+def _safe_math_expression(expression):
+    if not isinstance(expression, str) or len(expression) > _MAX_EXPRESSION_LENGTH:
+        raise ValueError('Invalid expression')
+    try:
+        parsed = ast.parse(expression, mode='eval')
+    except SyntaxError:
+        raise ValueError('Invalid expression')
+    return _evaluate_ast_node(parsed.body)
+
+
+def _is_safe_nmap_target(target):
+    return bool(target and _SAFE_NMAP_TARGET_RE.fullmatch(target))
+
+
+def command_out(command):
+    if isinstance(command, str):
+        command = shlex.split(command)
+    result = subprocess.run(
+        command,
+        shell=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    return result.stdout, result.stderr
+
+
+def _run_nmap(target):
+    return command_out(["nmap", target])
 
 
 @authentication_decorator
@@ -161,16 +240,16 @@ def csrf_lab_login(request):
         password = md5(password.encode()).hexdigest()
         User = CSRF_user_tbl.objects.filter(username=username, password=password)
         if User:
-            payload ={
+            payload = {
                 'username': username,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=300),
                 'iat': datetime.datetime.utcnow()
             }
-            cookie = jwt.encode(payload, 'csrf_vulneribility', algorithm='HS256')
+            cookie = jwt.encode(payload, _get_jwt_secret(), algorithm='HS256')
             response = redirect("/mitre/9/lab/transaction")
             response.set_cookie('auth_cookiee', cookie)
             return response
-        else :
+        else:
             return redirect('/mitre/9/lab/login')
 
 @authentication_decorator
@@ -179,19 +258,19 @@ def csrf_transfer_monei(request):
     if request.method == 'GET':
         try:
             cookie = request.COOKIES['auth_cookiee']
-            payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+            payload = jwt.decode(cookie, _get_jwt_secret(), algorithms=['HS256'])
             username = payload['username']
             User = CSRF_user_tbl.objects.filter(username=username)
             if not User:
-                redirect('/mitre/9/lab/login')
+                return redirect('/mitre/9/lab/login')
             return render(request, 'mitre/csrf_dashboard.html', {'balance': User[0].balance})
         except:
             return redirect('/mitre/9/lab/login')
 
-def csrf_transfer_monei_api(request,recipent,amount):
+def csrf_transfer_monei_api(request, recipent, amount):
     if request.method == "GET":
         cookie = request.COOKIES['auth_cookiee']
-        payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+        payload = jwt.decode(cookie, _get_jwt_secret(), algorithms=['HS256'])
         username = payload['username']
         User = CSRF_user_tbl.objects.filter(username=username)
         if not User:
@@ -205,9 +284,9 @@ def csrf_transfer_monei_api(request,recipent,amount):
                     recipent.save()
                     User[0].balance = User[0].balance - int(amount)
                     User[0].save()
-        return redirect('/mitre/9/lab/transaction') 
+        return redirect('/mitre/9/lab/transaction')
     else:
-        return redirect ('/mitre/9/lab/transaction')
+        return redirect('/mitre/9/lab/transaction')
 
 
 # @authentication_decorator
@@ -215,7 +294,10 @@ def csrf_transfer_monei_api(request,recipent,amount):
 def mitre_lab_25_api(request):
     if request.method == "POST":
         expression = request.POST.get('expression')
-        result = eval(expression)
+        try:
+            result = _safe_math_expression(expression)
+        except (ValueError, TypeError, ZeroDivisionError, OverflowError, RecursionError):
+            return JsonResponse({'error': 'Invalid expression'}, status=400)
         return JsonResponse({'result': result})
     else:
         return redirect('/mitre/25/lab/')
@@ -229,19 +311,17 @@ def mitre_lab_25(request):
 def mitre_lab_17(request):
     return render(request, 'mitre/mitre_lab_17.html')
 
-def command_out(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return process.communicate()
-    
 
 @csrf_exempt
 def mitre_lab_17_api(request):
     if request.method == "POST":
-        ip = request.POST.get('ip')
-        command = "nmap " + ip 
-        res, err = command_out(command)
+        ip = request.POST.get('ip', '').strip()
+        if not _is_safe_nmap_target(ip):
+            return JsonResponse({'error': 'Invalid target'}, status=400)
+        res, err = _run_nmap(ip)
         res = res.decode()
         err = err.decode()
         pattern = "STATE SERVICE.*\\n\\n"
-        ports = re.findall(pattern, res,re.DOTALL)[0][14:-2].split('\n')
+        matches = re.findall(pattern, res, re.DOTALL)
+        ports = matches[0][14:-2].split('\n') if matches else []
         return JsonResponse({'raw_res': str(res), 'raw_err': str(err), 'ports': ports})

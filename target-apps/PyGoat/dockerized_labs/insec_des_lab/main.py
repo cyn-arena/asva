@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request
 import pickle
 import base64
+import io
 from dataclasses import dataclass
 
 app = Flask(__name__)
@@ -13,6 +14,12 @@ class User:
     def __reduce__(self):
         # Intentionally vulnerable __reduce__ method to match PyGoat
         return (User, (self.username, self.is_admin))
+
+class RestrictedUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if name == "User":
+            return User
+        raise pickle.UnpicklingError(f"global '{module}.{name}' is forbidden")
 
 @app.route('/')
 def index():
@@ -32,8 +39,8 @@ def deserialize_data():
     try:
         serialized_data = request.form.get('serialized_data', '')
         decoded_data = base64.b64decode(serialized_data)
-        # Intentionally vulnerable deserialization, matching PyGoat
-        user = pickle.loads(decoded_data)
+        # Safely deserialize with a restricted unpickler
+        user = RestrictedUnpickler(io.BytesIO(decoded_data)).load()
         
         if isinstance(user, User):
             if user.is_admin:
@@ -49,5 +56,3 @@ def deserialize_data():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
-
-    

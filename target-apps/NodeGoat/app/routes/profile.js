@@ -49,17 +49,20 @@ function ProfileHandler(db) {
             bankRouting
         } = req.body;
 
-        // Fix for Section: ReDoS attack
-        // The following regexPattern that is used to validate the bankRouting number is insecure and vulnerable to
-        // catastrophic backtracking which means that specific type of input may cause it to consume all CPU resources
-        // with an exponential time until it completes
-        // --
-        // The Fix: Instead of using greedy quantifiers the same regex will work if we omit the second quantifier +
-        // const regexPattern = /([0-9]+)\#/;
-        const regexPattern = /([0-9]+)+\#/;
-        // Allow only numbers with a suffix of the letter #, for example: 'XXXXXX#'
-        const testComplyWithRequirements = regexPattern.test(bankRouting);
-        // if the regex test fails we do not allow saving
+        let testComplyWithRequirements = typeof bankRouting === "string" &&
+            bankRouting.length >= 2 &&
+            bankRouting.charAt(bankRouting.length - 1) === "#";
+
+        if (testComplyWithRequirements) {
+            for (let i = 0; i < bankRouting.length - 1; i++) {
+                const code = bankRouting.charCodeAt(i);
+                if (code < 48 || code > 57) {
+                    testComplyWithRequirements = false;
+                    break;
+                }
+            }
+        }
+
         if (testComplyWithRequirements !== true) {
             const firstNameSafeString = firstName;
             return res.render("profile", {

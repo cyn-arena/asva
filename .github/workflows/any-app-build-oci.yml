@@ -15,14 +15,13 @@ on:
   push:
     branches:
     #  - feat/nodegoat
-    #  - rel/26.11
+       - rel/26.11
     #  - feat/app-types
-       - k8s/deploy
+    #  - k8s/deploy
 
     paths:
-      # A push has no inputs, so it always builds PyGoat: watch only PyGoat's files. Temporary,
-      # like nodegoat-build.yml's trigger (which covers NodeGoat); comment out before merging
-      # into rel/26.11.
+      # A push has no inputs, so it always builds PyGoat: watch only PyGoat's files.
+      # NodeGoat's are covered by nodegoat-build.yml.
       - '.github/workflows/any-app-build-oci.yml'
       - 'target-apps/PyGoat/**'
 

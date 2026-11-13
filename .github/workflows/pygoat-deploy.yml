@@ -21,8 +21,8 @@ on:
         required: false
   push:
     branches:
-    #  - rel/26.11
-       - k8s/deploy
+       - rel/26.11
+    #  - k8s/deploy
     paths:
       - '.github/workflows/pygoat-deploy.yml'
       - 'target-apps/PyGoat/kubernetes/pygoat.yaml.template'

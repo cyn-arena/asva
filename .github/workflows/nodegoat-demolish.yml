@@ -5,7 +5,8 @@ on:
   push:
     branches:
       - feat/nodegoat
-      - rel/26.07 
+      - rel/26.07
+      - k8s/deploy 
     paths:
       - '.github/workflows/nodegoat-demolish.yml'
 

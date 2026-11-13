@@ -6,9 +6,13 @@ on:
     branches:
       - feat/nodegoat
       - rel/26.07
+      # Builds dvng-latest when NodeGoat's app or Dockerfile changes, e.g. a merged fix PR.
+      # Deploy is started by hand (nodegoat-deploy.yml).
+      - rel/26.11
     paths:
       - 'target-apps/NodeGoat/Dockerfile'
-    #  - '.github/workflows/nodegoat-build.yml'
+      - 'target-apps/NodeGoat/app/**'
+      - '.github/workflows/nodegoat-build.yml'
   workflow_call:
 
 jobs:

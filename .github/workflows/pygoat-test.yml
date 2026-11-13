@@ -4,9 +4,25 @@ on:
   workflow_call:
     inputs:
       stage:
-        description: "Test tier; currently supports 'unit' for ASVA components"
+        description: "Test tier: 'unit' (offline ASVA components) or 'e2e' (smoke checks against the deployed site)"
         type: string
         required: true
+      base_url:
+        description: "Deployed PyGoat address for the e2e stage (defaults to the PYGOAT_BASE_URL repository variable)"
+        type: string
+        required: false
+  # Manual run of one stage, e.g. the e2e checks against the live site without a full pipeline.
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: Test tier to run
+        type: choice
+        options: [e2e, unit]
+        default: e2e
+      base_url:
+        description: Deployed PyGoat address (leave empty to use the PYGOAT_BASE_URL repository variable)
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -30,3 +46,40 @@ jobs:
 
       - name: Test ASVA components
         run: pytest -m unit -q
+
+  # The PR check's smoke script, pointed at the deployed site: login page, register, logout,
+  # log in, a lab page and static assets. Standard library only, so nothing to install.
+  # Each run registers one throwaway account; the site's database resets on every deploy.
+  e2e:
+    name: Deployed application E2E tests
+    if: inputs.stage == 'e2e'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_URL: ${{ inputs.base_url || vars.PYGOAT_BASE_URL }}
+      SOURCE_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test deployed application functionality
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            echo "::error::No site address: set base_url or the PYGOAT_BASE_URL repository variable"
+            exit 1
+          fi
+          python scripts/pygoat-smoke.py --base-url "$BASE_URL" --output asva-results/e2e/pygoat-e2e.json
+
+      - name: Save e2e evidence even after failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pygoat-e2e-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asva-results/e2e/
+          retention-days: 14
+          if-no-files-found: warn

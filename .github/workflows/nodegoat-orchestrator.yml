@@ -80,7 +80,12 @@ jobs:
     name: NodeGoat - Build and publish image
     needs: fix
     if: success() && github.event_name == 'workflow_dispatch' && inputs.run_build_deploy != false
-    uses: ./.github/workflows/nodegoat-build.yml
+    # Shared build. If it misbehaves, switch back to ./.github/workflows/nodegoat-build.yml
+    # (no inputs needed).
+    uses: ./.github/workflows/any-app-build-oci.yml
+    with:
+      app_name: NodeGoat
+      tag_prefix: dvng # dvng.yaml.template pulls dvng-latest
     secrets: inherit
 
   deploy:
@@ -91,6 +96,7 @@ jobs:
     with:
       deploy_target: green
       deploy_nodeport: ${{ vars.NODEPORT_GREEN }}
+      image_sha: ${{ github.sha }} # the build above tagged this run's image dvng-<short sha>
 
   test-e2e:
     name: NodeGoat - Test deployed application

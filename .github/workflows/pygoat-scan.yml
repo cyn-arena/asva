@@ -33,7 +33,7 @@ jobs:
           INSTALL_DIR="$HOME/.local/bin" bash scripts/install-snyk.sh
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Build the actual PyGoat application image
-        run: docker build -f target-apps/PyGoat/Dockerfile.asva -t asva-pygoat:scan target-apps/PyGoat
+        run: docker build -f target-apps/PyGoat/Dockerfile -t asva-pygoat:scan target-apps/PyGoat
       - name: Scan Python source (SAST)
         id: sast
         continue-on-error: true
@@ -68,7 +68,7 @@ jobs:
         run: |
           set +e
           snyk container test asva-pygoat:scan \
-            --file=target-apps/PyGoat/Dockerfile.asva \
+            --file=target-apps/PyGoat/Dockerfile \
             --sarif-file-output=asva-results/scan/container.sarif.json
           rc=$?
           echo "exit_code=$rc" >> "$GITHUB_OUTPUT"

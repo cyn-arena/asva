@@ -1,0 +1,118 @@
+# Deploying PyGoat—an intentionally vulnerable web application—using a standard Dockerfile and Kubernetes (k8s) introduces severe security and architectural risks. Because PyGoat contains deliberate remote code execution (RCE), server-side request forgery (SSRF), and injection flaws, hosting it in a cluster requires strict isolation and security measures. The following Kubernetes manifest (pygoat.yaml) is designed to deploy PyGoat in a controlled environment, but it is crucial to understand the implications of running such an application in a production-like setting.
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: svc-pygoat
+  namespace: dvapps
+  labels:
+    app: pygoat
+
+spec:
+  selector:
+    app: pygoat
+
+  type: NodePort
+
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 32007
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: dep-pygoat
+  namespace: dvapps
+  labels:
+    app: pygoat
+
+spec:
+  replicas: 1
+
+  # One pod with a local SQLite DB: stop the old pod before starting the new one, so a
+  # deploy never needs room for two.
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app: pygoat
+
+  template:
+    metadata:
+      labels:
+        app: pygoat
+      # Filled in by pygoat-deploy.yml. A new value on every deploy changes the pod template,
+      # so kubectl apply always rolls out a new pod (and pulls the image again).
+      annotations:
+        asva/deploy-run: "${DEPLOY_RUN}"
+
+    spec:
+      automountServiceAccountToken: false
+
+      imagePullSecrets:
+      - name: sec-docker-registry
+
+      containers:
+      - name: pygoat
+        image: cyntillate/dvapps:PyGoat-${IMAGE_TAG}
+        imagePullPolicy: Always
+        # The image's entrypoint (asva/start.py) migrates and loads the challenges, then runs this.
+        # Fewer workers than the image default, to fit the memory limit below.
+        args: ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "gthread", "--threads", "4", "--timeout", "600", "pygoat.wsgi"]
+        env:
+          - name: PYGOAT_DB_PATH
+            value: /data/db.sqlite3
+          # Public https address of the site (repository variable PYGOAT_BASE_URL), so Django
+          # accepts form posts from it. Empty if the variable is not set.
+          - name: PYGOAT_CSRF_TRUSTED_ORIGINS
+            value: "${PYGOAT_BASE_URL}"
+        ports:
+        - containerPort: 8000
+        # Ready only once the login page answers, so a pod that fails to start fails the deploy
+        # (pygoat-deploy.yml waits for this) instead of reporting success while the site is down.
+        readinessProbe:
+          httpGet:
+            path: /login/
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          # PyGoat requires write access for its functionality.
+          readOnlyRootFilesystem: false 
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          capabilities:
+            drop:
+              - ALL
+
+        resources:
+          limits:
+            memory: 300Mi
+            cpu: 200m
+          requests:
+            memory: 200Mi
+            cpu: 100m
+
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          # SQLite database. Empty on every new pod.
+          - name: data
+            mountPath: /data
+
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          emptyDir: {}

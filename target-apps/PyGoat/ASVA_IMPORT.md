@@ -55,6 +55,10 @@ docker build --progress=plain -f Dockerfile.asva -t asva-pygoat:baseline .
 
 The first compatibility image built and ran successfully in the user's local test. Registration, login, logout, lab navigation and restart persistence were checked manually. The ASVA configuration has since moved migrations to runtime and added a SQLite volume, readiness and CI validation; see `docs/pygoat.md` at the ASVA repository root. Use `compose.asva.yml` for that configuration. The upstream `docker-compose.yml` still selects the original Dockerfile.
 
+## Single Dockerfile (11 November 2026)
+
+`Dockerfile.asva` has been folded into `Dockerfile`, which ASVA now customises in place, as with NodeGoat. The scan, PR checks, candidate rescans and the Kubernetes deploy all build that one file, so the deployed image is the one ASVA checked. The original upstream file is recoverable from the archive recorded under Source provenance. The app runs as user 1000 (set by `compose.asva.yml` and the Kubernetes pod), so the image gives that user `/app`, its contents and `/data`: at runtime PyGoat creates `app.log` in `/app` and lab files under it. The sections above describe the state at import.
+
 Prepare a minimal ASVA local container configuration addressing the findings above, then build from this imported source and verify startup, migrations, functional checks and cleanup. Record the tested source revision and image identity. Do not treat a pulled upstream image as evidence that this checkout builds.
 
 ## References

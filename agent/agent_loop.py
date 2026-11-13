@@ -216,7 +216,7 @@ def build_fix_prompt(
         return f"""You are fixing a {app_label()} application. File: {file_path}
 Fix only the reported vulnerabilities and preserve intended functionality and lab routes.
 For requirements.txt, use exactly the versions listed in the findings and no other new major version; preserve unrelated pins.
-For Dockerfile.asva, change the vulnerable base image or package instructions, preserving startup.
+For the Dockerfile, change the vulnerable base image or package instructions, preserving startup.
 Do not remove authentication, CSRF protection, tests or application features to silence findings.
 Findings: {json.dumps(_python_findings(findings, fix_type), indent=2)}
 {ctx_block}Current file:

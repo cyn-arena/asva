@@ -67,9 +67,22 @@ const index = (app, db) => {
     app.post("/memos", isLoggedIn, memosHandler.addMemos);
 
     // Handle redirect for learning resources link
-    app.get("/learn", isLoggedIn, (req, res) => {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
+    const resolveLearnRedirect = (req, res, next) => {
+        const requestedUrl = typeof req.query.url === "string" ? req.query.url : "";
+
+        if (requestedUrl === "/research" || requestedUrl === "research") {
+            res.locals.learnRedirect = "/research";
+        } else if (requestedUrl === "https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras") {
+            res.locals.learnRedirect = "https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras";
+        } else {
+            res.locals.learnRedirect = "/tutorial";
+        }
+
+        next();
+    };
+
+    app.get("/learn", isLoggedIn, resolveLearnRedirect, (req, res) => {
+        return res.redirect(302, res.locals.learnRedirect);
     });
 
     // Research Page

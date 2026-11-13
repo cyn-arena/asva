@@ -3,7 +3,14 @@
 name: PyGoat - Deploy to Kubernetes
 
 on:
-  # workflow_dispatch:
+  # Manual redeploy, e.g. after a reviewed fix is merged and its image is built:
+  # gh workflow run pygoat-deploy.yml --ref <branch>
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: Commit whose image to deploy (leave empty for PyGoat-latest)
+        type: string
+        default: ''
   workflow_call:
     inputs:
       image_sha:

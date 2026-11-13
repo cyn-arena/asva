@@ -20,10 +20,11 @@ on:
        - k8s/deploy
 
     paths:
+      # A push has no inputs, so it always builds PyGoat: watch only PyGoat's files. Temporary,
+      # like nodegoat-build.yml's trigger (which covers NodeGoat); comment out before merging
+      # into rel/26.11.
       - '.github/workflows/any-app-build-oci.yml'
-      - 'target-apps/PyGoat/Dockerfile'
-      - 'target-apps/vulnbank/Dockerfile'
-      - 'target-apps/NodeGoat/Dockerfile'
+      - 'target-apps/PyGoat/**'
 
   workflow_call:
     inputs:

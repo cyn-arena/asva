@@ -3,7 +3,19 @@
 name: NodeGoat - Deploy to Kubernetes
 
 on:
-  # workflow_dispatch:
+  # Manual redeploy, e.g. after a reviewed fix is merged and its image is built:
+  # gh workflow run nodegoat-deploy.yml --ref <branch> -f deploy_target=green
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: Deployment to update
+        type: choice
+        options: [green, blue]
+        default: green
+      image_sha:
+        description: Commit whose image to deploy (leave empty for dvng-latest)
+        type: string
+        default: ''
   workflow_call:
     inputs:
         deploy_target: # Deployment target (blue|green)
@@ -30,7 +42,7 @@ on:
 # Edit according to deployment target
 env:
   DEPLOY_TARGET: ${{ inputs.deploy_target || 'green' }} # blue|green
-  DEPLOY_NODEPORT: ${{ inputs.deploy_nodeport || vars.NODEPORT_GREEN }} # NODE_PORT_BLUE|GREEN
+  DEPLOY_NODEPORT: ${{ inputs.deploy_nodeport || (inputs.deploy_target == 'blue' && vars.NODEPORT_BLUE) || vars.NODEPORT_GREEN }}
   IMAGE_SHA: ${{ inputs.image_sha }}
   
 jobs:

@@ -1,38 +1,65 @@
-name: Generic - Build & Push to Dockerhub
+# Deploying an intentionally vulnerable application—using a standard Dockerfile and Kubernetes (k8s) introduces severe security and architectural risks. Hosting it in a cluster requires strict isolation and security measures.
+
+# This Workflow is one of 2 ways to build + push to OCI registry for any app in target-apps folder.  The other way is to call cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main directly.
+
+name: Generic - Build & Push to OCI Registry
 
 on:
-  # workflow_dispatch:
+  # Manual build of one app: gh workflow run any-app-build-oci.yml --ref <branch> -f app_name=NodeGoat
+  workflow_dispatch:
+    inputs:
+      app_name:
+        type: choice
+        options: [PyGoat, NodeGoat]
+        default: PyGoat
   push:
     branches:
     #  - feat/nodegoat
-    #  - rel/26.07
-      - feat/app-types
+       - rel/26.11
+    #  - feat/app-types
+    #  - k8s/deploy
+
     paths:
-    #  - 'target-apps/NodeGoat/Dockerfile'
+      # A push has no inputs, so it always builds PyGoat: watch only PyGoat's files.
+      # NodeGoat's are covered by nodegoat-build.yml.
       - '.github/workflows/any-app-build-oci.yml'
-      - 'target-apps/vulnbank/Dockerfile'
+      - 'target-apps/PyGoat/**'
+
   workflow_call:
+    inputs:
+      app_name:
+        type: string
+        # == Replace App ==
+        default: PyGoat
+        required: false
+      work_dir_parent:
+        type: string
+        default: target-apps
+        required: false
+      oci_repo:
+        type: string
+        default: dvapps
+        required: false
+      tag_prefix:
+        # Image tag prefix. Leave empty to use app_name. Set it when the app's Kubernetes
+        # manifest pulls a different prefix (NodeGoat's pulls dvng-latest).
+        type: string
+        default: ''
+        required: false
 
 jobs:
 
-## DVNG build and push to OCI registry
-#   build-to-oci-dvng:
-#     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
-#     with:
-#       working-directory: target-apps/NodeGoat
-#       oci-repo: dvapps
-#       tag-prefix: dvng
-#     secrets:
-#       oci-reg-id: ${{ secrets.OCI_REG_ID }}
-#       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}
-
-## VulnBank build and push to OCI registry
-  build-to-oci-vulnbank:
+  build-to-oci-registry:
+    # == Replace App ==
+    name: Build and Push ${{ inputs.app_name || 'PyGoat' }} to OCI registry
     uses: cyn-arena/platform-engine/.github/workflows/build-to-oci-reg.yml@main
     with:
-      working-directory: target-apps/vulnbank
-      oci-repo: dvapps
-      tag-prefix: vulnbank
+      # == Replace App ==
+      working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
+      oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
+      # == Replace App ==
+      # NodeGoat's manifest pulls dvng-<tag>, so a manual NodeGoat build uses the dvng prefix.
+      tag-prefix: ${{ inputs.tag_prefix || (inputs.app_name == 'NodeGoat' && 'dvng') || inputs.app_name || 'PyGoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

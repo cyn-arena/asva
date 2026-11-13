@@ -1,22 +1,29 @@
 name: NodeGoat - Remove Kubernetes deployment
 
+# Manual only: deletes the chosen NodeGoat Service and Deployment from the dvapps namespace.
+# Redeploy with nodegoat-deploy.yml (or a full orchestrator run for green).
 on:
-  # workflow_dispatch:
-  push:
-    branches:
-      - feat/nodegoat
-      - rel/26.07 
-    paths:
-      - '.github/workflows/nodegoat-demolish.yml'
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: Deployment to remove
+        type: choice
+        options: [green, blue]
+        default: green
+  # Push trigger off, so editing this file can no longer take a site down.
+  # push:
+  #   branches:
+  #     - k8s/deploy
+  #   paths:
+  #     - '.github/workflows/nodegoat-demolish.yml'
 
-# Edit according to deployment target 
 env:
-  DEPLOY_TARGET: blue # blue|green
-  DEPLOY_NODEPORT: ${{ vars.NODEPORT_BLUE }} # NODE_PORT_BLUE|GREEN
-  
+  DEPLOY_TARGET: ${{ inputs.deploy_target }}
+  DEPLOY_NODEPORT: ${{ inputs.deploy_target == 'blue' && vars.NODEPORT_BLUE || vars.NODEPORT_GREEN }}
+
 jobs:
   demolish:
-    name: Remove Kubernetes deployment (blue)
+    name: Remove Kubernetes deployment (${{ inputs.deploy_target }})
     runs-on:
       ${{ vars.ASVA_K8S_RUNNER }}
 
@@ -33,10 +40,13 @@ jobs:
         with:
            version: 'latest'
 
+      # Only the resource names matter for delete; the other placeholders get harmless values.
       - name: Delete NodeGoat Kubernetes resources
         run: |
           sed \
           -e "s|\${DEPLOY_TARGET}|$DEPLOY_TARGET|g" \
           -e "s|\${DEPLOY_NODEPORT}|$DEPLOY_NODEPORT|g" \
+          -e "s|\${IMAGE_TAG}|latest|g" \
+          -e "s|\${DEPLOY_RUN}|demolish|g" \
           target-apps/NodeGoat/kubernetes/dvng.yaml.template > target-apps/NodeGoat/kubernetes/dvng.yaml
-          kubectl delete -f target-apps/NodeGoat/kubernetes/dvng.yaml
+          kubectl delete -f target-apps/NodeGoat/kubernetes/dvng.yaml --ignore-not-found

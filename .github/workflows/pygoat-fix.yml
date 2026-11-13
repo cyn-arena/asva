@@ -223,7 +223,7 @@ jobs:
             --batch-dir "$ASVA_RESULTS_DIR/fix_batches" \
             --repo-name asva-pygoat \
             --commit-sha "$ASVA_SCANNED_SHA" \
-            --container-file Dockerfile.asva
+            --container-file Dockerfile
 
       # ---------- RAG and memory ----------
       # For the RAG's saved database and the memory DB; without a login both still run, without them.
@@ -330,7 +330,7 @@ jobs:
             --output-json "$ASVA_RESULTS_DIR/prs.json" \
             --import-map-dir "$ASVA_RESULTS_DIR/import_maps" \
             --findings-json "$ASVA_RESULTS_DIR/findings/ranked_unified_findings.json" \
-            --container-file Dockerfile.asva
+            --container-file Dockerfile
 
       # Before the RAG stops, so it can say where fixes are published. Never fails the job.
       - name: Update the container report issue

@@ -49,7 +49,7 @@ def prepared_run(tmp_path):
                     "--output", str(source / "findings/ranked_findings.json"),
                     "--batch-dir", str(source / "remediation/fix_batches"),
                     "--repo-name", "asva-pygoat", "--commit-sha", metadata["sha"],
-                    "--container-file", "Dockerfile.asva"],
+                    "--container-file", "Dockerfile"],
                    check=True, capture_output=True, env=env)
     return source, tmp_path / "dashboard", metadata
 
@@ -65,7 +65,7 @@ def test_scan_triage_bundle_matches_dashboard_contract(prepared_run):
     container_files = [file["file"] for rel in manifest["artifacts"]["fix_batches"]
                        for file in module.read_json(target / rel)["files_to_fix"]
                        if file["finding_type"] == "container"]
-    assert container_files and set(container_files) == {"Dockerfile.asva"}
+    assert container_files and set(container_files) == {"Dockerfile"}
 
 
 def test_package_rejects_a_different_scanned_commit(prepared_run):

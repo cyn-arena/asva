@@ -1,0 +1,41 @@
+name: PyGoat - Remove Kubernetes deployment
+
+# Manual only: deletes the PyGoat Service and Deployment from the dvapps namespace.
+# Redeploy with pygoat-deploy.yml (or a full orchestrator run).
+on:
+  workflow_dispatch:
+  # Push trigger off, so editing or merging this file cannot take the site down.
+  # push:
+  #   branches:
+  #     - rel/26.11
+  #   paths:
+  #     - '.github/workflows/pygoat-demolish.yml'
+
+jobs:
+  demolish:
+    name: Remove Kubernetes deployment
+    runs-on:
+      ${{ vars.ASVA_K8S_RUNNER }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            target-apps/PyGoat/kubernetes
+          sparse-checkout-cone-mode: true
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+           version: 'latest'
+
+      # Only the resource names matter for delete; the other placeholders get harmless values.
+      - name: Delete PyGoat Kubernetes resources
+        run: |
+          sed \
+          -e "s|\${IMAGE_TAG}|latest|g" \
+          -e "s|\${DEPLOY_RUN}|demolish|g" \
+          -e "s|\${PYGOAT_BASE_URL}||g" \
+          target-apps/PyGoat/kubernetes/pygoat.yaml.template > target-apps/PyGoat/kubernetes/pygoat.yaml
+          kubectl delete -f target-apps/PyGoat/kubernetes/pygoat.yaml --ignore-not-found

@@ -55,7 +55,7 @@ def scan(source, out, *, ecosystem="pip", failure=None, **options):
     options.setdefault("python_image", "python:9-slim")
     report = rescan(app="pygoat" if ecosystem == "pip" else "nodegoat", app_path=source, sha=SHA,
         batch_id=ROW["batch_id"], pr_url=ROW["pr_url"], run_id="123", output=out, ecosystem=ecosystem,
-        manifest="requirements.txt" if ecosystem == "pip" else "package.json", container_file="Dockerfile.asva",
+        manifest="requirements.txt" if ecosystem == "pip" else "package.json", container_file="Dockerfile",
         container_mode="application", run=run, verify_source=lambda path, sha: source, **options)
     return report, calls
 

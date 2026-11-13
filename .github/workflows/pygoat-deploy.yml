@@ -1,0 +1,72 @@
+# PyGoat is intentionally vulnerable. Deploy it only to an isolated cluster.
+
+name: PyGoat - Deploy to Kubernetes
+
+on:
+  # Manual redeploy, e.g. after a reviewed fix is merged and its image is built:
+  # gh workflow run pygoat-deploy.yml --ref <branch>
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: Commit whose image to deploy (leave empty for PyGoat-latest)
+        type: string
+        default: ''
+  workflow_call:
+    inputs:
+      image_sha:
+        # Commit the image was built from. The build tags it PyGoat-<first 7 characters>.
+        # Leave empty to deploy PyGoat-latest.
+        type: string
+        default: ''
+        required: false
+  push:
+    branches:
+       - rel/26.11
+    #  - k8s/deploy
+    paths:
+      - '.github/workflows/pygoat-deploy.yml'
+      - 'target-apps/PyGoat/kubernetes/pygoat.yaml.template'
+
+env:
+  IMAGE_SHA: ${{ inputs.image_sha }}
+  # Public https address of the site, so PyGoat accepts form posts through the HTTPS proxy.
+  PYGOAT_BASE_URL: ${{ vars.PYGOAT_BASE_URL }}
+
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on:
+      ${{ vars.ASVA_K8S_RUNNER }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            target-apps/PyGoat/kubernetes
+          sparse-checkout-cone-mode: true
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+           version: 'latest'
+
+      # DEPLOY_RUN is new on every run, so the pod template always changes and apply rolls out a
+      # new pod that pulls the image again, without a separate restart.
+      - name: Apply PyGoat Kubernetes resources
+        run: |
+          IMAGE_TAG="${IMAGE_SHA:0:7}"
+          IMAGE_TAG="${IMAGE_TAG:-latest}"
+          DEPLOY_RUN="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "Deploying PyGoat-${IMAGE_TAG} (deploy run ${DEPLOY_RUN})"
+          sed \
+          -e "s|\${IMAGE_TAG}|$IMAGE_TAG|g" \
+          -e "s|\${DEPLOY_RUN}|$DEPLOY_RUN|g" \
+          -e "s|\${PYGOAT_BASE_URL}|$PYGOAT_BASE_URL|g" \
+          target-apps/PyGoat/kubernetes/pygoat.yaml.template > target-apps/PyGoat/kubernetes/pygoat.yaml
+          kubectl apply -f target-apps/PyGoat/kubernetes/pygoat.yaml --validate=false
+
+      # Read-only: fails the job if the new pod never becomes ready (for example a missing image
+      # tag or a failed migration), instead of reporting a deploy that did not happen.
+      - name: Wait for the new pod
+        run: kubectl rollout status deployment/dep-pygoat -n dvapps --timeout=300s

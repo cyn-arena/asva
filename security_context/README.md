@@ -390,7 +390,7 @@ app folder; the app is copied to a temporary folder and never changed.
 
 `tests/eval_pygoat_fixes.py` makes the same comparison for PyGoat's `requirements.txt`, with
 ASVA's Python prompt and the pipeline's PyGoat model, and checks every distinct result the way the
-pipeline's candidate validation does: build the image from `Dockerfile.asva`, start it, and run
+pipeline's candidate validation does: build the image from PyGoat's `Dockerfile`, start it, and run
 ASVA's smoke test `scripts/pygoat-smoke.py` (`tools/pygoat_start_check.py`). The file the
 pipeline's own agent produced in the run the findings come from is checked too. Results:
 [evaluation/pygoat_fix_results.md](evaluation/pygoat_fix_results.md).

@@ -1,15 +1,16 @@
 name: PyGoat - Remove Kubernetes deployment
 
-# Manual only: deletes the PyGoat Service and Deployment from the dvapps namespace.
+# Deletes the PyGoat Service and Deployment from the dvapps namespace.
 # Redeploy with pygoat-deploy.yml (or a full orchestrator run).
 on:
   workflow_dispatch:
-  # Push trigger off, so editing this file cannot take the site down.
-  # push:
-  #   branches:
-  #     - k8s/deploy
-  #   paths:
-  #     - '.github/workflows/pygoat-demolish.yml'
+  # Temporary: GitHub can only start this by hand once it is on main, so until then pushing this
+  # file runs it (and removes the live site). Comment out after the merge into main.
+  push:
+    branches:
+      - k8s/deploy
+    paths:
+      - '.github/workflows/pygoat-demolish.yml'
 
 jobs:
   demolish:

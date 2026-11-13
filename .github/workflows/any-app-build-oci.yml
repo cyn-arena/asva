@@ -5,7 +5,13 @@
 name: Generic - Build & Push to OCI Registry
 
 on:
-  # workflow_dispatch:
+  # Manual build of one app: gh workflow run any-app-build-oci.yml --ref <branch> -f app_name=NodeGoat
+  workflow_dispatch:
+    inputs:
+      app_name:
+        type: choice
+        options: [PyGoat, NodeGoat]
+        default: PyGoat
   push:
     branches:
     #  - feat/nodegoat
@@ -52,7 +58,8 @@ jobs:
       working-directory: ${{ inputs.work_dir_parent || 'target-apps' }}/${{ inputs.app_name || 'PyGoat' }}
       oci-repo: ${{ inputs.oci_repo || 'dvapps' }}
       # == Replace App ==
-      tag-prefix: ${{ inputs.tag_prefix || inputs.app_name || 'PyGoat' }}
+      # NodeGoat's manifest pulls dvng-<tag>, so a manual NodeGoat build uses the dvng prefix.
+      tag-prefix: ${{ inputs.tag_prefix || (inputs.app_name == 'NodeGoat' && 'dvng') || inputs.app_name || 'PyGoat' }}
     secrets:
       oci-reg-id: ${{ secrets.OCI_REG_ID }}
       oci-reg-token: ${{ secrets.OCI_REG_TOKEN }}

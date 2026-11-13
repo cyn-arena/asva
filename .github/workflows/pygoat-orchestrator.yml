@@ -4,7 +4,7 @@ name: PyGoat - Pipeline
 on:
   push:
     branches:
-      - 'feat/expand-app-support'
+      - 'feat/**'
     paths:
       - 'target-apps/PyGoat/**'
       - '.github/workflows/pygoat-*.yml'

@@ -12,8 +12,8 @@ on:
 
 # Edit according to deployment target 
 env:
-  DEPLOY_TARGET: blue # blue|green
-  DEPLOY_NODEPORT: ${{ vars.NODEPORT_BLUE }} # NODE_PORT_BLUE|GREEN
+  DEPLOY_TARGET: green # blue|green
+  DEPLOY_NODEPORT: ${{ vars.NODEPORT_GREEN }} # NODE_PORT_BLUE|GREEN
   
 jobs:
   demolish:

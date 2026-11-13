@@ -1,5 +1,6 @@
 const ResearchDAO = require("../data/research-dao").ResearchDAO;
 const needle = require("needle");
+const { URL } = require("url");
 const {
     environmentalScripts
 } = require("../../config/config");
@@ -12,8 +13,18 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
-            return needle.get(url, (error, newResponse, body) => {
+            if (typeof req.query.symbol !== "string") {
+                return res.status(400).send("Invalid stock symbol");
+            }
+
+            const urlString = "http://download.finance.yahoo.com/d/quotes.csv?s=" + encodeURIComponent(req.query.symbol);
+            const url = new URL(urlString);
+
+            if (url.protocol !== "http:" || url.hostname !== "download.finance.yahoo.com") {
+                return res.status(400).send("Invalid URL");
+            }
+
+            return needle.get(url.href, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
                         "Content-Type": "text/html"

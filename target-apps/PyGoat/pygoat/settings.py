@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
 
 import django_heroku
 
@@ -18,11 +19,36 @@ import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _get_secret_key():
+    key = os.environ.get('DJANGO_SECRET_KEY')
+    if key:
+        return key
+
+    secret_file = os.path.join(BASE_DIR, '.django_secret_key')
+    try:
+        with open(secret_file, 'r') as f:
+            key = f.read().strip()
+            if key:
+                return key
+    except FileNotFoundError:
+        pass
+
+    key = secrets.token_urlsafe(50)
+    try:
+        fd = os.open(secret_file, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        with os.fdopen(fd, 'w') as f:
+            f.write(key)
+        return key
+    except FileExistsError:
+        with open(secret_file, 'r') as f:
+            return f.read().strip()
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

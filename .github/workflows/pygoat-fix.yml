@@ -249,14 +249,14 @@ jobs:
           exists=$(az storage blob exists \
             --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
             --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-            --name pygoat/memory/asva_memory.db \
+            --name pygoat/memory/no-memory-test.db \
             --auth-mode login \
             --query exists -o tsv)
           if [ "$exists" = "true" ]; then
             az storage blob download \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-              --name pygoat/memory/asva_memory.db \
+              --name pygoat/memory/no-memory-test.db \
               --file memory/asva_memory.db \
               --auth-mode login \
               --overwrite \
@@ -353,7 +353,8 @@ jobs:
       # Only after a good download (or a confirmed first run), so a failed download never
       # replaces the saved history with this run's alone.
       - name: Upload SQLite memory database
-        if: ${{ always() && steps.memory_download.outcome == 'success' }}
+        # TEST BRANCH ONLY (no-memory runs): upload nothing, so every run starts with empty memory.
+        if: ${{ false }}
         shell: bash
         run: |
           if [ -f memory/asva_memory.db ]; then

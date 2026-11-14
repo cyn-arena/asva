@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -14,6 +15,21 @@ from .utility import *
 from .views import authentication_decorator
 
 
+def _safe_ssrf_filename(value):
+    if not isinstance(value, str) or not value or "\x00" in value:
+        return None
+    base_dir = os.path.realpath(os.path.dirname(main.__file__))
+    candidate = os.path.realpath(os.path.join(base_dir, value))
+    try:
+        if os.path.commonpath([base_dir, candidate]) != base_dir:
+            return None
+    except ValueError:
+        return None
+    if candidate == base_dir:
+        return None
+    return os.path.relpath(candidate, base_dir)
+
+
 # steps --> 
 # 1. covert input code to corrosponding code and write in file
 # 2. extract inputs form 2nd code 
@@ -28,13 +44,20 @@ def ssrf_code_checker(request):
             if not (ssrf_code_converter(python_code)):
                 return JsonResponse({"status": "error", "message": "Invalid code"})
             test_bench1 = ssrf_html_input_extractor(html_code)
-            
+            if not isinstance(test_bench1, (list, tuple)):
+                return JsonResponse({"status": "error", "message": "Invalid html inputs"}, status=400)
             if (len(test_bench1) >4):
                 return JsonResponse({'message':'too many inputs in Html\n Try again'},status = 400)
+            safe_test_bench1 = []
+            for inputs in test_bench1:
+                safe_input = _safe_ssrf_filename(inputs)
+                if safe_input is None:
+                    return JsonResponse({"status": "error", "message": "Invalid input"}, status=400)
+                safe_test_bench1.append(safe_input)
             test_bench2 = ['secret.txt']
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
-            for inputs in test_bench1:
+            for inputs in safe_test_bench1:
                 outputs.append(main.ssrf_lab(inputs))
             if outputs == correct_output1:
                 outputs = []

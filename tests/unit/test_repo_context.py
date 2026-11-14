@@ -507,3 +507,81 @@ def test_django_settings_module_lists_and_package_sites_are_deduplicated(tmp_pat
     assert _importers(index, "shop/__init__.py") == {"proj/settings.py"}
     from agent.repo_context import python_import_names
     assert python_import_names("django-allauth") == ("allauth",)
+
+
+# --------------------------------------------------------------------------------------
+# URL routes and the links to them (templates are not imports)
+# --------------------------------------------------------------------------------------
+
+from agent.repo_context import render_route_links, routes_for_file  # noqa: E402
+
+_EXPRESS = {
+    "app/routes/index.js": 'const AllocationsHandler = require("./allocations");\n'
+                           "module.exports = (app) => {\n"
+                           "    const allocationsHandler = new AllocationsHandler();\n"
+                           '    app.get("/allocations/:userId", allocationsHandler.displayAllocations);\n'
+                           '    app.get("/login", login);\n'
+                           "};\n",
+    "app/routes/allocations.js": "function AllocationsHandler() {\n"
+                                 "    this.displayAllocations = (req, res) => {\n"
+                                 "        const { userId } = req.params;\n"
+                                 "    };\n"
+                                 "}\nmodule.exports = AllocationsHandler;\n",
+    "app/views/layout.html": '<a href="/allocations/{{userId}}">Allocations</a>\n<a href="/login">Login</a>\n',
+}
+
+
+def test_route_registered_by_an_importer_lists_the_template_links(tmp_path):
+    index = build_import_index(_tree(tmp_path, _EXPRESS))
+    text = render_route_links("app/routes/allocations.js", index)
+    assert "GET /allocations/:userId, registered at app/routes/index.js L4" in text
+    assert "app/views/layout.html L1: <a href=\"/allocations/{{userId}}\">" in text
+    assert "keep accepting it and stop using it" in text
+    # the section is part of the repo context the fix prompt gets
+    assert "app/views/layout.html L1" in gather_repo_context("app/routes/allocations.js", index)
+
+
+def test_parameterless_routes_are_left_out_unless_their_handler_has_a_finding(tmp_path):
+    index = build_import_index(_tree(tmp_path, _EXPRESS))
+    text = render_route_links("app/routes/index.js", index)
+    assert "/allocations/:userId" in text and "/login" not in text
+    assert "/login" in render_route_links("app/routes/index.js", index, focus={"login"})
+
+
+def test_route_without_links_gives_no_section(tmp_path):
+    files = dict(_EXPRESS, **{"app/views/layout.html": "<p>no links</p>\n"})
+    index = build_import_index(_tree(tmp_path, files))
+    assert render_route_links("app/routes/allocations.js", index) == ""
+    assert "URL routes" not in gather_repo_context("app/routes/allocations.js", index)
+
+
+def test_mounted_router_routes_get_the_mount_prefix(tmp_path):
+    index = build_import_index(_tree(tmp_path, {
+        "server.js": 'const memos = require("./routes/memos");\napp.use("/memos", memos);\n',
+        "routes/memos.js": 'const router = express.Router();\nrouter.get("/:memoId", show);\n'
+                           "module.exports = router;\n",
+        "views/memos.html": '<a href="/memos/{{id}}">open</a>\n',
+    }))
+    routes = routes_for_file("routes/memos.js", index)
+    assert [r.path for r in routes] == ["/memos/:memoId"]
+    assert "views/memos.html L1" in render_route_links("routes/memos.js", index)
+
+
+def test_django_route_links_by_path_and_by_url_name(tmp_path):
+    index = build_import_index(_tree(tmp_path, {
+        "manage.py": "",
+        "shop/__init__.py": "",
+        "shop/views.py": "def order(request, order_id):\n    return None\n",
+        "shop/urls.py": "from . import views\n"
+                        "urlpatterns = [path('orders/<int:order_id>', views.order, name='order')]\n",
+        "shop/templates/list.html": "<a href=\"{% url 'order' o.id %}\">x</a>\n<a href=\"/orders/{{ o.id }}\">y</a>\n",
+    }))
+    text = render_route_links("shop/views.py", index)
+    assert "URL /orders/<int:order_id> (name 'order'), registered at shop/urls.py L2" in text
+    assert "shop/templates/list.html L1" in text and "shop/templates/list.html L2" in text
+
+
+def test_nodegoat_allocations_context_names_the_menu_link(nodegoat_index):
+    text = render_route_links("app/routes/allocations.js", nodegoat_index)
+    assert "GET /allocations/:userId" in text
+    assert "app/views/layout.html L56" in text

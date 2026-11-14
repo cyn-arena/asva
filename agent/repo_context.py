@@ -10,6 +10,9 @@ note:
   - which files import it, their import line, and the lines where they use what they
     import (lines that use the function/class containing a finding are listed first)
   - which local modules it imports
+  - the URL routes it serves (registered in it, or in a file that imports it) and the
+    templates and code that link to those URLs, so a fix does not rename or drop a route
+    parameter that a page still uses (the IDOR fix that broke /allocations/{{userId}})
 
 It also records where each third-party package is used, so a dependency upgrade can point a
 reviewer at the code that depends on that package (see package_usage_sites), and renders the
@@ -55,6 +58,12 @@ DEFAULT_EXCLUDE_DIRS: tuple[str, ...] = (
 # Files larger than this are almost certainly bundled/minified, not app code.
 MAX_FILE_BYTES = 512_000
 
+# Template files searched for links to the app's URL routes (not parsed for imports).
+TEMPLATE_EXTS: tuple[str, ...] = (
+    ".html", ".htm", ".ejs", ".hbs", ".handlebars", ".mustache", ".pug", ".jade", ".njk",
+    ".jinja", ".jinja2", ".j2", ".twig", ".vue", ".erb",
+)
+
 
 @dataclass(frozen=True)
 class ContextBudget:
@@ -68,6 +77,10 @@ class ContextBudget:
     max_imports: int = 10
     max_chars: int = 4000
     max_line_chars: int = 160
+    # URL routes section (its own cap, so importers can never push it out)
+    max_routes: int = 6
+    max_route_links: int = 4      # per route
+    max_route_chars: int = 1500
 
 
 # ---------------------------------------------------------------------------------------
@@ -106,6 +119,8 @@ class ImportIndex:
     importers: dict[str, list[tuple[str, ImportRef]]] = field(default_factory=dict)
     # package name -> [(file, ref)]
     package_usage: dict[str, list[tuple[str, ImportRef]]] = field(default_factory=dict)
+    # template file -> lines (searched for links to URL routes; no imports)
+    texts: dict[str, list[str]] = field(default_factory=dict)
 
     def language_of(self, path: str) -> str:
         info = self.files.get(path)
@@ -652,6 +667,14 @@ def build_import_index(
             full = Path(dirpath) / name
             rel = full.relative_to(root).as_posix()
             resolver = resolver_for(rel)
+            if resolver is None and name.lower().endswith(TEMPLATE_EXTS):
+                try:
+                    if full.stat().st_size <= MAX_FILE_BYTES:
+                        index.texts[rel] = (full.read_text(encoding="utf-8", errors="replace")
+                                            .replace("\r\n", "\n").split("\n"))
+                except OSError:
+                    pass
+                continue
             if resolver is None or name.endswith((".min.js", ".bundle.js")):
                 continue
             try:
@@ -830,13 +853,226 @@ def gather_repo_context(
         if len(local_imports) > budget.max_imports:
             out.append(f"... ({len(local_imports) - budget.max_imports} more import(s) not shown)")
 
+    routes = render_route_links(path, index, budget, focus)
     if not out:
-        return ""
+        return routes
 
     text = "\n".join(out)
     if len(text) > budget.max_chars:
         marker = "\n... (truncated)"
         text = text[: budget.max_chars - len(marker)].rsplit("\n", 1)[0] + marker
+    return f"{routes}\n\n{text}" if routes else text
+
+
+# ---------------------------------------------------------------------------------------
+# URL routes and the links to them (templates are not imports, so the import graph alone
+# never shows that views/layout.html links to /allocations/{{userId}})
+# ---------------------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Route:
+    method: str        # GET / POST / ANY for Express, URL for Django, ROUTE for Flask
+    path: str          # full URL path as registered, e.g. /allocations/:userId
+    prefix: str        # static part before the first parameter, e.g. /allocations
+    has_param: bool
+    name: str          # Django url name ("" when none)
+    file: str          # where it is registered
+    line_no: int
+    statement: str
+    focus: bool        # the line names the function/class that contains a finding
+
+
+_JS_ROUTE_RE = re.compile(r"""\.(get|post|put|patch|delete|all|route)\s*\(\s*(["'`])(/[^"'`$]*)\2""")
+_JS_MOUNT_RE = re.compile(r"""\.use\s*\(\s*(["'`])(/[^"'`$]*)\1\s*,(.*)""")
+_PY_ROUTE_RE = re.compile(r"""\b(re_path|path|url)\s*\(\s*r?(["'])([^"']*)\2\s*,(.*)""")
+_PY_ROUTE_NAME_RE = re.compile(r"""\bname\s*=\s*["']([\w\-:.]+)["']""")
+_FLASK_ROUTE_RE = re.compile(r"""@\s*[\w.]+\.(route|get|post|put|patch|delete)\s*\(\s*r?["']([^"']*)["']""")
+_PARAM_START_RE = re.compile(r"[:<(*\[\\?$+]")
+
+
+def _route_prefix(path: str, regex: bool = False) -> tuple[str, str, bool]:
+    """(display path, static prefix, has parameter) with a leading slash and no trailing one."""
+    raw = path.lstrip("^").rstrip("$") if regex else path
+    m = _PARAM_START_RE.search(raw)
+    static = raw[: m.start()] if m else raw
+    display = "/" + raw.lstrip("/")
+    prefix = "/" + static.strip("/") if static.strip("/") else ""
+    return display, prefix, bool(m)
+
+
+def _join_url(mount: str, path: str) -> str:
+    if not mount:
+        return path
+    return mount.rstrip("/") + ("" if path in ("", "/") else "/" + path.lstrip("/")) or "/"
+
+
+def _parse_route(line: str, language: str) -> list[tuple[str, str, bool, str]]:
+    """Routes registered on one code line: [(method, path, is_regex, url name)]."""
+    found = []
+    if language == "javascript":
+        for m in _JS_ROUTE_RE.finditer(line):
+            method = m.group(1).upper()
+            found.append(("ANY" if method in ("ALL", "ROUTE") else method, m.group(3), False, ""))
+    elif language == "python":
+        m = _PY_ROUTE_RE.search(line)
+        if m and "include(" not in m.group(4):
+            name = _PY_ROUTE_NAME_RE.search(m.group(4))
+            found.append(("URL", m.group(3), m.group(1) != "path", name.group(1) if name else ""))
+        for m in _FLASK_ROUTE_RE.finditer(line):
+            found.append(("ROUTE", m.group(2), False, ""))
+    return found
+
+
+def _names_pattern(names: set[str]) -> re.Pattern | None:
+    if not names:
+        return None
+    return re.compile(r"(?<![\w$.])(?:" + "|".join(re.escape(n) for n in sorted(names)) + r")\b")
+
+
+def _mount_prefixes(path: str, index: ImportIndex) -> list[str]:
+    """URL prefixes a file's routes are mounted under: Express `app.use("/tutorial", router)`
+    or Django `path("challenge/", include("challenge.urls"))` in a file importing it."""
+    prefixes: list[str] = []
+    for importer, ref in index.importers.get(path, []):
+        info = index.files[importer]
+        if info.language == "python":
+            m = _PY_ROUTE_RE.search(info.code_lines[ref.line_no - 1]) if ref.line_no <= len(info.code_lines) else None
+            if m and "include(" in m.group(4):
+                prefixes.append("/" + m.group(3).strip("/") if m.group(3).strip("/") else "")
+            continue
+        names = _names_pattern(_tracked_names(info, ref.bindings))
+        if names is None:
+            continue
+        for line in info.code_lines:
+            m = _JS_MOUNT_RE.search(line)
+            if m and names.search(m.group(3)):
+                prefixes.append(m.group(2) if m.group(2) != "/" else "")
+    return list(dict.fromkeys(prefixes)) or [""]
+
+
+def routes_for_file(path: str, index: ImportIndex, focus: set[str] | frozenset[str] = frozenset()) -> list[Route]:
+    """URL routes `path` serves: registered in the file itself, or registered in a file that
+    imports it and points the route at what it imported (index.js -> allocationsHandler,
+    urls.py -> views.sql_lab). Mount prefixes are applied one level up."""
+    path = posixpath.normpath(path.replace("\\", "/"))
+    info = index.files.get(path)
+    if info is None:
+        return []
+    routes: list[Route] = []
+
+    def add(file: str, line_no: int, mounts: list[str], is_focus: bool) -> None:
+        f_info = index.files[file]
+        for method, raw, regex, name in _parse_route(f_info.code_lines[line_no - 1], f_info.language):
+            for mount in mounts:
+                display, prefix, has_param = _route_prefix(_join_url(mount, raw) if not regex else raw, regex)
+                if regex and mount:
+                    display, prefix = _join_url(mount, display), _join_url(mount, prefix)
+                routes.append(Route(method, display, prefix, has_param, name, file, line_no,
+                                    _collapse(f_info.lines[line_no - 1]), is_focus))
+
+    focus_any = _names_pattern(set(focus))
+    own_mounts = _mount_prefixes(path, index)
+    for i, line in enumerate(info.code_lines, start=1):
+        if _parse_route(line, info.language):
+            add(path, i, own_mounts, bool(focus_any and focus_any.search(line)))
+    # Flask: a decorator's focus is the function defined right below it
+    for importer, ref in index.importers.get(path, []):
+        imp = index.files[importer]
+        names = _tracked_names(imp, ref.bindings)
+        pat = _names_pattern(names)
+        if pat is None:
+            continue
+        focus_pat = None
+        if focus:
+            focus_pat = re.compile(
+                r"(?:" + "|".join(re.escape(n) for n in sorted(names)) + r")\s*\.\s*(?:"
+                + "|".join(re.escape(f) for f in sorted(focus)) + r")\b"
+                + (r"|(?<![\w$.'\"])(?:" + "|".join(re.escape(f) for f in sorted(set(focus) & set(ref.bindings))) + r")\b"
+                   if set(focus) & set(ref.bindings) else ""))
+        mounts = None
+        for i, line in enumerate(imp.code_lines, start=1):
+            if not pat.search(line) or not _parse_route(line, imp.language):
+                continue
+            if mounts is None:
+                mounts = _mount_prefixes(importer, index)
+            add(importer, i, mounts, bool(focus_pat and focus_pat.search(line)))
+    return list(dict.fromkeys(routes))
+
+
+def _link_pattern(route: Route) -> re.Pattern | None:
+    alts = []
+    if route.prefix:
+        after = r"/" if route.has_param else r"/?(?=$|[\"'?#\s<`)\]},;])"
+        alts.append(r"(?<![\w/.\-])" + re.escape(route.prefix) + after)
+    if route.name:
+        n = re.escape(route.name)
+        alts.append(rf"\{{%-?\s*url\s+[\"']{n}[\"']")
+        alts.append(rf"\b(?:reverse|reverse_lazy|redirect|url_for)\s*\(\s*[\"']{n}[\"']")
+    return re.compile("|".join(alts)) if alts else None
+
+
+def route_links(route: Route, index: ImportIndex, registrations: set[tuple[str, int]]) -> list[tuple[str, int, str]]:
+    """Template and code lines that link to `route`, as (file, line number, line)."""
+    pat = _link_pattern(route)
+    if pat is None:
+        return []
+    hits = []
+    sources = [(f, lines, lines) for f, lines in sorted(index.texts.items())]
+    sources += [(f, info.lines, info.code_lines) for f, info in sorted(index.files.items())]
+    for file, lines, search_lines in sources:
+        for i, line in enumerate(search_lines, start=1):
+            if (file, i) in registrations or not pat.search(line):
+                continue
+            hits.append((file, i, lines[i - 1]))
+    return hits
+
+
+def render_route_links(
+    file_path: str,
+    index: ImportIndex | None,
+    budget: ContextBudget = ContextBudget(),
+    focus: set[str] | frozenset[str] = frozenset(),
+) -> str:
+    """The URL routes this file serves that other parts of the app link to, with the linking
+    lines. Only routes a fix could break for those links are shown: routes with a parameter
+    (the IDOR fix that turned /allocations/:userId into /allocations broke the menu link
+    /allocations/{{userId}}), and parameterless routes whose handler contains a finding.
+    Routes with no link are left out. Returns "" when there is nothing to say."""
+    if index is None:
+        return ""
+    routes = [r for r in routes_for_file(file_path, index, focus) if r.has_param or r.focus]
+    if not routes:
+        return ""
+    registrations: set[tuple[str, int]] = set()
+    for f, info in index.files.items():
+        for i, line in enumerate(info.code_lines, start=1):
+            if _parse_route(line, info.language) or _JS_MOUNT_RE.search(line):
+                registrations.add((f, i))
+    linked = []
+    for r in routes:
+        links = route_links(r, index, registrations)
+        if links:
+            linked.append((r, links))
+    if not linked:
+        return ""
+    linked.sort(key=lambda t: (not t[0].focus, not t[0].has_param, t[0].file, t[0].line_no))
+    out = ["URL routes this file serves, and where the app links to them. Keep these URLs, "
+           "including their parameters, working for these links; if a parameter must no longer "
+           "be trusted, keep accepting it and stop using it rather than removing it:"]
+    for r, links in linked[: budget.max_routes]:
+        where = f"{r.file} L{r.line_no}: {_clip(r.statement, budget.max_line_chars)}"
+        out.append(f"- {r.method} {r.path}" + (f" (name '{r.name}')" if r.name else "")
+                   + f", registered at {where}")
+        for file, line_no, line in links[: budget.max_route_links]:
+            out.append(f"    {file} L{line_no}: {_clip(line, budget.max_line_chars)}")
+        if len(links) > budget.max_route_links:
+            out.append(f"    ... ({len(links) - budget.max_route_links} more link(s) not shown)")
+    if len(linked) > budget.max_routes:
+        out.append(f"... ({len(linked) - budget.max_routes} more linked route(s) not shown)")
+    text = "\n".join(out)
+    if len(text) > budget.max_route_chars:
+        marker = "\n... (truncated)"
+        text = text[: budget.max_route_chars - len(marker)].rsplit("\n", 1)[0] + marker
     return text
 
 

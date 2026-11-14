@@ -83,6 +83,23 @@ SECOND_PASS_NOTE = (
     "unchanged. Line numbers in the findings refer to the original file.\n\n"
 )
 
+# Second pass with no additional context (--pass2-without-context): a self-review of the
+# pass-1 fix. Used to evaluate the two-pass structure of 3.6 on its own, without 3.1/3.3/3.5.
+SECOND_PASS_REVIEW_NOTE = (
+    "This is the second (review) pass. The current content below already includes a "
+    "first-pass fix. Check it against the listed vulnerabilities: correct or complete that "
+    "fix where needed, and keep it compatible with the rest of the application. If the "
+    "first-pass fix is already correct and complete, return the content unchanged. Line "
+    "numbers in the findings refer to the original file.\n\n"
+)
+
+
+def second_pass_note(second_pass: bool, has_context: bool) -> str:
+    """The note that opens a second-pass prompt: integration (with context) or review."""
+    if not second_pass:
+        return ""
+    return SECOND_PASS_NOTE if has_context else SECOND_PASS_REVIEW_NOTE
+
 # How each target-app language is named in prompts. "node" keeps the ITP1 wording exactly.
 APP_LANGUAGE_LABELS = {"node": "Node.js", "python": "Python/Django"}
 
@@ -208,7 +225,8 @@ def build_fix_prompt(
     missing context leaves the prompt exactly as it was before ITP2. `second_pass` marks the
     integration pass of 3.6, whose `current_content` is the pass-1 result."""
 
-    ctx_block = (SECOND_PASS_NOTE if second_pass else "") + render_context(context)
+    rendered = render_context(context)
+    ctx_block = second_pass_note(second_pass, bool(rendered)) + rendered
 
     # Python source fixes use the framework-aware prompt; dependency, container and config
     # fixes for Python apps use the type-specific prompts below (pip requirements, Dockerfile).
@@ -506,7 +524,7 @@ def build_multi_file_prompt(
             f"{ctx_block}Current content:\n"
             f"{_LOGIC_FILE_START.format(path=f['path'])}\n{f['content']}\n{_LOGIC_FILE_END}"
         )
-    note = SECOND_PASS_NOTE if second_pass else ""
+    note = second_pass_note(second_pass, any(render_context(c) for c in contexts.values()))
     files_block = "\n\n".join(blocks)
     extra_rules = PYTHON_PROMPT_RULES if app_language() == "python" else ""
     return f"""You are a senior security engineer fixing vulnerabilities in a {app_label()} application.
@@ -1032,6 +1050,7 @@ def process_batch(
     passes: int = 1,
     files_per_prompt: int = 1,
     import_map_dir: str | Path | None = None,
+    pass2_without_context: bool | None = None,
 ) -> dict:
     """
     Load one batch file, generate LLM fixes for its files.
@@ -1045,6 +1064,9 @@ def process_batch(
       additional context at all skips pass 2 (it would only be a re-roll of pass 1).
       An LLM outage in pass 1 aborts the run (existing contract).
     files_per_prompt: the most code_change files per prompt (3.6 batch-size experiments).
+    pass2_without_context: run pass 2 even for a group with no additional context, as a
+      review of the pass-1 fix (default: ASVA_PASS2_WITHOUT_CONTEXT=1). Lets 3.6 be evaluated
+      without 3.1 (--no-repo-context --passes 2); off, such a group skips pass 2 as before.
     import_map_dir: when set and the import index is built, write an interactive HTML map
       of it there (import_map_<batch_id>.html).
 
@@ -1140,6 +1162,8 @@ def process_batch(
             rag_client.manifest_response(e["path"], e["content"], e["findings"], e["fix_type"])
             if is_dependency_manifest(e["path"]) else rag_client.response(e["findings"], e["fix_type"])
             for e in entries], held)
+    if pass2_without_context is None:
+        pass2_without_context = os.environ.get("ASVA_PASS2_WITHOUT_CONTEXT", "").strip() == "1"
     groups = make_prompt_groups(entries, batch_type, files_per_prompt)
     print(f"  Passes: {passes} | Prompts per pass: {len(groups)} "
           f"(files per prompt: {'all' if batch_type == 'logic' else files_per_prompt})")
@@ -1169,7 +1193,7 @@ def process_batch(
 
         if passes >= 2:
             group_ctx = {e["path"]: contexts.get(e["path"]) for e in group}
-            if not any(group_ctx.values()):
+            if not any(group_ctx.values()) and not pass2_without_context:
                 print("    Integration pass skipped: no additional context for these file(s)")
                 after_pass2.update(result)
                 continue
@@ -1428,6 +1452,13 @@ def main() -> None:
              "Use 10 or 20 for the 3.6 attention-dilution experiments."
     )
     parser.add_argument(
+        "--pass2-without-context",
+        action="store_true",
+        help="With --passes 2: run the second pass even for files with no additional context, "
+             "as a review of the pass-1 fix (same as ASVA_PASS2_WITHOUT_CONTEXT=1). For "
+             "evaluating 3.6 without 3.1."
+    )
+    parser.add_argument(
         "--output-json",
         default=None,
         metavar="PATH",
@@ -1480,6 +1511,11 @@ def main() -> None:
     print(f"  misuse fix  : {'ON' if test_first.enabled() and test_first.misuse_fix_enabled() else 'OFF'}")
     print(f"  passes      : {args.passes}"
           + (" (local without context, then integration with context)" if args.passes == 2 else ""))
+    if args.pass2_without_context:
+        os.environ["ASVA_PASS2_WITHOUT_CONTEXT"] = "1"
+    if args.passes == 2:
+        print(f"  pass 2 w/o context: "
+              f"{'review pass' if os.environ.get('ASVA_PASS2_WITHOUT_CONTEXT', '').strip() == '1' else 'skipped'}")
     print(f"  files/prompt: {args.files_per_prompt} (logic batches: all files in one prompt)")
     import_map_dir = (args.import_map_dir or os.environ.get("ASVA_IMPORT_MAP_DIR", "").strip()
                       or (str(Path(args.output_dir) / "import_maps") if args.dry_run else None))

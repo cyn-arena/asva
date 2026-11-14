@@ -642,6 +642,43 @@ def test_integration_pass_skipped_when_repo_context_switched_off(tmp_path, linke
     assert len(fake_llm.calls) == 1
 
 
+def _review_llm(prompt: str) -> str:
+    return "pass2 fix" if "second (review) pass" in prompt else "pass1 fix"
+
+
+def test_pass2_without_context_runs_a_review_pass(tmp_path, linked, fake_llm):
+    """3.6 without 3.1: --no-repo-context --passes 2 --pass2-without-context."""
+    fake_llm.side_effect = _review_llm
+    entry = process_batch(_write_batch(tmp_path, "app/x.js"), repo_dir=str(linked),
+                          passes=2, use_repo_context=False, pass2_without_context=True)
+
+    assert len(fake_llm.calls) == 2
+    review = fake_llm.calls[1]
+    assert "second (review) pass" in review and _SECOND_PASS_MARKER not in review
+    assert "Related code in the app" not in review
+    assert "pass1 fix" in review and "old content" not in review
+    assert entry["passes"] == {
+        "after_pass1": {"app/x.js": "pass1 fix"},
+        "after_pass2": {"app/x.js": "pass2 fix"},
+    }
+
+
+def test_pass2_without_context_from_the_environment(tmp_path, linked, fake_llm, monkeypatch):
+    monkeypatch.setenv("ASVA_PASS2_WITHOUT_CONTEXT", "1")
+    fake_llm.side_effect = _review_llm
+    entry = process_batch(_write_batch(tmp_path, "app/z.js"), repo_dir=str(linked), passes=2)
+    assert len(fake_llm.calls) == 2   # z.js has no context, but the review pass still runs
+    assert entry["passes"]["after_pass2"] == {"app/z.js": "pass2 fix"}
+
+
+def test_pass2_with_context_keeps_the_integration_note(tmp_path, linked, fake_llm):
+    fake_llm.side_effect = _per_pass_llm()
+    process_batch(_write_batch(tmp_path, "app/x.js"), repo_dir=str(linked), passes=2,
+                  pass2_without_context=True)
+    assert _SECOND_PASS_MARKER in fake_llm.calls[1]
+    assert "second (review) pass" not in fake_llm.calls[1]
+
+
 @pytest.mark.parametrize("pass2_reply", [
     LLMUnavailableError("Ollama call failed: 429"),   # outage in pass 2 does not abort
     "   ",                                            # empty pass-2 reply

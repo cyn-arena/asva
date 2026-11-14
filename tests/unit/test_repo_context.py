@@ -456,12 +456,16 @@ def test_pygoat_urlconf_chain(pygoat_index):
 def test_pygoat_models_and_package_usage(pygoat_index):
     assert {"introduction/views.py", "introduction/admin.py"} <= _importers(
         pygoat_index, "introduction/models.py")
-    assert "introduction/views.py:23" in package_usage_sites(pygoat_index, "yaml")
+    # look the import up rather than hardcoding its line: merged ASVA fixes move it
+    text = (PYGOAT / "introduction" / "views.py").read_text(encoding="utf-8").splitlines()
+    line = next(i for i, l in enumerate(text, start=1) if l.strip() == "import yaml")
+    assert f"introduction/views.py:{line}" in package_usage_sites(pygoat_index, "yaml")
 
 
 def test_pygoat_view_context_shows_its_url_route(pygoat_index):
     text = (PYGOAT / "introduction" / "views.py").read_text(encoding="utf-8").splitlines()
-    line = next(i for i, l in enumerate(text, start=1) if "pickle.loads(" in l)
+    # anchor on the view itself, not its vulnerable call: a merged fix removes pickle.loads
+    line = next(i for i, l in enumerate(text, start=1) if l.startswith("def insec_des_lab(")) + 1
     ctx = gather_repo_context("introduction/views.py", pygoat_index,
                               findings=[{"location": {"line": line}}])
     assert "views.insec_des_lab" in ctx.split("- introduction/urls.py")[1].splitlines()[2]

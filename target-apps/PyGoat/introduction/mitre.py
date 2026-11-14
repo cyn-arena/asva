@@ -1,5 +1,6 @@
 import ast
 import datetime
+import ipaddress
 import operator
 import re
 import subprocess
@@ -25,7 +26,6 @@ FLAG = "NOT_SUPPOSED_TO_BE_ACCESSED"
 
 _MAX_EXPRESSION_LENGTH = 512
 _MAX_EXPONENT = 1000
-_SAFE_NMAP_TARGET_RE = re.compile(r'^(?![.-])[A-Za-z0-9._:/-]{1,253}$')
 
 _ALLOWED_BIN_OPS = {
     ast.Add: operator.add,
@@ -99,11 +99,35 @@ def _safe_math_expression(expression):
         raise ValueError('Invalid expression')
 
 
-def _is_safe_nmap_target(target):
+def _sanitize_nmap_target(target):
     if not isinstance(target, str):
-        return False
+        return None
     target = target.strip()
-    return bool(target and _SAFE_NMAP_TARGET_RE.fullmatch(target))
+    if not target or len(target) > 253:
+        return None
+
+    # Validate as an IP address.
+    try:
+        return str(ipaddress.ip_address(target))
+    except ValueError:
+        pass
+
+    # Validate as a CIDR network.
+    try:
+        return str(ipaddress.ip_network(target, strict=False))
+    except ValueError:
+        pass
+
+    # Validate as a hostname.
+    match = re.fullmatch(
+        r'[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?'
+        r'(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*',
+        target
+    )
+    if match:
+        return match.group(0)
+
+    return None
 
 
 @authentication_decorator
@@ -324,14 +348,22 @@ def mitre_lab_17(request):
     return render(request, 'mitre/mitre_lab_17.html')
 
 def command_out(command):
-    if not isinstance(command, (list, tuple)):
+    if isinstance(command, (list, tuple)):
+        if len(command) != 2 or command[0] != 'nmap':
+            return b'', b'nmap: invalid command\n'
+        target = command[1]
+    elif isinstance(command, str):
+        target = command
+    else:
         return b'', b'nmap: invalid command\n'
-    args = list(command)
-    if not args or args[0] != 'nmap':
-        return b'', b'nmap: invalid command\n'
+
+    target = _sanitize_nmap_target(target)
+    if target is None:
+        return b'', b'nmap: invalid target\n'
+
     try:
         result = subprocess.run(
-            args,
+            ["nmap", target],
             shell=False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -348,10 +380,11 @@ def command_out(command):
 @csrf_exempt
 def mitre_lab_17_api(request):
     if request.method == "POST":
-        ip = request.POST.get('ip', '').strip()
-        if not _is_safe_nmap_target(ip):
+        ip = request.POST.get('ip', '')
+        ip = _sanitize_nmap_target(ip)
+        if ip is None:
             return JsonResponse({'error': 'Invalid target'}, status=400)
-        res, err = command_out(["nmap", ip])
+        res, err = command_out(ip)
         res = res.decode(errors='replace')
         err = err.decode(errors='replace')
         pattern = r"STATE SERVICE.*\n\n"

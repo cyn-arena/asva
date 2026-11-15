@@ -52,6 +52,7 @@ from agent import import_map
 from agent import rag_client
 from agent import safe_upgrades
 from agent import test_first
+from agent import dependency_check
 from agent.fix_context import FixContext, render_context
 
 from dataclasses import replace
@@ -380,6 +381,7 @@ Vulnerability (confirmed by test, not by a scanner rule):
 
 Instructions:
 - Fix the vulnerability described above.
+{LOGIC_KEEP_URLS_RULE}
 - Do NOT change any logic unrelated to it.
 - Do NOT add comments explaining the fix.
 - Return ONLY the complete fixed file content. No explanation, no markdown, no code blocks.
@@ -412,13 +414,26 @@ Instructions:
 _LOGIC_FILE_START = "===FILE: {path}==="
 _LOGIC_FILE_END = "===END FILE==="
 
+# Logic fixes (business-logic holes proven by a misuse test, e.g. an IDOR) tend to "fix" a
+# trusted URL parameter by removing it from the route, which breaks every page that links to
+# it (/allocations/:userId -> /allocations broke NodeGoat's menu link). One rule for every
+# prompt a logic fix goes through.
+LOGIC_KEEP_URLS_RULE = (
+    "- Keep existing URLs and route parameters working: pages, forms and links elsewhere in the "
+    "app use them. If a URL parameter must no longer be trusted (for example a user id), keep the "
+    "route as it is and stop using the parameter: take the value from a trusted source such as "
+    "the session instead."
+)
+
 
 def build_logic_change_prompt(file_contents: dict[str, str], detail: str,
                               contexts: dict[str, FixContext | None] | None = None) -> str:
     """Prompt covering ALL of a logic-change batch's files in one call -- a business-logic
     fix (e.g. an IDOR route + the DAO it calls + wherever the route is registered) can need
-    coordinated changes across files. This is the ITP1 prompt, still used verbatim for a
-    logic batch's first pass when there is no additional context."""
+    coordinated changes across files. This is the ITP1 prompt, still used for a logic
+    batch's first pass when there is no additional context; since ITP2 it carries
+    LOGIC_KEEP_URLS_RULE, and its multi-file example no longer suggests removing a route
+    parameter."""
     contexts = contexts or {}
     files_block = "\n\n".join(
         f"{render_context(contexts.get(path))}{_LOGIC_FILE_START.format(path=path)}\n{content}\n{_LOGIC_FILE_END}"
@@ -438,8 +453,9 @@ Current content of each file:
 
 Instructions:
 - Fix the vulnerability described above. You may need to change more than one file for a
-  consistent fix (e.g. a route parameter removed from one file must also be removed
-  wherever that route is registered).
+  consistent fix (e.g. when a function's parameters change in one file, update every file
+  that calls it).
+{LOGIC_KEEP_URLS_RULE}
 - Do NOT change any logic unrelated to the vulnerability.
 - Do NOT add comments explaining the fix.
 - Return EVERY file listed above, even if a file needs no change (return it unchanged).
@@ -527,6 +543,8 @@ def build_multi_file_prompt(
     note = second_pass_note(second_pass, any(render_context(c) for c in contexts.values()))
     files_block = "\n\n".join(blocks)
     extra_rules = PYTHON_PROMPT_RULES if app_language() == "python" else ""
+    if any(f["fix_type"] == "logic_change" for f in files):
+        extra_rules = LOGIC_KEEP_URLS_RULE + "\n" + extra_rules
     return f"""You are a senior security engineer fixing vulnerabilities in a {app_label()} application.
 
 You are given {len(files)} file(s). Each file lists its own vulnerabilities.
@@ -583,14 +601,31 @@ def build_refix_prompt(
     *,
     context: FixContext | None = None,
     reason: str | None = None,
+    source: str = "tests",
 ) -> str:
     """Build the retry prompt: the normal fix prompt plus the rejected previous attempt,
     so the LLM knows what not to repeat. Without this context a retry is just a re-roll
     of the same prompt, likely to produce the same rejected output. The same FixContext
     as the first attempt is passed through, so a retry is never thinner than the original.
     `reason`: the app failed its tests with this attempt (agent/test_first.py); the failure may
-    come from another file of the same batch, so an innocent attempt can come back unchanged."""
+    come from another file of the same batch, so an innocent attempt can come back unchanged.
+    `source="dependencies"`: `reason` comes from the static check before the build
+    (agent/dependency_check.py), about this file alone."""
     base = build_fix_prompt(file_path, current_content, findings, fix_type, context=context)
+    if reason and source == "dependencies":
+        return base + f"""
+IMPORTANT: a check before the app was built rejected a previous automated fix for this file
+(attempt {attempt}, shown below):
+
+{reason}
+
+Keep the vulnerability fixed, but do it without that problem. Do not add new dependencies.
+
+Previous attempt {attempt}:
+{failed_content}
+
+Return ONLY the complete corrected file content. No explanation, no markdown, no code blocks.
+"""
     if reason:
         return base + f"""
 IMPORTANT: the app was built and tested with a previous automated fix for this file (attempt
@@ -629,11 +664,13 @@ def get_llm_refix(
     *,
     context: FixContext | None = None,
     reason: str | None = None,
+    source: str = "tests",
 ) -> str:
-    """Ask the LLM for a revised fix after a previous attempt failed the validity gate or the app's tests."""
+    """Ask the LLM for a revised fix after a previous attempt failed the validity gate, the
+    dependency check or the app's tests."""
     prompt = build_refix_prompt(
         file_path, current_content, findings, fix_type, failed_content, attempt,
-        context=context, reason=reason,
+        context=context, reason=reason, source=source,
     )
     print(f"    Querying LLM for a revised fix... (attempt {attempt + 1} for {file_path})")
     return _strip_markdown_fences(call_llm(prompt))
@@ -1262,7 +1299,8 @@ def make_refix_fn(cycle: list[dict], repo_dir: str, *, use_repo_context: bool | 
     context_on = repo_context_enabled(use_repo_context)
     index_cache: dict[str, "repo_context.ImportIndex | None"] = {}
 
-    def refix(path: str, findings: list[dict], attempt: int, reason: str | None = None) -> str | None:
+    def refix(path: str, findings: list[dict], attempt: int, reason: str | None = None,
+              source: str = "tests") -> str | None:
         fix_type = fix_types.get(path)
         if fix_type is None or fix_type == "logic_change":
             return None
@@ -1283,7 +1321,7 @@ def make_refix_fn(cycle: list[dict], repo_dir: str, *, use_repo_context: bool | 
             new_content = get_llm_refix(
                 path, original, findings, fix_type,
                 failed_content=last_attempt.get(path, ""), attempt=attempt,
-                context=context, reason=reason,
+                context=context, reason=reason, source=source,
             )
         except LLMUnavailableError:
             print(f"    [WARN] LLM unavailable during re-fix of {path} — giving up on this file.")
@@ -1572,6 +1610,12 @@ def main() -> None:
                 passes=args.passes,
                 files_per_prompt=args.files_per_prompt,
                 import_map_dir=import_map_dir,
+            )
+            # A fix that imports a package the app lacks would stop the app from starting:
+            # send every such file back now, before test-first spends a build on each one.
+            entry = dependency_check.repair(
+                entry, repo_dir,
+                make_refix=lambda e: make_refix_fn([e], repo_dir, use_repo_context=use_repo_context),
             )
             entry = test_first.run(
                 entry, repo_dir, sca_upgrade_map,

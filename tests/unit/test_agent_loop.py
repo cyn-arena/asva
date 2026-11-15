@@ -306,6 +306,31 @@ def test_build_logic_change_prompt_includes_all_files_and_detail():
     assert "===FILE: app/data/allocations-dao.js===" in prompt
 
 
+def test_logic_prompts_keep_urls_and_route_parameters_working():
+    """Every prompt a logic fix can go through says to keep routes and stop trusting the
+    parameter, and none suggests removing a route parameter (the IDOR fix that broke
+    /allocations/{{userId}})."""
+    files = {"app/routes/allocations.js": "a", "app/routes/index.js": "b"}
+    findings = [{"description": "user1 can see user2's allocations"}]
+    multi = agent_loop.build_multi_file_prompt(
+        [{"path": p, "content": c, "findings": findings, "fix_type": "logic_change"} for p, c in files.items()],
+        contexts={"app/routes/allocations.js": FixContext(repo="routes")})
+    prompts = [
+        build_logic_change_prompt(files, "user1 can see user2's allocations"),
+        build_fix_prompt("app/routes/allocations.js", "a", findings, "logic_change"),
+        multi,
+    ]
+    for prompt in prompts:
+        assert agent_loop.LOGIC_KEEP_URLS_RULE in prompt
+        assert "route parameter removed" not in prompt
+
+
+def test_code_fix_prompts_do_not_get_the_logic_rule():
+    entry = {"path": "app/x.js", "content": "x", "findings": [], "fix_type": "code_change"}
+    assert agent_loop.LOGIC_KEEP_URLS_RULE not in agent_loop.build_multi_file_prompt([entry, {**entry, "path": "app/y.js"}])
+    assert agent_loop.LOGIC_KEEP_URLS_RULE not in build_fix_prompt("app/x.js", "x", [], "code_change")
+
+
 def test_parse_logic_change_response_extracts_each_file():
     response = (
         "===FILE: app/routes/allocations.js===\n"

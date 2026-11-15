@@ -52,12 +52,8 @@ const index = (app, db) => {
     app.post("/contributions", isLoggedIn, contributionsHandler.handleContributionsUpdate);
 
     // Benefits Page
-    app.get("/benefits", isLoggedIn, benefitsHandler.displayBenefits);
-    app.post("/benefits", isLoggedIn, benefitsHandler.updateBenefits);
-    /* Fix for A7 - checks user role to implement  Function Level Access Control
-     app.get("/benefits", isLoggedIn, isAdmin, benefitsHandler.displayBenefits);
-     app.post("/benefits", isLoggedIn, isAdmin, benefitsHandler.updateBenefits);
-     */
+    app.get("/benefits", isLoggedIn, isAdmin, benefitsHandler.displayBenefits);
+    app.post("/benefits", isLoggedIn, isAdmin, benefitsHandler.updateBenefits);
 
     // Allocations Page
     app.get("/allocations/:userId", isLoggedIn, allocationsHandler.displayAllocations);
@@ -68,8 +64,38 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
+        const khanAcademyUrl = "https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras";
+        let requestedUrl = typeof req.query.url === "string" ? req.query.url : "";
+
+        for (let i = 0; i < 2; i += 1) {
+            try {
+                const decodedUrl = decodeURIComponent(requestedUrl);
+                if (decodedUrl === requestedUrl) {
+                    break;
+                }
+                requestedUrl = decodedUrl;
+            } catch (err) {
+                break;
+            }
+        }
+
+        const normalizedUrl = requestedUrl.trim().replace(/\/+$/, "").toLowerCase();
+        const normalizedKhanAcademyUrl = khanAcademyUrl.toLowerCase();
+
+        if (normalizedUrl === "/research" || normalizedUrl === "research") {
+            return res.redirect(302, "/research");
+        }
+
+        if (
+            normalizedUrl === normalizedKhanAcademyUrl ||
+            normalizedUrl === normalizedKhanAcademyUrl.replace("https://", "http://") ||
+            normalizedUrl === normalizedKhanAcademyUrl.replace("https://", "") ||
+            normalizedUrl === normalizedKhanAcademyUrl.replace("https://", "//")
+        ) {
+            return res.redirect(302, khanAcademyUrl);
+        }
+
+        return res.redirect(302, "/tutorial");
     });
 
     // Research Page

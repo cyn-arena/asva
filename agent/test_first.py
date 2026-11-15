@@ -524,9 +524,41 @@ def _suspects(result: app_check.Result, paths: list[str]) -> list[str]:
 
 
 def _remember_failures(entry: dict, failures: dict[str, str]) -> None:
-    """What still fails, per file, after the retries: saved to memory (3.5) after submission, so the
-    next run's prompt says what this pass broke ("errors from pass N-1")."""
+    """What a fix broke, per file: saved to memory (3.5) after submission, so the next run's prompt
+    says what this pass broke ("errors from pass N-1")."""
     entry.setdefault("check_failures", {}).update(failures)
+
+
+# A build or start failure's cause is near the end of the app's log; the rest is start-up noise.
+_LOG_TAIL_LINES = 20
+
+
+def _failures_by_file(result: app_check.Result, paths: list[str]) -> dict[str, str]:
+    """What memory keeps of a failed check, per file. A failed test keeps only its own failure line,
+    saved against the files it points at (named in it, or linked by the test's `# @a` comments). One that
+    points only at files this fix did not change (e.g. a finding a reviewer kept out) is left out: these
+    files did not cause it. One that points nowhere goes to every file, as any of them may have.
+    A build or start failure keeps the end of the app's log, where its cause is."""
+    what = {"build": "the app did not build", "start": "the app did not start",
+            "smoke": "the app's tests failed"}.get(result.stage, result.stage)
+    if result.stage != "smoke":
+        tail = "\n".join(result.log.strip().splitlines()[-_LOG_TAIL_LINES:]) if result.log else ""
+        text = f"{what}: {result.detail}" + (f"\n\nEnd of the app's log:\n{tail}" if tail else "")
+        return {path: text for path in _suspects(result, paths)}
+    annotated = parse_annotated_files(_security_test_source())
+    per_file: dict[str, list[str]] = {}
+    for failure in result.detail.split(" | "):
+        found = {path for path in paths if path in failure}
+        elsewhere = False
+        for test, files in annotated.items():
+            if test in failure:
+                found |= set(files) & set(paths)
+                elsewhere = elsewhere or bool(set(files) - set(paths))
+        if not found and elsewhere:
+            continue
+        for path in sorted(found) or paths:
+            per_file.setdefault(path, []).append(" ".join(failure.split()))
+    return {path: f"{what}: " + " | ".join(lines) for path, lines in per_file.items()}
 
 
 def _reason(result: app_check.Result) -> str:
@@ -795,6 +827,7 @@ def _code(entry: dict, repo_dir: str, make_refix: Callable | None, logic_fix: Ca
     print(f"    [test-first] first attempt failed: {_why(result)}")
     refix = make_refix(entry) if make_refix else None
     best, best_result, current, latest = dict(files), result, dict(files), result
+    failed = [result]  # every attempt that failed, for memory if a retry then passes
     for round_number in range(1, _retries() + 1):
         if refix is None or time.monotonic() >= deadline:
             break
@@ -815,15 +848,24 @@ def _code(entry: dict, repo_dir: str, make_refix: Callable | None, logic_fix: Ca
             best, best_result = dict(current), latest
         if latest.passed:
             break
+        failed.append(latest)
 
     for f in entry["files"]:
         f["content"] = best[f["path"]]
     if best_result.passed:
+        # The retry fixed it, but the next run should not make the same first mistake.
+        fixed: dict[str, list[str]] = {}
+        for attempt in failed:
+            for path, text in _failures_by_file(attempt, list(best)).items():
+                if text not in fixed.setdefault(path, []):
+                    fixed[path].append(text)
+        _remember_failures(entry, {path: "fixed by a retry in that run -- " + "\n".join(texts)
+                                   for path, texts in fixed.items()})
         _add_to_pr_text(batch, _code_table(rows, ""))
         _after_pass(entry, repo_dir, make_refix, logic_fix, tests, deadline, findings_path)
     else:
         batch["draft"] = True
-        _remember_failures(entry, {p: _reason(best_result) for p in _suspects(best_result, list(best))})
+        _remember_failures(entry, _failures_by_file(best_result, list(best)))
         print("    [test-first] still failing: the PR opens as a draft")
         _add_to_pr_text(batch, _code_table(rows, "**This did not pass, so it is a draft.** It holds the attempt that got "
                                                  "furthest. Do not merge it until the failure below is fixed."))

@@ -432,6 +432,44 @@ def test_a_fix_that_passes_leaves_nothing_to_remember(app):
     assert "check_failures" not in entry
 
 
+# -- what memory keeps of a failure (errors from pass N-1) -----------------------------------------
+
+def test_a_failed_test_is_remembered_without_the_apps_log(app):
+    app["broken"] = lambda files: bool(files)  # the unchanged app passes
+    app["result"] = Result(False, "smoke", "FAILED test_link - assert '/x' == '/y'", log="mongo started\n" * 200)
+    entry = code_run(code_entry(), app, make_refix(lambda path, attempt: f"{path} v{attempt}"))
+    assert entry["check_failures"]["app/a.js"] == "the app's tests failed: FAILED test_link - assert '/x' == '/y'"
+
+
+def test_a_start_failure_keeps_only_the_end_of_the_log(app):
+    app["broken"] = lambda files: bool(files)  # the unchanged app passes
+    log = "\n".join(f"line {n}" for n in range(100)) + "\nTypeError at app/a.js:3"
+    app["result"] = Result(False, "start", "the app did not answer", log=log)
+    entry = code_run(code_entry({"app/a.js": "a"}), app, make_refix({"app/a.js": "a2"}))
+    error = entry["check_failures"]["app/a.js"]
+    assert "TypeError at app/a.js:3" in error and "line 81" in error and "line 80" not in error  # the last 20 lines
+
+
+def test_a_failure_that_points_only_at_a_file_this_fix_left_alone_is_not_blamed_on_it(app, monkeypatch):
+    # e.g. a security test for a finding a reviewer kept out of the PR: these files did not cause it.
+    monkeypatch.setattr(test_first, "_security_test_source",
+                        lambda: "# @a config/dev.js\ndef test_key():\n    pass\n\n# @a app/a.js\ndef test_link():\n    pass\n")
+    app["broken"] = lambda files: bool(files)  # the unchanged app passes
+    app["result"] = Result(False, "smoke", "FAILED test_key - literal key | FAILED test_link - wrong link")
+    entry = code_run(code_entry(), app, make_refix(lambda path, attempt: f"{path} v{attempt}"))
+    assert entry["check_failures"] == {"app/a.js": "the app's tests failed: FAILED test_link - wrong link"}
+
+
+def test_a_mistake_a_retry_fixed_is_remembered_too(app):
+    # The next run should not make the same first mistake (e.g. a broken link the retry put right).
+    app["broken"] = lambda files: "app/a.js" in files and files["app/a.js"] == "a first"
+    app["result"] = Result(False, "smoke", "FAILED test_link - went to app/a.js's fallback")
+    entry = code_run(code_entry(), app, make_refix({"app/a.js": "a fixed"}))
+    assert not entry["batch"].get("draft")
+    assert entry["check_failures"] == {
+        "app/a.js": "fixed by a retry in that run -- the app's tests failed: FAILED test_link - went to app/a.js's fallback"}
+
+
 def test_the_draft_holds_the_attempt_that_got_furthest(app, monkeypatch):
     results = iter([Result(False, "smoke", "FAILED one"),  # first attempt: runs, one test fails
                     Result(True, "passed"),                # the unchanged app passes

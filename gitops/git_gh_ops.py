@@ -156,6 +156,17 @@ def batch_branch_name(batch: dict) -> str:
     return f"fix/{batch_id}"
 
 
+def _with_run_suffix(branch: str) -> str:
+    """`branch` plus ASVA_FIX_BRANCH_SUFFIX, when set, so repeated runs of one scan push to
+    their own branches."""
+    suffix = os.environ.get("ASVA_FIX_BRANCH_SUFFIX", "")
+    if suffix:
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", suffix):
+            raise GitOpError("Unsafe fix branch suffix")
+        branch += "-" + suffix
+    return branch
+
+
 def file_commit_message(ff: dict) -> str:
     """One commit per file."""
     n = len(ff.get("findings", []))
@@ -594,7 +605,7 @@ def _submit_dependency_pair(batch: dict, files: list[dict], base_branch: str, re
         if blocked:
             return result
     original_branch = current_branch(repo_dir)
-    branch = batch_branch_name(batch)
+    branch = _with_run_suffix(batch_branch_name(batch))
     wrote_files, committed = False, False
     try:
         create_branch(branch, base_branch, repo_dir)
@@ -658,12 +669,7 @@ def submit_fix_batch(
                 "message": "No files in this batch."}
 
     base_branch = base_branch or config.GITHUB_BASE_BRANCH
-    branch = batch_branch_name(batch)
-    suffix = os.environ.get("ASVA_FIX_BRANCH_SUFFIX", "")
-    if suffix:
-        if not re.fullmatch(r"[A-Za-z0-9_-]+", suffix):
-            raise GitOpError("Unsafe fix branch suffix")
-        branch += "-" + suffix
+    branch = _with_run_suffix(batch_branch_name(batch))
     file_fixes = list(iter_file_fixes([{"batch": batch, "files": files}]))
 
     # Remember where the caller was so we can switch back afterwards (detached HEAD -> "").

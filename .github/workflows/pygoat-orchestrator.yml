@@ -34,6 +34,20 @@ on:
           not merged by this option. Available only for manual runs.
         type: boolean
         default: false # Set to true when deployment is safe
+      # ---- TEST BRANCH ONLY (component comparison) ----
+      arm:
+        description: Which ITP2 parts are on (official = all on, shared memory, as on rel)
+        type: choice
+        options: [official, baseline, memory, repo, rag, testfirst, testfirst-rag, full]
+        default: official
+      scan_run_id:
+        description: Reuse the scan from this run ID instead of scanning again (blank = scan now)
+        type: string
+        default: ''
+      run_label:
+        description: Added to fix branch names, e.g. cc-baseline-r1 (letters, digits, - and _)
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -49,6 +63,7 @@ jobs:
 
   scan:
     name: PyGoat - Scan vulnerabilities
+    if: ${{ !inputs.scan_run_id }} # TEST BRANCH ONLY: skipped when reusing a scan
     needs: baseline
     uses: ./.github/workflows/pygoat-scan.yml
     secrets: inherit
@@ -63,12 +78,21 @@ jobs:
   fix:
     name: PyGoat - Normalise, triage and generate fixes
     needs: [scan, test-unit]
-    if: inputs.scan_kind != 'after_fix'
+    if: ${{ !cancelled() && inputs.scan_kind != 'after_fix' && needs.test-unit.result == 'success' && (needs.scan.result == 'success' || (needs.scan.result == 'skipped' && inputs.scan_run_id != '')) }}
     uses: ./.github/workflows/pygoat-fix.yml
     with:
-      use_artifacts: true
+      use_artifacts: ${{ !inputs.scan_run_id }}
+      scan_run_id: ${{ inputs.scan_run_id || '' }}
       source_branch: ${{ github.ref_name }}
       source_sha: ${{ github.sha }}
+      # TEST BRANCH ONLY: what each comparison arm switches on (no arm = official)
+      arm_test_first: ${{ contains(fromJSON('["official","testfirst","testfirst-rag","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
+      arm_repo_context: ${{ contains(fromJSON('["official","repo","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
+      arm_rag: ${{ contains(fromJSON('["official","rag","testfirst-rag","full"]'), (inputs.arm || 'official')) }}
+      arm_memory: ${{ (inputs.arm || 'official') == 'official' && 'real' || inputs.arm == 'baseline' && 'fresh' || inputs.arm == 'memory' && 'reuse' || 'off' }}
+      arm_report_issues: ${{ (inputs.arm || 'official') == 'official' }}
+      branch_suffix: ${{ inputs.run_label || '' }}
+      arm_base_image: ${{ contains(fromJSON('["official","testfirst","testfirst-rag","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
     secrets: inherit
 
   pr-check:
@@ -145,7 +169,7 @@ jobs:
     # Waits for build, deploy and test-e2e too, so evidence is published last. Their results are not
     # in outcomes yet: that is an additive change to the dashboard contract.
     needs: [baseline, scan, test-unit, fix, pr-check, after-fix, build, deploy, test-e2e]
-    if: always()
+    if: ${{ false }} # TEST BRANCH ONLY: comparison runs are not published to the dashboard
     uses: ./.github/workflows/publish-dashboard-results.yml
     with:
       app-code: pygoat

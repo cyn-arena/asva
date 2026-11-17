@@ -20,6 +20,40 @@ on:
           description: "Exact scanned commit for current-run artifacts"
           type: string
           required: false
+        # ---- TEST BRANCH ONLY (component comparison). The defaults keep the official behaviour. ----
+        arm_test_first:
+          description: "'1' = test-first validation on (with the scan before the PR); '0' = off"
+          type: string
+          default: '1'
+          required: false
+        arm_repo_context:
+          type: string
+          default: '1'
+          required: false
+        arm_rag:
+          type: boolean
+          default: true
+          required: false
+        arm_memory:
+          description: "real = shared memory; off = empty, not saved; fresh = empty, saved to the test copy; reuse = load the test copy"
+          type: string
+          default: real
+          required: false
+        arm_base_image:
+          description: "'1' = try a newer OS under PyGoat's image; '0' = off"
+          type: string
+          default: '1'
+          required: false
+        arm_report_issues:
+          description: "false = don't update the container report issue or file failure issues"
+          type: boolean
+          default: true
+          required: false
+        branch_suffix:
+          description: "Added to every fix branch name, so repeated runs of one scan don't collide"
+          type: string
+          default: ''
+          required: false
     secrets:
       OLLAMA_API_KEY:
         required: false
@@ -67,11 +101,15 @@ jobs:
       # Context window the model server uses; the agent warns when a prompt may not fit (ITP2 3.6).
       OLLAMA_NUM_CTX: '1000000'
       # Test fixes before there is a PR: try held-back upgrades, retry code fixes (agent/test_first.py).
-      ASVA_TEST_FIRST: '1'
+      ASVA_TEST_FIRST: ${{ inputs.arm_test_first }}
       # Try a newer OS under this app's image when that is where the fixes are (agent/base_image.py).
-      ASVA_BASE_IMAGE_FIX: '1'
+      ASVA_BASE_IMAGE_FIX: ${{ inputs.arm_base_image }}
       # Scan a code fix before its PR, for what it adds (agent/code_scan.py).
-      ASVA_SCAN_BEFORE_PR: '1'
+      ASVA_SCAN_BEFORE_PR: ${{ inputs.arm_test_first }}
+      # TEST BRANCH ONLY (component comparison)
+      ASVA_REPO_CONTEXT: ${{ inputs.arm_repo_context }}
+      ASVA_MEMORY_MODE: ${{ inputs.arm_memory }}
+      ASVA_FIX_BRANCH_SUFFIX: ${{ inputs.branch_suffix }}
       # How this app is checked (agent/app_check.py). It has six workers: a fix that makes them disagree,
       # such as a random SECRET_KEY in each, failed only about 1 run in 7 locally. A run takes about a second.
       ASVA_APP_SMOKE_RUNS: '20'
@@ -244,19 +282,25 @@ jobs:
         shell: bash
         run: |
           mkdir -p memory
+          # TEST BRANCH ONLY: which memory copy to load (ASVA_MEMORY_MODE, from arm_memory)
+          case "$ASVA_MEMORY_MODE" in
+            off|fresh) echo "Component comparison: starting with empty memory ($ASVA_MEMORY_MODE)."; exit 0 ;;
+            reuse) MEMORY_BLOB=asva-memory-test/pygoat_memory.db ;;
+            *) MEMORY_BLOB=pygoat/memory/asva_memory.db ;;
+          esac
           # A failed lookup fails this step (and so skips the upload), rather than reading as
           # "no DB yet" and replacing the saved history with an empty one.
           exists=$(az storage blob exists \
             --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
             --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-            --name pygoat/memory/asva_memory.db \
+            --name "$MEMORY_BLOB" \
             --auth-mode login \
             --query exists -o tsv)
           if [ "$exists" = "true" ]; then
             az storage blob download \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-              --name pygoat/memory/asva_memory.db \
+              --name "$MEMORY_BLOB" \
               --file memory/asva_memory.db \
               --auth-mode login \
               --overwrite \
@@ -274,6 +318,12 @@ jobs:
           # Set first: with no file here the agent applies no decisions (never the sample).
           echo "ASVA_DECISIONS_PATH=$GITHUB_WORKSPACE/decisions/decisions.json" >> "$GITHUB_ENV"
           mkdir -p decisions
+          # TEST BRANCH ONLY: comparison runs use no reviewer decisions (no file = none applied)
+          if [ "$ASVA_MEMORY_MODE" != "real" ]; then
+            echo "ASVA_DECISIONS_PATH=$GITHUB_WORKSPACE/decisions/decisions.json" >> "$GITHUB_ENV"
+            echo "Component comparison: no reviewer decisions."
+            exit 0
+          fi
           if [ "${{ steps.azure_login.outcome }}" = "success" ] && az storage blob exists \
             --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
             --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
@@ -298,6 +348,7 @@ jobs:
         run: python -m memory.decisions_loader
 
       - name: Start the RAG
+        if: ${{ inputs.arm_rag }} # TEST BRANCH ONLY
         env:
           GHCR_TOKEN: ${{ github.token }}
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
@@ -334,7 +385,7 @@ jobs:
 
       # Before the RAG stops, so it can say where fixes are published. Never fails the job.
       - name: Update the container report issue
-        if: ${{ !cancelled() && steps.normalise.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.normalise.outcome == 'success' && inputs.arm_report_issues }}
         continue-on-error: true
         run: |
           python -m gitops.post_container_report \
@@ -347,7 +398,7 @@ jobs:
             --execute
 
       - name: Stop the RAG and save its database
-        if: always()
+        if: ${{ always() && inputs.arm_rag }} # TEST BRANCH ONLY
         run: bash scripts/rag-container.sh stop
 
       # Only after a good download (or a confirmed first run), so a failed download never
@@ -356,18 +407,24 @@ jobs:
         if: ${{ always() && steps.memory_download.outcome == 'success' }}
         shell: bash
         run: |
+          # TEST BRANCH ONLY: the shared memory is never written by a comparison run
+          case "$ASVA_MEMORY_MODE" in
+            off|reuse) echo "Component comparison: memory not saved ($ASVA_MEMORY_MODE)."; exit 0 ;;
+            fresh) MEMORY_BLOB=asva-memory-test/pygoat_memory.db ;;
+            *) MEMORY_BLOB=pygoat/memory/asva_memory.db ;;
+          esac
           if [ -f memory/asva_memory.db ]; then
             # The store runs in WAL mode -- fold the -wal file into the .db before uploading.
             python -c "import sqlite3; c = sqlite3.connect('memory/asva_memory.db'); c.execute('PRAGMA wal_checkpoint(TRUNCATE)'); c.close()"
             az storage blob upload \
               --account-name "$ASVA_AZURE_STORAGE_ACCOUNT" \
               --container-name "$ASVA_AZURE_STORAGE_CONTAINER" \
-              --name pygoat/memory/asva_memory.db \
+              --name "$MEMORY_BLOB" \
               --file memory/asva_memory.db \
               --auth-mode login \
               --overwrite \
               -o none --no-progress
-            echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/pygoat/memory/asva_memory.db"
+            echo "Uploaded memory database to $ASVA_AZURE_STORAGE_CONTAINER/$MEMORY_BLOB"
           else
             echo "No SQLite database file exists; nothing to upload."
           fi
@@ -389,7 +446,7 @@ jobs:
       # agent ran at all" (success OR failure), not on success, or the loudest failure
       # would be the one that files no issue.
       - name: File an issue for any batch that failed before commit
-        if: ${{ !cancelled() && steps.agent.outcome != 'skipped' }}
+        if: ${{ !cancelled() && steps.agent.outcome != 'skipped' && inputs.arm_report_issues }}
         run: |
           python -m gitops.post_fix_failure_issue \
             --prs-json "$ASVA_RESULTS_DIR/prs.json" \

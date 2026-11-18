@@ -14,6 +14,25 @@ from .utility import *
 from .views import authentication_decorator
 
 
+def _is_safe_ssrf_input(value):
+    if not isinstance(value, str) or not value:
+        return False
+
+    lowered = value.lower()
+    if "\x00" in value or "%00" in lowered:
+        return False
+    if ".." in lowered or "%2e" in lowered or "%2f" in lowered or "%5c" in lowered:
+        return False
+    if value.startswith(("/", "\\")):
+        return False
+    if "\\" in value:
+        return False
+    if len(value) > 1 and value[1] == ":":
+        return False
+
+    return True
+
+
 # steps --> 
 # 1. covert input code to corrosponding code and write in file
 # 2. extract inputs form 2nd code 
@@ -31,6 +50,10 @@ def ssrf_code_checker(request):
             
             if (len(test_bench1) >4):
                 return JsonResponse({'message':'too many inputs in Html\n Try again'},status = 400)
+
+            if not all(_is_safe_ssrf_input(item) for item in test_bench1):
+                return JsonResponse({'message': 'Invalid input detected'}, status=400)
+
             test_bench2 = ['secret.txt']
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []

@@ -1,4 +1,6 @@
+import os
 import time
+from urllib.parse import urlparse
 
 import requests
 from django.contrib.auth import authenticate, login
@@ -12,6 +14,32 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+def _safe_ssrf_test_input(value):
+    if not isinstance(value, str):
+        return None
+
+    value = value.strip()
+    lowered = value.lower()
+    if not value or '\x00' in value or '..' in value or '\\' in value:
+        return None
+    if '%2e' in lowered or '%2f' in lowered or '%5c' in lowered:
+        return None
+
+    parsed = urlparse(value)
+    if parsed.scheme in ('http', 'https'):
+        if parsed.hostname not in ('127.0.0.1', 'localhost'):
+            return None
+        if not parsed.path.startswith('/2021/discussion/'):
+            return None
+        return value
+
+    allowed = {'blog1', 'blog2', 'blog3', 'blog4'}
+    if value in allowed:
+        return value
+
+    return None
 
 
 # steps --> 
@@ -31,6 +59,15 @@ def ssrf_code_checker(request):
             
             if (len(test_bench1) >4):
                 return JsonResponse({'message':'too many inputs in Html\n Try again'},status = 400)
+
+            safe_test_bench1 = []
+            for inputs in test_bench1:
+                safe_input = _safe_ssrf_test_input(inputs)
+                if safe_input is None:
+                    return JsonResponse({'message':'Invalid input in Html\n Try again'},status = 400)
+                safe_test_bench1.append(safe_input)
+            test_bench1 = safe_test_bench1
+
             test_bench2 = ['secret.txt']
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []

@@ -1,4 +1,6 @@
+import os
 import time
+from urllib.parse import urlparse, unquote
 
 import requests
 from django.contrib.auth import authenticate, login
@@ -12,6 +14,42 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+def _is_safe_ssrf_input(value):
+    if not isinstance(value, str):
+        return False
+
+    decoded = value
+    for _ in range(3):
+        new_decoded = unquote(decoded)
+        if new_decoded == decoded:
+            break
+        decoded = new_decoded
+
+    if not decoded or '\x00' in decoded:
+        return False
+
+    parsed = urlparse(decoded)
+    if parsed.scheme:
+        if parsed.scheme.lower() not in ('http', 'https'):
+            return False
+        if not parsed.netloc:
+            return False
+        path = unquote(parsed.path)
+        if '..' in path.split('/') or '\\' in path:
+            return False
+        return True
+
+    if os.path.isabs(decoded):
+        return False
+    if '\\' in decoded:
+        return False
+    if '..' in decoded.split('/'):
+        return False
+    if os.path.basename(decoded) != decoded:
+        return False
+    return True
 
 
 # steps --> 
@@ -35,6 +73,8 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
+                if not _is_safe_ssrf_input(inputs):
+                    return JsonResponse({'message': 'Invalid input in HTML code'}, status=400)
                 outputs.append(main.ssrf_lab(inputs))
             if outputs == correct_output1:
                 outputs = []

@@ -10,13 +10,17 @@ import re
 import string
 import subprocess
 import uuid
+import ast
+import ipaddress
+import socket
 from dataclasses import dataclass
 from hashlib import md5
 from io import BytesIO
 from random import randint
+from urllib.parse import urlparse
 from xml.dom.pulldom import START_ELEMENT, parseString
 from xml.sax import make_parser
-from xml.sax.handler import feature_external_ges
+from xml.sax.handler import feature_external_ges, feature_external_pes
 
 import jwt
 import requests
@@ -39,21 +43,170 @@ from .models import (FAANG, AF_admin, AF_session_id, Blogs, CF_user, authLogin,
                      comments, info, login, otp, sql_lab_table, tickits)
 from .utility import customHash, filter_blog
 
+
+def safe_eval_expression(expression):
+    if not isinstance(expression, str):
+        raise ValueError("Invalid expression")
+    tree = ast.parse(expression, mode="eval")
+
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        if isinstance(node, ast.Constant):
+            return node.value
+        if hasattr(ast, "Num") and isinstance(node, ast.Num):
+            return node.n
+        if hasattr(ast, "Str") and isinstance(node, ast.Str):
+            return node.s
+        if hasattr(ast, "NameConstant") and isinstance(node, ast.NameConstant):
+            return node.value
+        if isinstance(node, ast.UnaryOp):
+            operand = _eval(node.operand)
+            if isinstance(node.op, ast.UAdd):
+                return +operand
+            if isinstance(node.op, ast.USub):
+                return -operand
+            if isinstance(node.op, ast.Not):
+                return not operand
+            if isinstance(node.op, ast.Invert):
+                return ~operand
+            raise ValueError("Unsupported unary operator")
+        if isinstance(node, ast.BinOp):
+            left = _eval(node.left)
+            right = _eval(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            if isinstance(node.op, ast.Sub):
+                return left - right
+            if isinstance(node.op, ast.Mult):
+                return left * right
+            if isinstance(node.op, ast.Div):
+                return left / right
+            if isinstance(node.op, ast.FloorDiv):
+                return left // right
+            if isinstance(node.op, ast.Mod):
+                return left % right
+            if isinstance(node.op, ast.Pow):
+                return left ** right
+            if isinstance(node.op, ast.LShift):
+                return left << right
+            if isinstance(node.op, ast.RShift):
+                return left >> right
+            if isinstance(node.op, ast.BitOr):
+                return left | right
+            if isinstance(node.op, ast.BitXor):
+                return left ^ right
+            if isinstance(node.op, ast.BitAnd):
+                return left & right
+            raise ValueError("Unsupported binary operator")
+        if isinstance(node, ast.BoolOp):
+            values = [_eval(value) for value in node.values]
+            if isinstance(node.op, ast.And):
+                return all(values)
+            if isinstance(node.op, ast.Or):
+                return any(values)
+            raise ValueError("Unsupported boolean operator")
+        if isinstance(node, ast.Compare):
+            left = _eval(node.left)
+            for op, comparator in zip(node.ops, node.comparators):
+                right = _eval(comparator)
+                if isinstance(op, ast.Eq):
+                    ok = left == right
+                elif isinstance(op, ast.NotEq):
+                    ok = left != right
+                elif isinstance(op, ast.Lt):
+                    ok = left < right
+                elif isinstance(op, ast.LtE):
+                    ok = left <= right
+                elif isinstance(op, ast.Gt):
+                    ok = left > right
+                elif isinstance(op, ast.GtE):
+                    ok = left >= right
+                elif isinstance(op, ast.In):
+                    ok = left in right
+                elif isinstance(op, ast.NotIn):
+                    ok = left not in right
+                elif isinstance(op, ast.Is):
+                    ok = left is right
+                elif isinstance(op, ast.IsNot):
+                    ok = left is not right
+                else:
+                    raise ValueError("Unsupported comparison operator")
+                if not ok:
+                    return False
+                left = right
+            return True
+        if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
+            values = [_eval(value) for value in node.elts]
+            if isinstance(node, ast.List):
+                return values
+            if isinstance(node, ast.Tuple):
+                return tuple(values)
+            return set(values)
+        if isinstance(node, ast.Dict):
+            return {_eval(key): _eval(value) for key, value in zip(node.keys, node.values)}
+        raise ValueError("Unsupported expression")
+
+    return _eval(tree)
+
+
+def is_safe_external_url(url):
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False
+
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        return False
+    if parsed.username or parsed.password:
+        return False
+
+    hostname = parsed.hostname.lower()
+    if hostname in ("localhost", "localhost.localdomain") or hostname.endswith(".local"):
+        return False
+
+    try:
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    except ValueError:
+        return False
+
+    try:
+        addresses = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+    except Exception:
+        return False
+
+    if not addresses:
+        return False
+
+    for address in addresses:
+        try:
+            ip = ipaddress.ip_address(address[4][0])
+        except ValueError:
+            return False
+        if not ip.is_global:
+            return False
+        mapped = getattr(ip, "ipv4_mapped", None)
+        if mapped is not None and not mapped.is_global:
+            return False
+
+    return True
+
+
 #*****************************************Lab Requirements****************************************************#
 
 #*****************************************Login and Registration****************************************************#
 
 def register(request):
-	if request.method == "POST":
-		form = NewUserForm(request.POST)
-		if form.is_valid():
-			user = form.save()
-			login(request, user)
-			messages.success(request, "Registration successful." )
-			return redirect('/')
-		messages.error(request, "Unsuccessful registration. Invalid information.")
-	form = NewUserForm()
-	return render (request=request, template_name="registration/register.html", context={"register_form":form})
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful." )
+            return redirect('/')
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    form = NewUserForm()
+    return render (request=request, template_name="registration/register.html", context={"register_form":form})
 
 # def register(request):
 #     if request.method=="POST":
@@ -155,11 +308,11 @@ def sql_lab(request):
 
             if login.objects.filter(user=name):
 
-                sql_query = "SELECT * FROM introduction_login WHERE user='"+name+"' AND password='"+password+"'"
+                sql_query = "SELECT * FROM introduction_login WHERE user=%s AND password=%s"
                 print(sql_query)
                 try:
                     print("\nin try\n")
-                    val=login.objects.raw(sql_query)
+                    val = list(login.objects.raw(sql_query, [name, password]))
                 except:
                     print("\nin except\n")
                     return render(
@@ -199,8 +352,7 @@ def insec_des(request):
 @dataclass
 class TestUser:
     admin: int = 0
-pickled_user = pickle.dumps(TestUser())
-encoded_user = base64.b64encode(pickled_user)
+encoded_user = base64.b64encode(json.dumps({"admin": 0}).encode("utf-8")).decode("utf-8")
 
 def insec_des_lab(request):
     if request.user.is_authenticated:
@@ -208,11 +360,15 @@ def insec_des_lab(request):
         token = request.COOKIES.get('token')
         if token == None:
             token = encoded_user
-            response.set_cookie(key='token',value=token.decode('utf-8'))
+            response.set_cookie(key='token',value=token)
         else:
-            token = base64.b64decode(token)
-            admin = pickle.loads(token)
-            if admin.admin == 1:
+            try:
+                token_bytes = base64.b64decode(token)
+                data = json.loads(token_bytes.decode("utf-8"))
+                admin_flag = int(data.get("admin", 0))
+            except Exception:
+                admin_flag = 0
+            if admin_flag == 1:
                 response = render(request,'Lab/insec_des/insec_des_lab.html', {"message":"Welcome Admin, SECRETKEY:ADMIN123"})
                 return response
 
@@ -256,8 +412,16 @@ def xxe_see(request):
 def xxe_parse(request):
 
     parser = make_parser()
-    parser.setFeature(feature_external_ges, True)
+    try:
+        parser.setFeature(feature_external_ges, False)
+    except Exception:
+        pass
+    try:
+        parser.setFeature(feature_external_pes, False)
+    except Exception:
+        pass
     doc = parseString(request.body.decode('utf-8'), parser=parser)
+    text = ''
     for event, node in doc:
         if event == START_ELEMENT and node.tagName == 'text':
             doc.expandNode(node)
@@ -457,7 +621,7 @@ def cmd_lab2(request):
             
             print(val)
             try:
-                output = eval(val)
+                output = safe_eval_expression(val)
             except:
                 output = "Something went wrong"
                 return render(request,'Lab/CMD/cmd_lab2.html',{"output":output})
@@ -557,7 +721,7 @@ def a9_lab(request):
             try :
                 file=request.FILES["file"]
                 try :
-                    data = yaml.load(file,yaml.Loader)
+                    data = yaml.safe_load(file)
                     
                     return render(request,"Lab/A9/a9_lab.html",{"data":data})
                 except:
@@ -861,7 +1025,7 @@ def injection_sql_lab(request):
         print(password)
 
         if name:
-            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id='"+name+"'AND password='"+password+"'"
+            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id=%s AND password=%s"
 
             sql_instance = sql_lab_table(id="admin", password="65079b006e85a7e798abecb99e47c154")
             sql_instance.save()
@@ -875,7 +1039,7 @@ def injection_sql_lab(request):
             print(sql_query)
 
             try:
-                user = sql_lab_table.objects.raw(sql_query)
+                user = list(sql_lab_table.objects.raw(sql_query, [name, password]))
                 user = user[0].id
                 print(user)
 
@@ -922,10 +1086,14 @@ def ssrf_lab(request):
         else:
             file=request.POST["blog"]
             try :
-                dirname = os.path.dirname(__file__)
-                filename = os.path.join(dirname, file)
-                file = open(filename,"r")
-                data = file.read()
+                dirname = os.path.realpath(os.path.dirname(__file__))
+                filename = os.path.realpath(os.path.join(dirname, file))
+                if os.path.commonpath([dirname, filename]) != dirname:
+                    raise ValueError("Unsafe path")
+                if not os.path.isfile(filename):
+                    raise ValueError("Not a file")
+                with open(filename,"r") as blog_file:
+                    data = blog_file.read()
                 return render(request,"Lab/ssrf/ssrf_lab.html",{"blog":data})
             except:
                 return render(request, "Lab/ssrf/ssrf_lab.html", {"blog": "No blog found"})
@@ -960,7 +1128,9 @@ def ssrf_lab2(request):
     elif request.method == "POST":
         url = request.POST["url"]
         try:
-            response = requests.get(url)
+            if not is_safe_external_url(url):
+                raise ValueError("Unsafe URL")
+            response = requests.get(url, timeout=5, allow_redirects=False)
             return render(request, "Lab/ssrf/ssrf_lab2.html", {"response": response.content.decode()})
         except:
             return render(request, "Lab/ssrf/ssrf_lab2.html", {"error": "Invalid URL"})

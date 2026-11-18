@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import secrets
+import time
 
 import django_heroku
 
@@ -22,7 +24,55 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _get_secret_key():
+    secret_key = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_key_file = os.environ.get(
+        'DJANGO_SECRET_KEY_FILE',
+        os.path.join(BASE_DIR, '.django_secret_key'),
+    )
+
+    for _ in range(50):
+        try:
+            with open(secret_key_file, 'r') as f:
+                existing_key = f.read().strip()
+            if existing_key:
+                return existing_key
+        except FileNotFoundError:
+            pass
+        except OSError:
+            break
+
+        new_key = secrets.token_urlsafe(64)
+        try:
+            fd = os.open(secret_key_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            time.sleep(0.01)
+            continue
+        except OSError:
+            return new_key
+
+        try:
+            with os.fdopen(fd, 'w') as f:
+                f.write(new_key)
+            return new_key
+        except OSError:
+            return new_key
+
+    try:
+        with open(secret_key_file, 'r') as f:
+            existing_key = f.read().strip()
+        if existing_key:
+            return existing_key
+    except OSError:
+        pass
+
+    return secrets.token_urlsafe(64)
+
+
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 
@@ -168,5 +218,5 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SECRET_COOKIE_KEY = "PYGOAT"
+SECRET_COOKIE_KEY = os.environ.get('SECRET_COOKIE_KEY') or SECRET_KEY
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000","http://0.0.0.0:8000","http://172.16.189.10"]

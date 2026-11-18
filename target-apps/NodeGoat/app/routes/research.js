@@ -1,5 +1,6 @@
 const ResearchDAO = require("../data/research-dao").ResearchDAO;
 const needle = require("needle");
+const { URL } = require("url");
 const {
     environmentalScripts
 } = require("../../config/config");
@@ -8,12 +9,33 @@ function ResearchHandler(db) {
     "use strict";
 
     const researchDAO = new ResearchDAO(db);
+    const allowedHost = "dev.markitondemand.com";
 
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
-            return needle.get(url, (error, newResponse, body) => {
+            let parsedUrl;
+            try {
+                parsedUrl = new URL(req.query.url + encodeURIComponent(req.query.symbol));
+            } catch (error) {
+                res.writeHead(400, {
+                    "Content-Type": "text/plain"
+                });
+                return res.end("Invalid URL");
+            }
+
+            if ((parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") ||
+                parsedUrl.hostname !== allowedHost ||
+                parsedUrl.username ||
+                parsedUrl.password ||
+                (parsedUrl.port && parsedUrl.port !== "80" && parsedUrl.port !== "443")) {
+                res.writeHead(400, {
+                    "Content-Type": "text/plain"
+                });
+                return res.end("Invalid URL");
+            }
+
+            return needle.get(parsedUrl.toString(), { follow_max: 0 }, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
                         "Content-Type": "text/html"

@@ -89,7 +89,7 @@ jobs:
       arm_test_first: ${{ contains(fromJSON('["official","testfirst","testfirst-rag","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
       arm_repo_context: ${{ contains(fromJSON('["official","repo","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
       arm_rag: ${{ contains(fromJSON('["official","rag","testfirst-rag","full"]'), (inputs.arm || 'official')) }}
-      arm_memory: ${{ (inputs.arm || 'official') == 'official' && 'real' || inputs.arm == 'baseline' && 'fresh' || inputs.arm == 'memory' && 'reuse' || 'off' }}
+      arm_memory: ${{ (inputs.arm || 'official') == 'official' && 'real' || inputs.arm == 'baseline' && 'fresh' || contains(fromJSON('["memory","full"]'), inputs.arm) && 'reuse' || 'off' }}
       arm_report_issues: ${{ (inputs.arm || 'official') == 'official' }}
       branch_suffix: ${{ inputs.run_label || '' }}
       arm_base_image: ${{ contains(fromJSON('["official","testfirst","testfirst-rag","full"]'), (inputs.arm || 'official')) && '1' || '0' }}

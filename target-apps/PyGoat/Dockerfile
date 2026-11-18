@@ -2,7 +2,7 @@
 # Buster base image and pinned Debian packages are gone), so ASVA customises this file in place,
 # as with NodeGoat; see ASVA_IMPORT.md. The scan, PR checks, candidate rescans and the
 # Kubernetes deploy all build this one file.
-FROM python:3.11-slim-bookworm
+FROM python:3.11-slim-trixie
 
 WORKDIR /app
 

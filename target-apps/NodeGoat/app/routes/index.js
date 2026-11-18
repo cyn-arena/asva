@@ -1,3 +1,4 @@
+const { URL } = require("url");
 const SessionHandler = require("./session");
 const ProfileHandler = require("./profile");
 const BenefitsHandler = require("./benefits");
@@ -68,8 +69,40 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
+        const requestedUrl = req.query.url;
+
+        if (typeof requestedUrl !== "string" || requestedUrl.length === 0) {
+            return res.redirect("/");
+        }
+
+        const baseUrl = new URL("http://localhost");
+        let redirectUrl;
+
+        try {
+            redirectUrl = new URL(requestedUrl, baseUrl);
+        } catch (err) {
+            return res.redirect("/");
+        }
+
+        const allowedLearningResourceHosts = new Set([
+            "www.khanacademy.org",
+            "khanacademy.org"
+        ]);
+
+        if (redirectUrl.origin === baseUrl.origin) {
+            return res.redirect(`${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`);
+        }
+
+        if (
+            redirectUrl.protocol === "https:" &&
+            allowedLearningResourceHosts.has(redirectUrl.hostname) &&
+            !redirectUrl.username &&
+            !redirectUrl.password
+        ) {
+            return res.redirect(redirectUrl.href);
+        }
+
+        return res.redirect("/");
     });
 
     // Research Page

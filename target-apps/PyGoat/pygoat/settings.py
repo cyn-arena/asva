@@ -22,7 +22,35 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+def _get_secret_key():
+    secret_key = os.environ.get('DJANGO_SECRET_KEY')
+    if secret_key:
+        return secret_key
+
+    secret_file = os.path.join(BASE_DIR, '.django_secret_key')
+    lock_file = secret_file + '.lock'
+    try:
+        import fcntl
+        with open(lock_file, 'a') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            try:
+                with open(secret_file, 'r') as f:
+                    secret_key = f.read().strip()
+            except FileNotFoundError:
+                secret_key = ''
+            if not secret_key:
+                from django.core.management.utils import get_random_secret_key
+                secret_key = get_random_secret_key()
+                with open(secret_file, 'w') as f:
+                    f.write(secret_key)
+            return secret_key
+    except Exception:
+        import hashlib
+        return hashlib.sha256(
+            f"{BASE_DIR}:{os.environ.get('HOSTNAME', 'localhost')}".encode()
+        ).hexdigest()
+
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

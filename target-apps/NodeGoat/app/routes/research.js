@@ -12,8 +12,9 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
-            return needle.get(url, (error, newResponse, body) => {
+            const url = new URL("https://www.google.com/finance");
+            url.searchParams.set("q", req.query.symbol);
+            return needle.get(url.href, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
                         "Content-Type": "text/html"

@@ -37,7 +37,7 @@ on:
       arm:
         description: Which ITP2 parts are on (official = all on, shared memory, as on rel)
         type: choice
-        options: [official, baseline, memory, repo, rag, testfirst, testfirst-rag, full]
+        options: [official, baseline, memory, memory-shared, repo, rag, testfirst, testfirst-rag, full]
         default: official
       scan_run_id:
         description: Reuse the scan from this run ID instead of scanning again (blank = scan now)
@@ -45,6 +45,10 @@ on:
         default: ''
       run_label:
         description: Added to fix branch names, e.g. cc-baseline-r1 (letters, digits, - and _)
+        type: string
+        default: ''
+      lockfile_rescan_prs:
+        description: 'Only rescan these dependency PRs with a rebuilt lock file: JSON list of {batch_id, sha, pr_url} (blank = normal run)'
         type: string
         default: ''
 
@@ -58,12 +62,33 @@ permissions:
 jobs:
   scan:
     name: NodeGoat - Scan vulnerabilities
-    if: ${{ !inputs.scan_run_id }} # TEST BRANCH ONLY: skipped when reusing a scan
+    if: ${{ !inputs.scan_run_id && !inputs.lockfile_rescan_prs }} # TEST BRANCH ONLY: skipped when reusing a scan or only rescanning
     uses: ./.github/workflows/nodegoat-scan.yml
+    secrets: inherit
+
+  # TEST BRANCH ONLY (component comparison): rescan dependency PRs whose lock file is out of
+  # sync with package.json, after rebuilding it. Nothing is pushed; every other job is skipped.
+  lockfile-rescan:
+    name: NodeGoat - Rescan with a rebuilt lock file (comparison only)
+    if: ${{ inputs.lockfile_rescan_prs != '' }}
+    uses: ./.github/workflows/candidate-rescan.yml
+    with:
+      app-code: nodegoat
+      app-path: target-apps/NodeGoat
+      ecosystem: npm
+      manifest: package.json
+      container-file: docker-compose.yml
+      container-mode: third-party
+      node-version: '20.19.0'
+      npm-version: '8.19.4'
+      compose-files: docker-compose.yml docker-compose.pr-check.yml
+      prs: ${{ inputs.lockfile_rescan_prs }}
+      regenerate-lockfile: true
     secrets: inherit
 
   test-unit:
     name: NodeGoat - Test ASVA components
+    if: ${{ !inputs.lockfile_rescan_prs }} # TEST BRANCH ONLY: skipped when only rescanning
     uses: ./.github/workflows/nodegoat-test.yml
     with:
       stage: unit
@@ -82,10 +107,10 @@ jobs:
       arm_test_first: ${{ contains(fromJSON('["official","testfirst","testfirst-rag","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
       arm_repo_context: ${{ contains(fromJSON('["official","repo","full"]'), (inputs.arm || 'official')) && '1' || '0' }}
       arm_rag: ${{ contains(fromJSON('["official","rag","testfirst-rag","full"]'), (inputs.arm || 'official')) }}
-      arm_memory: ${{ (inputs.arm || 'official') == 'official' && 'real' || inputs.arm == 'baseline' && 'fresh' || contains(fromJSON('["memory","full"]'), inputs.arm) && 'reuse' || 'off' }}
+      arm_memory: ${{ (inputs.arm || 'official') == 'official' && 'real' || inputs.arm == 'baseline' && 'fresh' || contains(fromJSON('["full","memory-shared"]'), inputs.arm) && 'readonly' || inputs.arm == 'memory' && 'reuse' || 'off' }}
       arm_report_issues: ${{ (inputs.arm || 'official') == 'official' }}
       branch_suffix: ${{ inputs.run_label || '' }}
-      arm_sca_mode: ${{ contains(fromJSON('["baseline","memory","repo","rag"]'), inputs.arm) && 'llm' || '' }}
+      arm_sca_mode: ${{ contains(fromJSON('["baseline","memory","memory-shared","repo","rag"]'), inputs.arm) && 'llm' || '' }}
       ## ---------- specify scan run id to fix specified scan ---------- 
       # scan_run_id: "29006193665" 
     secrets: inherit

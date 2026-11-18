@@ -43,6 +43,10 @@ on:
       compose-files:
         type: string
         default: ''
+      # TEST BRANCH ONLY (component comparison): rebuild the npm lock file before scanning
+      regenerate-lockfile:
+        type: boolean
+        default: false
     secrets:
       SNYK_TOKEN:
         required: false
@@ -107,6 +111,24 @@ jobs:
         if: inputs.ecosystem == 'npm' && inputs.npm-version != ''
         run: npm install --global "npm@$NPM_VERSION" --ignore-scripts --no-audit --no-fund
 
+      # TEST BRANCH ONLY (component comparison): a PR that changed package.json without its
+      # lock file can't be installed with npm ci. Rebuild the lock file from the PR's
+      # package.json, as a person would with npm install, and scan that. The rescan only accepts
+      # a clean checkout, so the rebuilt file is committed in this runner only and never pushed.
+      - name: Rebuild the lock file from package.json (comparison only)
+        if: inputs.regenerate-lockfile && inputs.ecosystem == 'npm'
+        working-directory: candidate-source/${{ inputs.app-path }}
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          if git diff --quiet -- package-lock.json; then
+            echo "The lock file already matched package.json."
+          else
+            git -c user.name="asva-comparison" -c user.email="asva-comparison@users.noreply.github.com" \
+              commit -q -m "Rebuilt lock file (comparison only, not pushed)" -- package-lock.json
+            git show --stat --format="Rebuilt lock file: %H" HEAD | head -3
+          fi
+          echo "RESCAN_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
       - name: Install pinned Snyk CLI
         run: |
           INSTALL_DIR="$HOME/.local/bin" bash scripts/install-snyk.sh
@@ -120,7 +142,7 @@ jobs:
             args+=(--compose-file "$file")
           done
           python -m scripts.candidate_rescan --app "$APP_CODE" --app-path "$APP_PATH" \
-            --sha "$EXPECTED_SHA" --batch-id "$BATCH_ID" --pr-url "$CANDIDATE_PR" \
+            --sha "${RESCAN_SHA:-$EXPECTED_SHA}" --batch-id "$BATCH_ID" --pr-url "$CANDIDATE_PR" \
             --run-id "$GITHUB_RUN_ID" --output asva-results/after-fix \
             --ecosystem "$ECOSYSTEM" --manifest "$MANIFEST" \
             --container-file "$CONTAINER_FILE" --container-mode "$CONTAINER_MODE" \

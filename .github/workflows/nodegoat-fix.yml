@@ -35,7 +35,7 @@ on:
           default: true
           required: false
         arm_memory:
-          description: "real = shared memory; off = empty, not saved; fresh = empty, saved to the test copy; reuse = load the test copy"
+          description: "real = shared memory; off = empty, not saved; fresh = empty, saved to the test copy; reuse = load the test copy; readonly = load the shared memory (as on rel), not saved"
           type: string
           default: real
           required: false
@@ -300,7 +300,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p memory
-          # TEST BRANCH ONLY: which memory copy to load (ASVA_MEMORY_MODE, from arm_memory)
+          # TEST BRANCH ONLY: which memory copy to load (ASVA_MEMORY_MODE, from arm_memory; real and readonly load the shared one)
           case "$ASVA_MEMORY_MODE" in
             off|fresh) echo "Component comparison: starting with empty memory ($ASVA_MEMORY_MODE)."; exit 0 ;;
             reuse) MEMORY_BLOB=asva-memory-test/nodegoat_memory.db ;;
@@ -467,7 +467,7 @@ jobs:
         run: |
           # TEST BRANCH ONLY: the shared memory is never written by a comparison run
           case "$ASVA_MEMORY_MODE" in
-            off|reuse) echo "Component comparison: memory not saved ($ASVA_MEMORY_MODE)."; exit 0 ;;
+            off|reuse|readonly) echo "Component comparison: memory not saved ($ASVA_MEMORY_MODE)."; exit 0 ;;
             fresh) MEMORY_BLOB=asva-memory-test/nodegoat_memory.db ;;
             *) MEMORY_BLOB=asva-memory/asva_memory.db ;;
           esac

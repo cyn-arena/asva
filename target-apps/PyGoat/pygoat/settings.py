@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import hashlib
 import os
+import secrets
+import tempfile
+import time
 
 import django_heroku
 
@@ -18,11 +22,61 @@ import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+def _get_secret_key():
+    for env_name in ('DJANGO_SECRET_KEY', 'SECRET_KEY'):
+        value = os.environ.get(env_name)
+        if value:
+            return value
+
+    secret_key_file = os.environ.get('DJANGO_SECRET_KEY_FILE')
+    candidate_files = []
+    if secret_key_file:
+        candidate_files.append(secret_key_file)
+    candidate_files.append(os.path.join(tempfile.gettempdir(), 'pygoat_secret_key'))
+    candidate_files.append(os.path.join(BASE_DIR, '.secret_key'))
+
+    for path in candidate_files:
+        try:
+            with open(path, 'r') as f:
+                existing_key = f.read().strip()
+            if existing_key:
+                return existing_key
+        except OSError:
+            pass
+
+        new_key = secrets.token_urlsafe(64)
+        try:
+            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            for _ in range(50):
+                try:
+                    with open(path, 'r') as f:
+                        existing_key = f.read().strip()
+                    if existing_key:
+                        return existing_key
+                except OSError:
+                    pass
+                time.sleep(0.01)
+            continue
+        except OSError:
+            continue
+
+        try:
+            with os.fdopen(fd, 'w') as f:
+                f.write(new_key)
+            return new_key
+        except OSError:
+            try:
+                os.unlink(path)
+            except OSError:
+                pass
+            continue
+
+    return hashlib.sha256(os.path.join(BASE_DIR, 'pygoat').encode('utf-8')).hexdigest()
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

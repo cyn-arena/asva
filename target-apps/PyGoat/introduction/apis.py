@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -12,6 +13,16 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+def _is_safe_lab_input(value):
+    if not isinstance(value, str) or not value:
+        return False
+    if value in ('.', '..'):
+        return False
+    if '/' in value or '\\' in value or '..' in value:
+        return False
+    return True
 
 
 # steps --> 
@@ -35,6 +46,8 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
+                if not _is_safe_lab_input(inputs):
+                    return JsonResponse({'message': 'Invalid input'}, status=400)
                 outputs.append(main.ssrf_lab(inputs))
             if outputs == correct_output1:
                 outputs = []

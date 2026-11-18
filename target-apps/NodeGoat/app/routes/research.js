@@ -4,6 +4,11 @@ const {
     environmentalScripts
 } = require("../../config/config");
 
+const YAHOO_RESEARCH_URL = "http://finance.yahoo.com/d/quotes.csv?s=";
+const YAHOO_RESEARCH_URL_SECURE = "https://finance.yahoo.com/d/quotes.csv?s=";
+const MARKIT_RESEARCH_URL = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=";
+const MARKIT_RESEARCH_URL_SECURE = "https://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=";
+
 function ResearchHandler(db) {
     "use strict";
 
@@ -12,7 +17,22 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
+            const requestedUrl = req.query.url;
+            let baseUrl;
+
+            if (requestedUrl === YAHOO_RESEARCH_URL) {
+                baseUrl = YAHOO_RESEARCH_URL;
+            } else if (requestedUrl === YAHOO_RESEARCH_URL_SECURE) {
+                baseUrl = YAHOO_RESEARCH_URL_SECURE;
+            } else if (requestedUrl === MARKIT_RESEARCH_URL) {
+                baseUrl = MARKIT_RESEARCH_URL;
+            } else if (requestedUrl === MARKIT_RESEARCH_URL_SECURE) {
+                baseUrl = MARKIT_RESEARCH_URL_SECURE;
+            } else {
+                return res.status(400).send("Invalid research URL");
+            }
+
+            const url = baseUrl + encodeURIComponent(req.query.symbol);
             return needle.get(url, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {

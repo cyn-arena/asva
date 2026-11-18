@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -14,6 +15,21 @@ from .utility import *
 from .views import authentication_decorator
 
 
+def _is_safe_ssrf_lab_input(value):
+    if not isinstance(value, str) or not value or "\x00" in value:
+        return False
+    if os.path.isabs(value):
+        return False
+    if len(value) >= 2 and value[1] == ':' and value[0].isalpha():
+        return False
+    normalized = value.replace('\\', '/')
+    if normalized.startswith('/'):
+        return False
+    if '..' in normalized.split('/'):
+        return False
+    return True
+
+
 # steps --> 
 # 1. covert input code to corrosponding code and write in file
 # 2. extract inputs form 2nd code 
@@ -28,6 +44,8 @@ def ssrf_code_checker(request):
             if not (ssrf_code_converter(python_code)):
                 return JsonResponse({"status": "error", "message": "Invalid code"})
             test_bench1 = ssrf_html_input_extractor(html_code)
+            if not all(_is_safe_ssrf_lab_input(value) for value in test_bench1):
+                return JsonResponse({"status": "error", "message": "Invalid input"}, status=400)
             
             if (len(test_bench1) >4):
                 return JsonResponse({'message':'too many inputs in Html\n Try again'},status = 400)

@@ -1,3 +1,4 @@
+import re
 import time
 
 import requests
@@ -31,6 +32,10 @@ def ssrf_code_checker(request):
             
             if (len(test_bench1) >4):
                 return JsonResponse({'message':'too many inputs in Html\n Try again'},status = 400)
+
+            if not all(isinstance(item, str) and re.fullmatch(r'[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)?', item) for item in test_bench1):
+                return JsonResponse({'message': 'Invalid input'}, status=400)
+
             test_bench2 = ['secret.txt']
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []

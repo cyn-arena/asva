@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import hashlib
 import os
+import secrets
+import tempfile
+import time
 
 import django_heroku
 
@@ -21,8 +25,60 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+
+def _get_secret_key():
+    for env_name in ('DJANGO_SECRET_KEY', 'SECRET_KEY'):
+        value = os.environ.get(env_name)
+        if value:
+            return value
+
+    secret_key_file = os.environ.get(
+        'DJANGO_SECRET_KEY_FILE',
+        os.path.join(tempfile.gettempdir(), 'pygoat_django_secret_key'),
+    )
+
+    for _ in range(50):
+        try:
+            with open(secret_key_file, 'r') as secret_file:
+                existing_key = secret_file.read().strip()
+            if existing_key:
+                return existing_key
+        except FileNotFoundError:
+            pass
+        except OSError:
+            break
+
+        new_key = secrets.token_urlsafe(64)
+        try:
+            fd = os.open(secret_key_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            time.sleep(0.01)
+            continue
+        except OSError:
+            break
+
+        try:
+            with os.fdopen(fd, 'w') as secret_file:
+                secret_file.write(new_key)
+        except OSError:
+            break
+        return new_key
+
+    try:
+        with open(secret_key_file, 'r') as secret_file:
+            existing_key = secret_file.read().strip()
+        if existing_key:
+            return existing_key
+    except OSError:
+        pass
+
+    return hashlib.sha256(
+        f"{BASE_DIR}:{os.path.abspath(__file__)}".encode()
+    ).hexdigest()
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'
+SECRET_KEY = _get_secret_key()
 
 SENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'
 

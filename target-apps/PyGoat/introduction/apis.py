@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -12,6 +13,9 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+SAFE_SSRF_INPUTS = ('blog1.txt', 'blog2.txt', 'blog3.txt', 'blog4.txt')
 
 
 # steps --> 
@@ -31,19 +35,19 @@ def ssrf_code_checker(request):
             
             if (len(test_bench1) >4):
                 return JsonResponse({'message':'too many inputs in Html\n Try again'},status = 400)
-            test_bench2 = ['secret.txt']
+            if list(test_bench1) != list(SAFE_SSRF_INPUTS):
+                return JsonResponse({'message':'Testbench failed, Code is not working\n Try again'},status = 200)
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
-            for inputs in test_bench1:
-                outputs.append(main.ssrf_lab(inputs))
+            for safe_input in SAFE_SSRF_INPUTS:
+                outputs.append(main.ssrf_lab(safe_input))
             if outputs == correct_output1:
                 outputs = []
             else:
                 return JsonResponse({'message':'Testbench failed, Code is not working\n Try again'},status = 200)
 
             correct_output2 = [{"blog": "No blog found"}]
-            for inputs in test_bench2:
-                outputs.append(main.ssrf_lab(inputs))
+            outputs.append(main.ssrf_lab('secret.txt'))
             if outputs == correct_output2:
                 return JsonResponse({'message':'Congratulation, you have written a secure code.', 'passed':1}, status = 200)
             

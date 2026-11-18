@@ -1,9 +1,14 @@
+import ast
 import datetime
+import ipaddress
+import operator
+import os
 import re
 import subprocess
 from hashlib import md5
 
 import jwt
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -19,6 +24,45 @@ from .views import authentication_decorator
 FLAG = "NOT_SUPPOSED_TO_BE_ACCESSED"
 
 # target zone end
+
+_JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or settings.SECRET_KEY
+
+_BINARY_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+
+_UNARY_OPERATORS = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
+
+
+def _safe_eval(node):
+    if isinstance(node, ast.Expression):
+        return _safe_eval(node.body)
+    if isinstance(node, ast.Constant):
+        if isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
+            return node.value
+        raise ValueError('Unsupported constant')
+    if hasattr(ast, 'Num') and isinstance(node, ast.Num):
+        return node.n
+    if isinstance(node, ast.BinOp):
+        op = _BINARY_OPERATORS.get(type(node.op))
+        if op is None:
+            raise ValueError('Unsupported operator')
+        return op(_safe_eval(node.left), _safe_eval(node.right))
+    if isinstance(node, ast.UnaryOp):
+        op = _UNARY_OPERATORS.get(type(node.op))
+        if op is None:
+            raise ValueError('Unsupported operator')
+        return op(_safe_eval(node.operand))
+    raise ValueError('Unsupported expression')
 
 
 @authentication_decorator
@@ -166,7 +210,7 @@ def csrf_lab_login(request):
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=300),
                 'iat': datetime.datetime.utcnow()
             }
-            cookie = jwt.encode(payload, 'csrf_vulneribility', algorithm='HS256')
+            cookie = jwt.encode(payload, _JWT_SECRET_KEY, algorithm='HS256')
             response = redirect("/mitre/9/lab/transaction")
             response.set_cookie('auth_cookiee', cookie)
             return response
@@ -179,7 +223,7 @@ def csrf_transfer_monei(request):
     if request.method == 'GET':
         try:
             cookie = request.COOKIES['auth_cookiee']
-            payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+            payload = jwt.decode(cookie, _JWT_SECRET_KEY, algorithms=['HS256'])
             username = payload['username']
             User = CSRF_user_tbl.objects.filter(username=username)
             if not User:
@@ -191,7 +235,7 @@ def csrf_transfer_monei(request):
 def csrf_transfer_monei_api(request,recipent,amount):
     if request.method == "GET":
         cookie = request.COOKIES['auth_cookiee']
-        payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+        payload = jwt.decode(cookie, _JWT_SECRET_KEY, algorithms=['HS256'])
         username = payload['username']
         User = CSRF_user_tbl.objects.filter(username=username)
         if not User:
@@ -214,8 +258,11 @@ def csrf_transfer_monei_api(request,recipent,amount):
 @csrf_exempt
 def mitre_lab_25_api(request):
     if request.method == "POST":
-        expression = request.POST.get('expression')
-        result = eval(expression)
+        expression = request.POST.get('expression', '')
+        try:
+            result = _safe_eval(ast.parse(expression, mode='eval'))
+        except Exception:
+            return JsonResponse({'error': 'Invalid expression'}, status=400)
         return JsonResponse({'result': result})
     else:
         return redirect('/mitre/25/lab/')
@@ -230,15 +277,19 @@ def mitre_lab_17(request):
     return render(request, 'mitre/mitre_lab_17.html')
 
 def command_out(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process.communicate()
     
 
 @csrf_exempt
 def mitre_lab_17_api(request):
     if request.method == "POST":
-        ip = request.POST.get('ip')
-        command = "nmap " + ip 
+        ip = request.POST.get('ip', '').strip()
+        try:
+            ip = str(ipaddress.ip_address(ip))
+        except ValueError:
+            return JsonResponse({'error': 'Invalid IP address'}, status=400)
+        command = ["nmap", ip]
         res, err = command_out(command)
         res = res.decode()
         err = err.decode()

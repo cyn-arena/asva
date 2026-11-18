@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -12,6 +13,23 @@ from introduction.playground.ssrf import main
 
 from .utility import *
 from .views import authentication_decorator
+
+
+def _safe_ssrf_input(value):
+    if not isinstance(value, str) or "\x00" in value:
+        return None
+    if os.path.basename(value) != value:
+        return None
+    if value in ("", ".", ".."):
+        return None
+    base_dir = os.path.realpath(os.path.dirname(main.__file__))
+    candidate = os.path.realpath(os.path.join(base_dir, value))
+    try:
+        if os.path.commonpath([base_dir, candidate]) != base_dir:
+            return None
+    except ValueError:
+        return None
+    return value
 
 
 # steps --> 
@@ -35,7 +53,10 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
-                outputs.append(main.ssrf_lab(inputs))
+                safe_input = _safe_ssrf_input(inputs)
+                if safe_input is None:
+                    return JsonResponse({'message': 'Invalid input'}, status=400)
+                outputs.append(main.ssrf_lab(safe_input))
             if outputs == correct_output1:
                 outputs = []
             else:

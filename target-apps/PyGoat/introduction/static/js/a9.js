@@ -1,4 +1,17 @@
-// console.log("imported a9.js");
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 event1 = function(){
     document.getElementById("a9_b1").style.display = 'none';
@@ -14,11 +27,23 @@ event3 = function(){
     var log_code = document.getElementById('a9_log').value
     var target_code = document.getElementById('a9_api').value
 
+    var csrftoken = getCookie("csrftoken");
+    if (!csrftoken) {
+        var csrfInput = document.querySelector('[name="csrfmiddlewaretoken"]');
+        if (csrfInput) {
+            csrftoken = csrfInput.value;
+        }
+    }
+
     var myHeaders = new Headers();
-    myHeaders.append("Cookie", "csrftoken=5fVOTXh2HNahtvJFJNRSrKkwPAgPM9YCHlrCGprAxhAAKOUWMxqMnWm8BUomv0Yd; jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNjUzMzEzMDIxLCJpYXQiOjE2NTMzMDk0MjF9.dh2gfP9wKD8GKu1J-jVs2jJUYMgKu_kMaJjrD0hHP-I");
+    if (csrftoken) {
+        myHeaders.append("X-CSRFToken", csrftoken);
+    }
 
     var formdata = new FormData();
-    formdata.append("csrfmiddlewaretoken", "5fVOTXh2HNahtvJFJNRSrKkwPAgPM9YCHlrCGprAxhAAKOUWMxqMnWm8BUomv0Yd");
+    if (csrftoken) {
+        formdata.append("csrfmiddlewaretoken", csrftoken);
+    }
     formdata.append("log_code", log_code);
     formdata.append("api_code", target_code);
 
@@ -26,7 +51,8 @@ event3 = function(){
     method: 'POST',
     headers: myHeaders,
     body: formdata,
-    redirect: 'follow'
+    redirect: 'follow',
+    credentials: 'same-origin'
     };
 
     fetch("/2021/discussion/A9/api", requestOptions)

@@ -12,8 +12,25 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
-            return needle.get(url, (error, newResponse, body) => {
+            let url;
+            try {
+                url = new URL(String(req.query.url) + String(req.query.symbol));
+            } catch (error) {
+                url = null;
+            }
+
+            if (!url ||
+                (url.protocol !== "http:" && url.protocol !== "https:") ||
+                url.hostname !== "finance.yahoo.com" ||
+                url.username ||
+                url.password) {
+                res.writeHead(400, {
+                    "Content-Type": "text/plain"
+                });
+                return res.end("Invalid research URL");
+            }
+
+            return needle.get(url.toString(), (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
                         "Content-Type": "text/html"

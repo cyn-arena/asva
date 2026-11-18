@@ -1,9 +1,15 @@
+import ast
 import datetime
+import ipaddress
+import math
+import operator
+import os
 import re
 import subprocess
 from hashlib import md5
 
 import jwt
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import CSRF_user_tbl
 from .views import authentication_decorator
 
-# import os
+JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or settings.SECRET_KEY
 
 ## Mitre top1 | CWE:787
 
@@ -166,7 +172,7 @@ def csrf_lab_login(request):
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=300),
                 'iat': datetime.datetime.utcnow()
             }
-            cookie = jwt.encode(payload, 'csrf_vulneribility', algorithm='HS256')
+            cookie = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
             response = redirect("/mitre/9/lab/transaction")
             response.set_cookie('auth_cookiee', cookie)
             return response
@@ -179,7 +185,7 @@ def csrf_transfer_monei(request):
     if request.method == 'GET':
         try:
             cookie = request.COOKIES['auth_cookiee']
-            payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+            payload = jwt.decode(cookie, JWT_SECRET_KEY, algorithms=['HS256'])
             username = payload['username']
             User = CSRF_user_tbl.objects.filter(username=username)
             if not User:
@@ -191,7 +197,7 @@ def csrf_transfer_monei(request):
 def csrf_transfer_monei_api(request,recipent,amount):
     if request.method == "GET":
         cookie = request.COOKIES['auth_cookiee']
-        payload = jwt.decode(cookie, 'csrf_vulneribility', algorithms=['HS256'])
+        payload = jwt.decode(cookie, JWT_SECRET_KEY, algorithms=['HS256'])
         username = payload['username']
         User = CSRF_user_tbl.objects.filter(username=username)
         if not User:
@@ -210,12 +216,76 @@ def csrf_transfer_monei_api(request,recipent,amount):
         return redirect ('/mitre/9/lab/transaction')
 
 
+_ALLOWED_BINOPS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+
+_ALLOWED_UNARYOPS = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
+
+
+def safe_eval(expression):
+    if not expression or len(expression) > 1000:
+        raise ValueError("Invalid expression")
+
+    tree = ast.parse(expression, mode='eval')
+
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+
+        if isinstance(node, ast.Constant):
+            value = node.value
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError("Unsupported constant")
+            if isinstance(value, float) and not math.isfinite(value):
+                raise ValueError("Unsupported constant")
+            return value
+
+        if isinstance(node, ast.BinOp):
+            op = _ALLOWED_BINOPS.get(type(node.op))
+            if op is None:
+                raise ValueError("Unsupported operator")
+            left = _eval(node.left)
+            right = _eval(node.right)
+            if isinstance(node.op, ast.Pow):
+                if not isinstance(right, int) or abs(right) > 100:
+                    raise ValueError("Exponent too large")
+                if abs(left) > 1_000_000:
+                    raise ValueError("Base too large")
+            result = op(left, right)
+            if isinstance(result, float) and not math.isfinite(result):
+                raise ValueError("Result out of range")
+            return result
+
+        if isinstance(node, ast.UnaryOp):
+            op = _ALLOWED_UNARYOPS.get(type(node.op))
+            if op is None:
+                raise ValueError("Unsupported operator")
+            return op(_eval(node.operand))
+
+        raise ValueError("Unsupported expression")
+
+    return _eval(tree)
+
+
 # @authentication_decorator
 @csrf_exempt
 def mitre_lab_25_api(request):
     if request.method == "POST":
         expression = request.POST.get('expression')
-        result = eval(expression)
+        try:
+            result = safe_eval(expression)
+        except Exception:
+            return JsonResponse({'error': 'Invalid expression'}, status=400)
         return JsonResponse({'result': result})
     else:
         return redirect('/mitre/25/lab/')
@@ -230,18 +300,42 @@ def mitre_lab_17(request):
     return render(request, 'mitre/mitre_lab_17.html')
 
 def command_out(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process.communicate()
-    
+
+
+_HOSTNAME_RE = re.compile(
+    r'^(?=.{1,253}$)(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.(?!-)[A-Za-z0-9-]{1,63}(?<!-))*$'
+)
+
+
+def is_valid_scan_target(target):
+    target = target.strip()
+    if not target or len(target) > 253:
+        return False
+    try:
+        if '/' in target:
+            ipaddress.ip_network(target, strict=False)
+        else:
+            ipaddress.ip_address(target)
+        return True
+    except ValueError:
+        pass
+    return bool(_HOSTNAME_RE.fullmatch(target))
+
 
 @csrf_exempt
 def mitre_lab_17_api(request):
     if request.method == "POST":
-        ip = request.POST.get('ip')
-        command = "nmap " + ip 
+        ip = request.POST.get('ip', '').strip()
+        if not is_valid_scan_target(ip):
+            return JsonResponse({'error': 'Invalid target'}, status=400)
+        command = ["nmap", ip]
         res, err = command_out(command)
-        res = res.decode()
-        err = err.decode()
+        res = res.decode(errors='replace')
+        err = err.decode(errors='replace')
         pattern = "STATE SERVICE.*\\n\\n"
-        ports = re.findall(pattern, res,re.DOTALL)[0][14:-2].split('\n')
+        matches = re.findall(pattern, res, re.DOTALL)
+        ports = matches[0][14:-2].split('\n') if matches else []
         return JsonResponse({'raw_res': str(res), 'raw_err': str(err), 'ports': ports})
+    return HttpResponseBadRequest('Invalid request')

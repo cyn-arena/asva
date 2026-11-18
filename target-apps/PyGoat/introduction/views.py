@@ -1,14 +1,17 @@
+import ast
 import base64
 import datetime
 import hashlib
+import ipaddress
 import json
 import logging
 import os
-import pickle
 import random
 import re
+import socket
 import string
 import subprocess
+import urllib.parse
 import uuid
 from dataclasses import dataclass
 from hashlib import md5
@@ -16,7 +19,7 @@ from io import BytesIO
 from random import randint
 from xml.dom.pulldom import START_ELEMENT, parseString
 from xml.sax import make_parser
-from xml.sax.handler import feature_external_ges
+from xml.sax.handler import feature_external_ges, feature_external_pes
 
 import jwt
 import requests
@@ -44,16 +47,16 @@ from .utility import customHash, filter_blog
 #*****************************************Login and Registration****************************************************#
 
 def register(request):
-	if request.method == "POST":
-		form = NewUserForm(request.POST)
-		if form.is_valid():
-			user = form.save()
-			login(request, user)
-			messages.success(request, "Registration successful." )
-			return redirect('/')
-		messages.error(request, "Unsuccessful registration. Invalid information.")
-	form = NewUserForm()
-	return render (request=request, template_name="registration/register.html", context={"register_form":form})
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful." )
+            return redirect('/')
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    form = NewUserForm()
+    return render (request=request, template_name="registration/register.html", context={"register_form":form})
 
 # def register(request):
 #     if request.method=="POST":
@@ -155,11 +158,11 @@ def sql_lab(request):
 
             if login.objects.filter(user=name):
 
-                sql_query = "SELECT * FROM introduction_login WHERE user='"+name+"' AND password='"+password+"'"
+                sql_query = "SELECT * FROM introduction_login WHERE user=%s AND password=%s"
                 print(sql_query)
                 try:
                     print("\nin try\n")
-                    val=login.objects.raw(sql_query)
+                    val=login.objects.raw(sql_query, [name, password])
                 except:
                     print("\nin except\n")
                     return render(
@@ -199,22 +202,26 @@ def insec_des(request):
 @dataclass
 class TestUser:
     admin: int = 0
-pickled_user = pickle.dumps(TestUser())
-encoded_user = base64.b64encode(pickled_user)
+
+_default_user = json.dumps({"admin": 0}).encode("utf-8")
+encoded_user = base64.b64encode(_default_user)
 
 def insec_des_lab(request):
     if request.user.is_authenticated:
         response = render(request,'Lab/insec_des/insec_des_lab.html', {"message":"Only Admins can see this page"})
         token = request.COOKIES.get('token')
-        if token == None:
+        if token is None:
             token = encoded_user
             response.set_cookie(key='token',value=token.decode('utf-8'))
         else:
-            token = base64.b64decode(token)
-            admin = pickle.loads(token)
-            if admin.admin == 1:
-                response = render(request,'Lab/insec_des/insec_des_lab.html', {"message":"Welcome Admin, SECRETKEY:ADMIN123"})
-                return response
+            try:
+                token = base64.b64decode(token.encode('utf-8'), validate=True)
+                admin = json.loads(token.decode('utf-8'))
+                if isinstance(admin, dict) and admin.get('admin') == 1:
+                    response = render(request,'Lab/insec_des/insec_des_lab.html', {"message":"Welcome Admin, SECRETKEY:ADMIN123"})
+                    return response
+            except Exception:
+                pass
 
         return response
     else:
@@ -256,16 +263,30 @@ def xxe_see(request):
 def xxe_parse(request):
 
     parser = make_parser()
-    parser.setFeature(feature_external_ges, True)
+    try:
+        parser.setFeature(feature_external_ges, False)
+    except Exception:
+        pass
+    try:
+        parser.setFeature(feature_external_pes, False)
+    except Exception:
+        pass
     doc = parseString(request.body.decode('utf-8'), parser=parser)
+    text = ''
     for event, node in doc:
         if event == START_ELEMENT and node.tagName == 'text':
             doc.expandNode(node)
             text = node.toxml()
-    startInd = text.find('>')
-    endInd = text.find('<', startInd)
-    text = text[startInd + 1:endInd:]
-    p=comments.objects.filter(id=1).update(comment=text)
+    if text:
+        startInd = text.find('>')
+        endInd = text.find('<', startInd)
+        if startInd != -1:
+            if endInd == -1:
+                endInd = len(text)
+            text = text[startInd + 1:endInd]
+        else:
+            text = ''
+    comments.objects.filter(id=1).update(comment=text)
 
     return render(request, 'Lab/XXE/xxe_lab.html')
 
@@ -457,7 +478,7 @@ def cmd_lab2(request):
             
             print(val)
             try:
-                output = eval(val)
+                output = ast.literal_eval(val)
             except:
                 output = "Something went wrong"
                 return render(request,'Lab/CMD/cmd_lab2.html',{"output":output})
@@ -557,7 +578,7 @@ def a9_lab(request):
             try :
                 file=request.FILES["file"]
                 try :
-                    data = yaml.load(file,yaml.Loader)
+                    data = yaml.safe_load(file)
                     
                     return render(request,"Lab/A9/a9_lab.html",{"data":data})
                 except:
@@ -861,7 +882,7 @@ def injection_sql_lab(request):
         print(password)
 
         if name:
-            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id='"+name+"'AND password='"+password+"'"
+            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id=%s AND password=%s"
 
             sql_instance = sql_lab_table(id="admin", password="65079b006e85a7e798abecb99e47c154")
             sql_instance.save()
@@ -875,7 +896,7 @@ def injection_sql_lab(request):
             print(sql_query)
 
             try:
-                user = sql_lab_table.objects.raw(sql_query)
+                user = sql_lab_table.objects.raw(sql_query, [name, password])
                 user = user[0].id
                 print(user)
 
@@ -922,10 +943,12 @@ def ssrf_lab(request):
         else:
             file=request.POST["blog"]
             try :
-                dirname = os.path.dirname(__file__)
-                filename = os.path.join(dirname, file)
-                file = open(filename,"r")
-                data = file.read()
+                dirname = os.path.realpath(os.path.dirname(__file__))
+                filename = os.path.realpath(os.path.join(dirname, file))
+                if os.path.commonpath([dirname, filename]) != dirname:
+                    raise ValueError("Invalid path")
+                with open(filename,"r") as f:
+                    data = f.read()
                 return render(request,"Lab/ssrf/ssrf_lab.html",{"blog":data})
             except:
                 return render(request, "Lab/ssrf/ssrf_lab.html", {"blog": "No blog found"})
@@ -952,6 +975,43 @@ def ssrf_target(request):
     else:
         return render(request,"Lab/ssrf/ssrf_target.html",{"access_denied":True})
 
+def _is_safe_outbound_url(url):
+    try:
+        parsed = urllib.parse.urlparse(url)
+    except Exception:
+        return False
+
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        return False
+
+    hostname = parsed.hostname.lower()
+    if hostname in ("localhost", "127.0.0.1", "::1") or hostname.endswith(".localhost"):
+        return False
+
+    try:
+        port = parsed.port
+    except ValueError:
+        return False
+
+    if port is None:
+        port = 443 if parsed.scheme == "https" else 80
+
+    try:
+        addrinfo = socket.getaddrinfo(hostname, port, proto=socket.IPPROTO_TCP)
+    except (socket.gaierror, OSError):
+        return False
+
+    for family, _, _, _, sockaddr in addrinfo:
+        try:
+            ip = ipaddress.ip_address(sockaddr[0].split('%')[0])
+        except ValueError:
+            return False
+        if (ip.is_private or ip.is_loopback or ip.is_link_local or
+                ip.is_multicast or ip.is_reserved or ip.is_unspecified):
+            return False
+
+    return True
+
 @authentication_decorator
 def ssrf_lab2(request):
     if request.method == "GET":
@@ -960,7 +1020,9 @@ def ssrf_lab2(request):
     elif request.method == "POST":
         url = request.POST["url"]
         try:
-            response = requests.get(url)
+            if not _is_safe_outbound_url(url):
+                return render(request, "Lab/ssrf/ssrf_lab2.html", {"error": "Invalid URL"})
+            response = requests.get(url, timeout=5, allow_redirects=False)
             return render(request, "Lab/ssrf/ssrf_lab2.html", {"response": response.content.decode()})
         except:
             return render(request, "Lab/ssrf/ssrf_lab2.html", {"error": "Invalid URL"})

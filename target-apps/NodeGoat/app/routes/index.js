@@ -68,8 +68,51 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
+        const redirectUrl = req.query.url;
+        if (typeof redirectUrl !== "string") {
+            return res.redirect("/");
+        }
+
+        let pathname;
+        try {
+            const parsedUrl = new URL(redirectUrl, "http://localhost");
+            if (parsedUrl.origin !== "http://localhost") {
+                return res.redirect("/");
+            }
+            pathname = parsedUrl.pathname;
+        } catch (err) {
+            return res.redirect("/");
+        }
+
+        switch (pathname) {
+            case "/":
+                return res.redirect("/");
+            case "/login":
+                return res.redirect("/login");
+            case "/signup":
+                return res.redirect("/signup");
+            case "/logout":
+                return res.redirect("/logout");
+            case "/dashboard":
+                return res.redirect("/dashboard");
+            case "/profile":
+                return res.redirect("/profile");
+            case "/contributions":
+                return res.redirect("/contributions");
+            case "/benefits":
+                return res.redirect("/benefits");
+            case "/memos":
+                return res.redirect("/memos");
+            case "/research":
+                return res.redirect("/research");
+            case "/tutorial":
+                return res.redirect("/tutorial");
+            default:
+                if (pathname.startsWith("/tutorial/")) {
+                    return res.redirect("/tutorial");
+                }
+                return res.redirect("/");
+        }
     });
 
     // Research Page

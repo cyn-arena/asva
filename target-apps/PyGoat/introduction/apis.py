@@ -1,3 +1,4 @@
+import os
 import time
 
 import requests
@@ -35,7 +36,16 @@ def ssrf_code_checker(request):
             correct_output1 = [{"blog": "blog1-passed"}, {"blog": "blog2-passed"}, {"blog": "blog3-passed"}, {"blog": "blog4-passed"}]
             outputs = []
             for inputs in test_bench1:
-                outputs.append(main.ssrf_lab(inputs))
+                if not isinstance(inputs, str):
+                    return JsonResponse({'message': 'Invalid input in HTML code'}, status=400)
+                safe_input = os.path.basename(inputs)
+                if (safe_input != inputs
+                        or not safe_input
+                        or safe_input in ('.', '..')
+                        or '\x00' in safe_input
+                        or '\\' in safe_input):
+                    return JsonResponse({'message': 'Invalid input in HTML code'}, status=400)
+                outputs.append(main.ssrf_lab(safe_input))
             if outputs == correct_output1:
                 outputs = []
             else:

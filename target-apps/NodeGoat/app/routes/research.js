@@ -4,6 +4,8 @@ const {
     environmentalScripts
 } = require("../../config/config");
 
+const RESEARCH_URL = "https://www.google.com/finance?q=";
+
 function ResearchHandler(db) {
     "use strict";
 
@@ -11,8 +13,8 @@ function ResearchHandler(db) {
 
     this.displayResearch = (req, res) => {
 
-        if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
+        if (req.query.symbol && req.query.url === RESEARCH_URL) {
+            const url = RESEARCH_URL + encodeURIComponent(req.query.symbol);
             return needle.get(url, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {

@@ -8,12 +8,13 @@ function ResearchHandler(db) {
     "use strict";
 
     const researchDAO = new ResearchDAO(db);
+    const stockQuoteUrl = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=";
 
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
-            return needle.get(url, (error, newResponse, body) => {
+            const url = stockQuoteUrl + encodeURIComponent(req.query.symbol);
+            return needle.get(url, { follow_max: 0 }, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
                         "Content-Type": "text/html"
